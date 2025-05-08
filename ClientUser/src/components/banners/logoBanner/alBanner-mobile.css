@@ -1,0 +1,40 @@
+.banner-cont {
+    display: none;
+}
+
+.landing-banner {
+    height: 170px;
+    width: 100%;
+    display: grid;
+    justify-content: center;
+}
+
+.al-logo-image {
+    height: 170px;
+    width: 274px;
+    background: url("/al_logo_4.png") no-repeat;
+    background-size: cover;
+    animation: scaler 2s linear 0s infinite;
+}
+
+@keyframes scaler {
+    0% {
+        scale: 1
+    }
+
+    45% {
+        scale: 1
+    }
+
+    50% {
+        scale: 1.05
+    }
+
+    55% {
+        scale: 1;
+    }
+
+    100% {
+        scale: 1
+    }
+}

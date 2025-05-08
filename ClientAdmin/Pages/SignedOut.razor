@@ -1,0 +1,29 @@
+@page "/SignedOut"
+@using ALAdmin.Services.Auth.Manager
+@using System.Timers
+@inject NavigationManager Navigation
+@inject IAuthManager Auth
+@rendermode InteractiveServer
+
+<div class="fills center-content">
+    <h1 id="signout-message">Du er nu logget ud</h1>
+</div>
+
+@code {
+    private readonly Timer _timer = new(1000);
+
+    private void NavigateToLoginPage(Object? source, ElapsedEventArgs e)
+    {
+        Navigation.NavigateTo("/login", true);
+        _timer.Enabled = false;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        await Auth.LogoutAsync();
+        _timer.Elapsed += NavigateToLoginPage;
+        _timer.Enabled = true;
+    }
+
+}

@@ -1,0 +1,9 @@
+
+.filter-cont{
+    display: grid;
+    align-content: start;
+}
+
+.filter-headline{
+    margin-bottom: 16px;
+}

@@ -1,0 +1,20 @@
+#top-bar-cont{
+    display: grid;
+    height: min-content;
+    grid-template-columns: repeat(3,1fr);
+    border-bottom: 1px solid var(--al-light-dark);
+    min-height: 64px;
+    align-items: center;
+}
+
+#links-cont{
+    width: min-content;
+    min-width: 192px;
+    height: 48px;
+    justify-self: center;
+    border-radius: 6px;
+}
+
+#logut-link{
+    justify-self: flex-end;
+}

@@ -1,0 +1,53 @@
+@page "/UpdateMember/{ParameterId?}"
+@using ALAdmin.Services.Auth.Request
+@using ALAdmin.Components.Views
+@using ALAdmin.Components.Forms
+@using ALAdmin.Components.Sections
+@using ALAdmin.DataTransferObjects.Members
+@inject IJSRuntime JsRuntime
+@inject IAuthRequest Request
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<div id="details-cont" class="pad16 fillp scroll">
+    <EditForm Model="ModifiedMember" OnValidSubmit="RequestUpdate" FormName="Create">
+        <div id="details-inner" class="center al-tile pad16">
+            <FormControlsSection @bind-EditMode="EditMode" Editable="true"/>
+            <div id="update-form-cont" class="view-section pad16">
+                <h3 class="center-content section-label">Detaljer</h3>
+                <br/>
+                <MemberForm EditEnabled="EditMode" ReadMember="UnmodifiedMember" EditMember="ModifiedMember"/>
+            </div>
+            <div id="update-roles-cont" class="view-section pad16 clip">
+                <h3 class="center-content section-label">Roller</h3>
+                <RolesView EditMode="EditMode" Roles="ModifiedMember.Roles"/>
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+@code{
+    [Parameter] public string? ParameterId { get; set; }
+    private MemberInfo UnmodifiedMember { get; set; } = new();
+    private MemberInfo ModifiedMember { get; set; } = new();
+    private string Pass1 { get; set; } = "";
+    private string Pass2 { get; set; } = "";
+    private bool EditMode { get; set; }
+
+    private async Task RequestUpdate()
+    {
+        if (!await JsRuntime.InvokeAsync<bool>("confirm", "Sikker?")) return;
+        if (Pass1.Length >= 8 && Pass1 != Pass2) ModifiedMember.Password = Pass1;
+        var result = await Request.PatchAsync("/members", ModifiedMember.ToDto());
+        if (result) Navigation.NavigateTo("/");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        var route = $"/members/{ParameterId}";
+        UnmodifiedMember = await Request.GetAsync<MemberInfo>(route) ?? new();
+        ModifiedMember = UnmodifiedMember.ToDuplicated();
+        StateHasChanged();
+    }
+}

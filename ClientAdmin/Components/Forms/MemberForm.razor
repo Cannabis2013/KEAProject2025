@@ -1,0 +1,70 @@
+@using ALAdmin.Components.Controls
+@using ALAdmin.DataTransferObjects.Members
+
+<div class="Member-form-cont fillp">
+    <TextField
+        EditMode="EditEnabled"
+        Label="Fornavn"
+        PlaceHolder="Fornavn"
+        @bind-EditValue="EditMember.FirstName"
+        ReadValue="@ReadMember.FirstName"
+    />
+    <TextField
+        EditMode="EditEnabled"
+        Label="Efternavn"
+        PlaceHolder="Efternavn"
+        @bind-EditValue="EditMember.LastName"
+        ReadValue="@ReadMember.LastName"
+    />
+    <TextField
+        EditMode="EditEnabled"
+        Label="Telefon nummer"
+        MaxCount="8"
+        PlaceHolder="Telefon nummer"
+        @bind-EditValue="@EditMember.PhoneNumber"
+        ReadValue="@ReadMember.PhoneNumber"
+    />
+    <TextField
+        EditMode="EditEnabled"
+        Label="E-Mail"
+        PlaceHolder="E-Mail"
+        @bind-EditValue="EditMember.Email"
+        ReadValue="@ReadMember.Email"
+    />
+    <TextField
+        EditMode="EditEnabled"
+        Label="Ansvarsområde"
+        PlaceHolder="Område"
+        @bind-EditValue="EditMember.Title"
+        ReadValue="@ReadMember.Title"
+    />
+    @if (EditEnabled)
+    {
+        <TextField
+            Type="password"
+            Label="Kode"
+            @bind-EditValue="Pass1"
+            OnValueChanged="UpdatePassword"
+        />
+        <TextField
+            Type="password"
+            Label="Kode (gentag)"
+            @bind-EditValue="Pass2"
+            OnValueChanged="UpdatePassword"
+        />
+    }
+</div>
+
+@code{
+    [Parameter] public MemberInfo ReadMember { get; set; } = new();
+    [Parameter] public MemberInfo EditMember { get; set; } = new();
+    [Parameter] public bool EditEnabled { get; set; }
+    
+    private string Pass1 { get; set; } = "";
+    private string Pass2 { get; set; } = "";
+
+    private void UpdatePassword()
+    {
+        if (Pass1 == Pass2) EditMember.Password = Pass1;
+    }
+}

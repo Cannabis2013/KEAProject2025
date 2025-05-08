@@ -1,0 +1,29 @@
+<div class="checkbox-cont fillp">
+    <p class="checkbox-text fillp center-content">@Text</p>
+    @if (Value)
+    {
+        <input checked class="checkbox-input" type="checkbox" @onchange="UpdateValue"/>
+    }
+    else
+    {
+        <input class="checkbox-input" type="checkbox" @onchange="UpdateValue"/>
+    }
+</div>
+
+@code {
+    [Parameter] public string Text { get; set; } = "";
+    [Parameter] public bool Value { get; set; }
+
+    [Parameter] public EventCallback<bool> ValueChanged { get; set; }
+
+    [Parameter]
+    public EventCallback OnChange { get; set; }
+
+    private async Task UpdateValue(ChangeEventArgs args)
+    {
+        var value = (bool)(args.Value ?? false);
+        await ValueChanged.InvokeAsync(value);
+        await OnChange.InvokeAsync();
+    }
+
+}

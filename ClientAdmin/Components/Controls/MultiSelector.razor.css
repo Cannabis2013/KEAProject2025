@@ -1,0 +1,9 @@
+.select-cont{
+    height: 140px;
+    background-color: var(--al-medium-dark);
+    color: var(--al-font-color);
+}
+
+.select-cont:checked{
+    background-color: var(--al-font-color-warning);
+}

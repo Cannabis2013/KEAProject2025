@@ -1,0 +1,13 @@
+<div class="search-cont pad8 round6 fillh">
+    <input placeholder="Søg" class="fillp search-input" @oninput="UpdateValue"/>
+    <img alt="Billede af søgeikon" src="Ressources/search.png" class="search-img"/>
+</div>
+@code {
+    [Parameter] public EventCallback<string> OnValueChanged { get; set; }
+    
+    private async Task UpdateValue(ChangeEventArgs args)
+    {
+        var value = args.Value?.ToString() ?? "";
+        await OnValueChanged.InvokeAsync(value);
+    }
+}

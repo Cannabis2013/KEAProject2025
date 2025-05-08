@@ -1,0 +1,64 @@
+@page "/CreateMember"
+
+@using System.Text.RegularExpressions
+@using ALAdmin.DataTransferObjects.Members
+@using ALAdmin.Services.Auth.Request
+@using ALAdmin.Components.Views
+@using ALAdmin.Components.Forms
+@using ALAdmin.Components.Sections
+@inject IAuthRequest Request
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<div id="details-cont" class="pad16 fillp scroll">
+    <EditForm EditContext="_editContext" OnValidSubmit="RequestCreate" FormName="Create">
+        <div id="details-inner" class="center fillp al-tile pad16">
+            <FormControlsSection EditMode="true" Editable="false"/>
+            <div id="create-details-cont" class="view-section pad16">
+                <h3 class="center-content section-label">Opret</h3>
+                <br/>
+                <MemberForm EditEnabled="true" EditMember="Member"/>
+                <br/>
+                <div style="color: red !important;">
+                    <ValidationMessage For="() => Member.Password"/>
+                    <ValidationMessage For="() => Member.PhoneNumber"/>
+                </div>
+            </div>
+            <div id="create-roles-cont" class="view-section pad16 clip">
+                <h3 class="center-content section-label">Roller</h3>
+                <RolesView Roles="Member.Roles" EditMode="true"/>
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+@code
+{
+    private EditContext? _editContext;
+    private ValidationMessageStore? _messageStore;
+    private MemberInfo Member { get; } = new();
+    private const string PhoneMessage = "Telefon nummer: 8 tal";
+    private const string PasswordMessage = "Kode: Mindst 8 tegn";
+    
+    private async Task RequestCreate()
+    {
+        var result = await Request.PostAsync("members", Member.ToDto());
+        if (result) Navigation.NavigateTo("/");
+    }
+
+    protected override void OnInitialized()
+    {
+        _editContext = new(Member);
+        _editContext.OnValidationRequested += HandleValidation;
+        _messageStore = new(_editContext);
+    }
+
+    private void HandleValidation(object? sender, ValidationRequestedEventArgs args)
+    {
+        _messageStore!.Clear();
+        if (!Regex.IsMatch(Member.Password,"^[A-z]{8,}$"))
+            _messageStore.Add(() => Member.Password,PasswordMessage);
+        if(!Regex.IsMatch(Member.PhoneNumber,@"^\d{8}$"))
+            _messageStore.Add(() => Member.PhoneNumber,PhoneMessage);
+    }
+}

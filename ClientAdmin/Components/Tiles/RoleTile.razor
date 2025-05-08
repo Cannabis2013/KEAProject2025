@@ -1,0 +1,37 @@
+@if (EditMode || Roles.Contains(Value))
+{
+    <div class="role-tile border round6 clip">
+        <div class="role-upper-section pad8">
+            <h3>@Label</h3>
+            @if (Roles.Contains(Value) && EditMode)
+            {
+                <input checked class="role-selector" type="checkbox" @onchange="HandleSelectEvent"/>
+            }
+            else if(EditMode)
+            {
+                <input class="role-selector" type="checkbox" @onchange="HandleSelectEvent"/>
+            }
+        </div>
+        <div class="desc-cont pad8">
+            <p>@RoleDescription</p>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public required bool EditMode { get; set; }
+    [Parameter] public required string Value { get; set; }
+    [Parameter] public required string Label { get; set; }
+    [Parameter] public required List<string> Roles { get; set; }
+    [Parameter] public string RoleDescription { get; set; } = "";
+    
+    private void HandleSelectEvent(ChangeEventArgs args)
+    {
+        var state = (bool)(args.Value ?? false);
+        if (state)
+            Roles.Add(Value);
+        else
+            Roles.Remove(Value);
+    }
+
+}

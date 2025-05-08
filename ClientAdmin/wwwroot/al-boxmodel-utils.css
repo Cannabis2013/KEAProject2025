@@ -1,0 +1,59 @@
+.fills{
+    width: 100vw;
+    height: 100vh;
+}
+
+.fillp{
+    width: 100%;
+    height: 100%;
+}
+
+.fillh{
+    height: 100%;
+}
+
+.adaptive{
+    width: min-content;
+    height: min-content;
+}
+
+.pad8{
+    padding: 8px;
+}
+
+.pad16{
+    padding: 16px;
+}
+
+.gapx8{
+    row-gap: 8px;
+}
+
+.gapy8{
+    column-gap: 8px;
+}
+
+.gapx16{
+    row-gap: 16px;
+}
+
+.gapy16{
+    column-gap: 16px;
+}
+
+.no-border{
+    border: none;
+}
+
+.border{
+    border: solid 1px var(--al-stronger-dark);
+}
+
+.round6{
+    border-radius: 6px;
+}
+
+.center{
+    margin-left: auto;
+    margin-right: auto;
+}

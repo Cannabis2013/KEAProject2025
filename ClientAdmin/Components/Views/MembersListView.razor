@@ -1,0 +1,46 @@
+@inject NavigationManager Navigation
+@using ALAdmin.DataTransferObjects.Members
+@using ALAdmin.Components.Controls
+<div id="members-overview" class="fillp">
+    <div class="list-header-cont fillp">
+        <div class="header-item list-columns fillp padx8">
+            <p>Medlems nr.</p>
+            <p>navn</p>
+            <p>Email</p>
+            <p>Sidste betaling</p>
+        </div>
+    </div>
+    <div class="list-cont">
+        <Virtualize Items="Members" Context="member">
+            <div class="list-item list-columns padx8">
+                <a href="/UpdateMember/@member.MemberId">@member.MemberId</a>
+                <p>@member.FirstName @member.LastName</p>
+                <a href="mailto:@member.Email">@member.Email</a>
+                <p>@member.LastPayment.ToString("d")</p>
+                <PushButton IconOnly="true" IconUrl="Ressources/trashcan.png" OnClickAsync="() => NavigateToDelete(member.MemberId)" Style="height: 24px;"/>
+                @if (RenderPaymentWarning(member))
+                {
+                    <div class="payment-warning-cont center-content">
+                        <div class="payment-warning">!</div>
+                    </div>
+                }
+            </div>
+        </Virtualize>
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<MemberListItem> Members { get; set; } = [];
+
+    private void NavigateToDelete(int id) => Navigation.NavigateTo($"/deletePage/{id}");
+
+    private bool RenderPaymentWarning(MemberListItem member)
+    {
+        var utc = member.LastPayment.ToUniversalTime().Ticks;
+        var now = DateTime.UtcNow.Ticks;
+        var diff = now > utc ? now - utc : 0;
+        var years = new DateTime(diff).Year - 1;
+        return years >= 1;
+    }
+
+}

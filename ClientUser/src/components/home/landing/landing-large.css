@@ -1,0 +1,36 @@
+@media (min-width: 768px) {
+    .landing-banner-cont {
+        display: grid;
+        height: 100vh;
+        grid-template-rows: 1fr min-content 1fr;
+        background-color: black;
+        position: relative;
+        align-items: center;
+    }
+
+    .text-rotation-cont {
+        display: grid;
+        margin-left: 128px;
+        justify-items: center;
+        align-self: center;
+        width: min-content;
+    }
+
+    .text-banner {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 32px 0 32px;
+        align-self: flex-start;
+        margin: 0;
+    }
+
+    .text-banner > p {
+        font-size: 2rem;
+        display: grid;
+        align-items: center;
+        font-weight: bold;
+        margin: 0;
+        padding: 0;
+    }
+}

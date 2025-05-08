@@ -1,0 +1,8 @@
+.login-form{
+    display: grid;
+    row-gap: 8px;
+}
+
+label{
+    display: block;
+}

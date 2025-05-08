@@ -1,0 +1,10 @@
+.update-controls-bar{
+    display: flex;
+    column-gap: 16px;
+}
+
+@media (orientation: landscape) and (min-width: 1280px){
+    .update-controls-bar{
+        grid-column: span 2;
+    }
+}

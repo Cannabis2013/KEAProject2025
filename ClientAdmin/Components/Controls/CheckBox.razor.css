@@ -1,0 +1,16 @@
+.checkbox-cont{
+    display: grid;
+    grid-template-columns: min-content min-content;
+    column-gap: 6px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.checkbox-input{
+    width: 20px;
+    height: 20px;
+}
+
+.checkbox-text{
+    white-space: nowrap;
+}

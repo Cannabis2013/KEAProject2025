@@ -1,0 +1,24 @@
+@page "/NoConnection"
+<div class="fills center-content">
+    <div class="al-tile center-content pad16">
+        <h1 class="text-warning">Ingen forbindelse til server</h1>
+        <div style=@GetCssHeight(12)></div>
+        <ul style="padding-left: 16px;">
+            <li style="color: var(--al-font-color)">
+                Tjek dine kabler
+            </li>
+            <li style="color: var(--al-font-color)">Ring til søfartsstyrelsen og hør om russerne er på spil</li>
+            <li style="color: var(--al-font-color)">Har i betalt jeres regning til Yousee?</li>
+            <li style="color: var(--al-font-color)">Ring til IT ansvarlig (han er på ferie og kommer først tilbage om et år)</li>
+        </ul>
+        <div style=@GetCssHeight(6)></div>
+        <a style="justify-self: end;width: min-content; white-space: nowrap;" href="/">Prøv igen</a>
+    </div>
+</div>
+
+@code {
+    private string GetCssHeight(int h)
+    {
+        return $"height: {h}px";
+    }
+}

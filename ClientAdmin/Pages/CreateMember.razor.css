@@ -1,0 +1,42 @@
+#details-inner{
+    display: grid;
+    gap: 1rem;
+    height: min-content;
+    width: 100%;
+}
+
+#create-controls-bar{
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min-content;
+    justify-content: start;
+}
+
+@media (orientation: landscape) and (min-width: 1280px){
+    #details-inner {
+        grid-template-columns: 256px 1fr;
+        grid-template-rows: min-content min-content;
+        justify-content: center;
+        width: 1156px;
+    }
+
+    #create-controls-bar{
+        grid-column: span 2;
+    }
+}
+
+#create-details-cont{
+    height: min-content;
+}
+
+#create-form-cont{
+    display: grid;
+    align-items: start;
+    align-content: start;
+}
+
+#create-roles-cont{
+    display: grid;
+    grid-template-rows: min-content 1fr;
+    row-gap: 1rem;
+}

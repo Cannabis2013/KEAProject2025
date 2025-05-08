@@ -1,0 +1,8 @@
+.user-selector{
+    background-color: var(--input-back-color);
+    color: var(--input-font-color);
+    padding: 9px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+}

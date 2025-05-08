@@ -1,0 +1,36 @@
+@using ALAdmin.Services.Auth.Manager
+@using ALAdmin.Components.Controls
+@inject IAuthManager Auth;
+@inject NavigationManager Navigation;
+@rendermode InteractiveServer
+
+@if (SignedIn)
+{
+    <div id="top-bar-cont" class="pad16">
+        <p style="white-space: nowrap">Amager Loyalist bruger administration</p>
+        <div id="links-cont" class="border">
+        </div>
+        <PushButton Style="justify-self: end" OnClickAsync="NavigateToSignOut" IconUrl="./Ressources/signout.png" Text="Log ud"/>
+    </div>
+}
+else
+{
+    <div></div>
+}
+
+@code {
+    private bool SignedIn { get; set; }
+
+    private void NavigateToSignOut()
+    {
+        SignedIn = false;
+        Navigation.NavigateTo("/SignedOut");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        SignedIn = await Auth.IsSignedInAsync();
+        StateHasChanged();
+    }
+}

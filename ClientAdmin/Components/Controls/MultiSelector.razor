@@ -1,0 +1,45 @@
+@rendermode InteractiveServer
+
+@if (EditMode)
+{
+    <select @onchange="UpdateValues" class="ani-fadein-fast select-cont fillp pad8 round6 center-content" multiple>
+        @foreach (var entry in Entries)
+        {
+            if (Values.Contains(entry))
+            {
+                <option selected>@entry</option>
+            }
+            else
+            {
+                <option>@entry</option>
+            }
+            <hr/>
+        }
+    </select>
+}
+else
+{
+    <div class="ani-fadein-fast" style="height: 140px;">
+        <label>@Label</label>
+        @foreach (var role in Values)
+        {
+            <p>@role</p>
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public string Label { get; set; } = "Label";
+    [Parameter] public bool EditMode { get; set; } = true;
+    [Parameter] public List<string> Values { get; set; } = [];
+    [Parameter] public List<string> Entries { get; set; } = [];
+    [Parameter] public EventCallback<List<string>> ValuesChanged { get; set; }
+
+    private void UpdateValues(ChangeEventArgs args)
+    {
+        if (args.Value is null) return;
+        var selected = (string[])args.Value;
+        Values = selected.ToList();
+        ValuesChanged.InvokeAsync(Values);
+    }
+}

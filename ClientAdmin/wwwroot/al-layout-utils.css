@@ -1,0 +1,13 @@
+.center-content{
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+}
+
+.col-spreaded{
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-rows: min-content;
+    justify-content: space-between;
+}

@@ -1,0 +1,44 @@
+@using ALAdmin.DataTransferObjects.Members
+@using ALAdmin.Services.Auth.Request
+@using ALAdmin.Services.Auth.Storage
+@inject IAuthStorage Storage
+@inject IAuthRequest Request
+@rendermode InteractiveServer
+
+<div class="member-card-cont al-tile pad16">
+    <div class="image-holder">
+        <img src="Ressources/userTemplate.png" width="100%" height="100%"/>
+    </div>
+    <label>
+        Navn
+        <p class="card-field">@MemberCardItem.Name</p>
+    </label>
+    <label>
+        Medlems nr.
+        <p class="card-field">@MemberCardItem.Id</p>
+    </label>
+    <label>
+        Mail
+        <p class="card-field">@MemberCardItem.Email</p>
+    </label>
+    <label>
+        Tilmeldt
+        <p class="card-field">@MemberCardItem.JoinedDate.ToString("D")</p>
+    </label>
+</div>
+
+@code {
+    private MemberCardItem MemberCardItem { get; set; } = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await UpdateMemberCard();
+        StateHasChanged();
+    }
+    
+    private async Task UpdateMemberCard()
+    {
+        var userId = await Storage.UserId();
+        MemberCardItem = await Request.GetAsync<MemberCardItem>($"members/{userId}") ?? new();
+    }
+}

@@ -1,0 +1,18 @@
+.text-field-cont{
+    background-color: var(--input-back-color);
+    color: var(--input-font-color);
+    border: none;
+    outline: none;
+}
+
+.text-field-cont::placeholder{
+    color: var(--input-font-color);
+}
+
+.field-value{
+    font-size: 1rem;
+}
+
+.field-label{
+    font-size: 0.8rem;
+}

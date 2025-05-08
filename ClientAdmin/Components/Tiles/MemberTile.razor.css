@@ -1,0 +1,27 @@
+.member-card-cont{
+    display: none;
+}
+@media (orientation: landscape) and (min-width: 768px) {
+    .member-card-cont{
+        display: grid;
+        align-items: center;
+        min-width: 256px;
+        width: min-content;
+        height: 100%;
+        gap: .75rem;
+    }
+    
+    .image-holder{
+        width: 192px;
+        height: 192px;
+        align-self: center;
+        justify-self: center;
+        border-radius: 6px;
+    }
+    
+    .card-field{
+        font-size: 1.5rem;
+        line-height: 2rem;
+        white-space: nowrap;
+    }
+}

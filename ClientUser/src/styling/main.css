@@ -1,0 +1,75 @@
+html {
+    scroll-behavior: smooth;
+}
+
+:root {
+    --al-blue: rgba(135, 206, 250, 0.8);
+    --al-back: #3f3f3f
+}
+
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+html * {
+    font-family: "Poppins", sans-serif;
+    user-select: none;
+}
+
+h1,
+h2,
+h3, a,
+p {
+    color: var(--al-blue);
+    margin: 0;
+}
+
+.horizontal-center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.fill-parent {
+    height: 100%;
+    width: 100%;
+}
+
+.fill-screen {
+    height: 100vh;
+    width: 100vw;
+}
+
+.fluid-container {
+    width: 100%;
+    padding: 8px;
+}
+
+.al-box {
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.19);
+}
+
+@media only screen and (min-width: 768px) {
+    .fluid-container {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 64px 8px 0 8px;
+    }
+}
+
+@media only screen and (min-width: 1024px) {
+    .fluid-container {
+        width: 800px;
+    }
+}
+
+::-webkit-scrollbar {
+    display: none;
+}

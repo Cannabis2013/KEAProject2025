@@ -1,0 +1,6 @@
+.Member-form-cont{
+    display: grid;
+    grid-auto-rows: min-content;
+    row-gap: .5rem;
+    align-content: center;
+}

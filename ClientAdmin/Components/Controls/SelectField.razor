@@ -1,0 +1,31 @@
+@using ALAdmin.Models.Controls
+<label style="width: 192px" class="ani-fadein-fast">@Label</label>
+<select class="user-selector" value="@Value" @onchange="HandleChange">
+    @foreach (var item in Items ?? [])
+    {
+        if (item.Value == Value)
+        {
+            <option selected value="@item.Value">@item.Text</option>
+        }
+        else
+        {
+            <option value="@item.Value">@item.Text</option>
+        }
+    }
+</select>
+
+@code {
+    [Parameter] public string Label { get; set; } = "Label";
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public EventCallback<string> OnChange { get; set; }
+    [Parameter] public List<ListItem>? Items { get; set; }
+
+    private async Task HandleChange(ChangeEventArgs args)
+    {
+        Value = args.Value?.ToString();
+        await ValueChanged.InvokeAsync(Value);
+        await OnChange.InvokeAsync(Value);
+    }
+
+}

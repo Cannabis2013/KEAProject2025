@@ -1,0 +1,31 @@
+#details-inner{
+    display: grid;
+    gap: 1rem;
+    height: min-content;
+    width: 100%;
+}
+
+@media (orientation: landscape) and (min-width: 1280px){
+    #details-inner{
+        grid-template-columns: 256px 1fr;
+        grid-template-rows: min-content 1fr;
+        width: 1156px;
+        min-height: 600px;
+    }
+
+    #update-controls-bar{
+        grid-column: span 2;
+    }
+}
+
+#update-form-cont{
+    display: grid;
+    align-items: start;
+    align-content: start;
+}
+
+#update-roles-cont{
+    display: grid;
+    grid-template-rows: min-content 1fr;
+    row-gap: 1rem;
+}

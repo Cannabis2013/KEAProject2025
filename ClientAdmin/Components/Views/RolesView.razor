@@ -1,0 +1,64 @@
+@using ALAdmin.Components.Tiles
+<div class="roles-selector-cont fillp">
+    <RoleTile
+        EditMode="EditMode"
+        Label="Formand"
+        Value="CHAIRMAN"
+        Roles="Roles"
+        RoleDescription="Kan alt. Tildel med omtanke."
+    />
+
+    <RoleTile
+        EditMode="EditMode"
+        Label="Næstformand"
+        Value="DEPUTY_CHAIRMAN"
+        Roles="Roles"
+        RoleDescription="Kan det meste. Tildel med omtanke."
+    />
+
+    <RoleTile
+        EditMode="EditMode"
+        Label="Kassér"
+        Value="CASHIER"
+        Roles="Roles"
+        RoleDescription="Står for alt med betalinger og regnskab"
+    />
+
+    <RoleTile
+        EditMode="EditMode"
+        Label="Webmaster"
+        Value="IT"
+        Roles="Roles"
+        RoleDescription="Kan det meste. Står for vedligehold af IT. Tildel med omtanke."
+    />
+
+    <RoleTile
+        EditMode="EditMode"
+        Label="Medlem"
+        Value="MEMBER"
+        Roles="Roles"
+        RoleDescription="Ordinært medlem. Kan håndtere sine egne beskeder. Kan se nyheder."
+    />
+
+    <RoleTile
+        EditMode="EditMode"
+        Label="Prospect"
+        Value="PROSPECT"
+        Roles="Roles"
+        RoleDescription="Er på prøve i klubben. Vasker klubtrøjer og sørger for at trommen er i orden. Har ingen eller få rettigheder."
+    />
+
+    <RoleTile
+        EditMode="EditMode"
+        Label="Hangaround"
+        Value="HANGAROUND"
+        Roles="Roles"
+        RoleDescription="Går til fester med kluben og hænger ud med medlemmerne. Har ingen rettigheder."
+    />
+</div>
+
+@code
+{
+    [Parameter] public required bool EditMode { get; set; }
+    [Parameter] public List<string> Roles { get; set; } = [];
+}

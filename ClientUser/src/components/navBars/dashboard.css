@@ -1,0 +1,60 @@
+.nav-handle,
+.dash-cont, .dash-inner-cont {
+    display: none;
+}
+
+@media only screen and (min-width: 768px) {
+    .nav-handle {
+        display: block;
+        z-index: 800;
+        position: absolute;
+        width: 64px;
+        height: 64px;
+        cursor: pointer;
+        border-bottom-right-radius: 6px;
+    }
+
+    .nav-handle:active {
+        box-shadow: white 0 0 15px;
+    }
+
+    .dash-cont {
+        display: none;
+        background-color: #3f3f3f;
+        z-index: 666;
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        opacity: 0;
+        transition: opacity .3s ease-in-out;
+    }
+
+    .dash-inner-cont {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: min-content 1fr;
+        align-items: start;
+        position: absolute;
+        left: 128px;
+        right: 0;
+        top: 0;
+        bottom: 0;
+    }
+
+    .dash-head {
+        font-size: 6rem;
+        font-weight: bold;
+        grid-column: span 2;
+    }
+
+    .links-cont {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 192px);
+        grid-auto-rows: min-content;
+        column-gap: 20px;
+        justify-content: start;
+        overflow: scroll;
+        gap: 20px;
+        height: 100%;
+    }
+}

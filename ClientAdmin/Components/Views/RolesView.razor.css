@@ -1,0 +1,12 @@
+.roles-selector-cont{
+    display: grid;
+    grid-template-columns: repeat(auto-fill,256px);
+    grid-auto-rows: min-content;
+    gap: 1rem;
+    overflow: scroll;
+    justify-content: center;
+}
+
+ul{
+    padding: 16px;
+}

@@ -1,0 +1,29 @@
+:root {
+    --al-background: #3f3f3f;
+    --al-section-color: #2a2a2a;
+    --al-tile: #3f3f3f;
+    --al-tile-border: #1a1a1a;
+    --al-tile-shadow: #1a1a1a;
+    --al-light-dark: #2f2f2f;
+    --al-medium-dark: #1f1f1f;
+    --al-strong-dark: #1b1b1b;
+    --al-stronger-dark: #101010;
+    --btn-border-color: #1f1f1f;
+    --btn-back-color: #3f3f3f;
+    --btn-back-hover: #4f4f4f;
+    --btn-text-color: rgb(100, 171, 215);
+    --al-text-label: #afafaf;
+    --search-back-color: wheat;
+    --search-font-color: black;
+    --search-placeholder-color: black;
+    --input-back-color: black;
+    --input-font-color: rgb(100, 171, 215);
+    --input-font-placeholder-color: rgb(100, 171, 215);
+    --al-filter-bar: transparent;
+    --al-font-color: rgb(100, 171, 215);
+    --al-section-label: rgb(68, 147, 239); 
+    --label-color: rgb(75, 129, 166);
+    --input-color-placeholder: rgb(75, 129, 166);
+    --al-validation-message: #e50000;
+    --al-font-color-warning: red;
+}

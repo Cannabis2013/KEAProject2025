@@ -1,0 +1,15 @@
+@using ALAdmin.Components.Controls
+@using ALAdmin.Models.Members
+
+<div class="filter-cont fillp pad16">
+    <h3 class="filter-headline">Filter</h3>
+    <CheckBox Text="Har betalt" @bind-Value="Values.HasPaid" OnChange="UpdateContext"/>
+    <CheckBox Text="Har ikke betalt" @bind-Value="Values.HasNotPaid" OnChange="UpdateContext" />
+</div>
+
+@code {
+    [Parameter] public EventCallback<FilterValues> OnChange { get; set; }
+    private FilterValues Values { get; set; } = new();
+
+    private async Task UpdateContext() => await OnChange.InvokeAsync(Values);
+}

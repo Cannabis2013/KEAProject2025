@@ -1,0 +1,39 @@
+@if (EditMode)
+{
+    <label style="width: 192px" class="ani-fadein-fast">@Label</label>
+    <input
+        class="text-field-cont ani-fadein-fast fillp field-input pad8 round6"
+        @bind="EditValue"
+        type="@Type"
+        placeholder="@PlaceHolder"
+        maxlength='@MaxCount'
+        @oninput="UpdateCallingContext"
+    />
+}
+else
+{
+    <label style="width: 192px" class="ani-fadein-fast">@Label</label>
+    <div class="ani-fadein-fast">
+        <p>@ReadValue</p>
+    </div>
+}
+
+@code {
+    [Parameter] public bool EditMode { get; set; } = true;
+    [Parameter] public int MaxCount { get; set; } = -1;
+    [Parameter] public string Type { get; set; } = "text";
+    [Parameter] public string Label { get; set; } = "Label";
+    [Parameter] public string PlaceHolder { get; set; } = "";
+    [Parameter] public string EditValue { get; set; } = "";
+    [Parameter] public string ReadValue { get; set; } = "";
+    [Parameter] public EventCallback<string> EditValueChanged { get; set; }
+    [Parameter] public EventCallback<string> OnValueChanged { get; set; }
+
+    private async Task UpdateCallingContext(ChangeEventArgs args)
+    {
+        EditValue = args.Value?.ToString() ?? "";
+        await EditValueChanged.InvokeAsync(EditValue);
+        await OnValueChanged.InvokeAsync(EditValue);
+    }
+
+}

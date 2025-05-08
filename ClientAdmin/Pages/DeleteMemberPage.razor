@@ -1,0 +1,45 @@
+@page "/deletePage/{MemberId}"
+@using ALAdmin.DataTransferObjects.Members
+@using ALAdmin.Services.Auth.Request
+@using ALAdmin.Components.Controls
+@inject IAuthRequest Request
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<div class="fillp center-content">
+    <div id="delete-cont" class="al-tile pad16 round6">
+        <h1>Slet</h1>
+        <p>Er du sikker på du vil slette @RenderFullName() fra systemet?</p>
+        <div class="col-spreaded">
+            <PushButton Text="Fortryd" OnClickAsync="Cancel"/>
+            <PushButton IconUrl="Ressources/trashcan.png" OnClickAsync="DeleteMember"/>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string MemberId { get; set; } = "";
+
+    private MemberInfo Member { get; set; } = new();
+
+    private void Cancel() => Navigation.NavigateTo("/members");
+
+    private async Task DeleteMember()
+    {
+        await Request.RemoveAsync($"/members/{MemberId}");
+        Navigation.NavigateTo("/members");
+    }
+
+    private string RenderFullName()
+    {
+        return $"{Member.FirstName} {Member.LastName}";
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        Member = await Request.GetAsync<MemberInfo>($"/members/{MemberId}") ?? new();
+        StateHasChanged();
+    }
+
+}

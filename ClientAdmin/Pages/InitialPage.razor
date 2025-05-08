@@ -1,0 +1,20 @@
+@page "/"
+@using ALAdmin.Services.Auth.Authentication
+@rendermode InteractiveServer
+@inject IAuthentication Authentication;
+@inject NavigationManager NavigationManager
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        try
+        {
+            await Authentication.AuthenticateAsync();
+        }
+        catch (Exception)
+        {
+            NavigationManager.NavigateTo("/login", true);
+        }
+        NavigationManager.NavigateTo("/members");
+    }
+}

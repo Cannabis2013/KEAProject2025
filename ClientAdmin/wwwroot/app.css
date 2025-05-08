@@ -1,0 +1,47 @@
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: var(--al-background);
+    padding: 0;
+    margin: 0;
+}
+
+* {
+    box-sizing: border-box;
+    user-select: none;
+}
+
+label {
+    color: var(--label-color);
+}
+
+h1 {
+    font-size: 2rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+}
+
+h1, h2, h3, h4, h5, h6, p, a, li,.btn-link, input {
+    color: var(--al-font-color);
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    display: grid;
+    align-items: center;
+    white-space: nowrap;
+    width: min-content;
+}
+
+.section-label{
+    color: var(--al-section-label);
+}
+
+input {
+    color: black;
+}

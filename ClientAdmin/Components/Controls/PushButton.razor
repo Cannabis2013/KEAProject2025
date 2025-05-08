@@ -1,0 +1,30 @@
+<button type="@ButtonType()" style="@Style" class="push-button @Decorated() @ButtonLayout() pad8 round6" @onclick="HandleClick">
+    @if (IconUrl is not null)
+    {
+        <img width="16" height="16" src="@IconUrl" alt="Icon"/>
+    }
+    <p class="push-label">@Text</p>
+</button>
+
+@code {
+    [Parameter] public EventCallback OnClickAsync { get; set; }
+    [Parameter] public string Style { get; set; } = "";
+    [Parameter] public bool IsForm { get; set; }
+    [Parameter] public string Text { get; set; } = "";
+    [Parameter] public string? ImageUrl { get; set; }
+    [Parameter] public string? IconUrl { get; set; }
+    [Parameter] public Enum? ButtonMode {get;set;}
+    [Parameter] public bool IconOnly { get; set; }
+
+    private string Decorated() => !IconOnly ? "push-decorated" : "push-non-decorated";
+    
+    private string ButtonType() => IsForm ? "submit" : "button";
+    
+    private string ButtonLayout() => IconUrl is null || !Text.Any() ? "center-content" : "icon-layout";
+
+    private void HandleClick()
+    {
+        if (IsForm) return;
+        OnClickAsync.InvokeAsync();
+    }
+}

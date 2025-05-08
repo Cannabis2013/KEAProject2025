@@ -1,0 +1,35 @@
+.push-button{
+    transition: background-color .4s;
+    cursor: pointer;
+    width: min-content;
+}
+
+.push-decorated{
+    background-color: var(--btn-back-color);
+    border: solid 1px var(--btn-border-color);
+}
+
+.push-non-decorated{
+    background-color: transparent;
+    border: none;
+}
+
+.push-decorated:hover{
+    background-color: var(--btn-back-hover);
+}
+
+.push-button:active{
+    scale: 0.95;
+}
+
+.icon-layout{
+    display: grid;
+    grid-template-columns: 16px 1fr;
+    align-items: center;
+    column-gap: 8px;
+}
+
+.push-label{
+    color: var(--btn-text-color) !important;
+    white-space: nowrap;
+}

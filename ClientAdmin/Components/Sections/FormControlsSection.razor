@@ -1,0 +1,31 @@
+@using ALAdmin.Components.Controls
+@inject NavigationManager Navigation
+<div class="update-controls-bar fillp view-section pad16">
+    <PushButton Text="Hjem" IconUrl="./Ressources/home.png" OnClickAsync="HandleCancel"/>
+    @if (Editable)
+    {
+        <PushButton OnClickAsync="HandleEditModeChange" Text="@SwitchButtonText()"/>
+    }
+    @if (EditMode)
+    {
+        <PushButton Text="Opdater betaling"/>
+        <PushButton IconUrl="./Ressources/save.png" IsForm="true" Text="Gem"/>
+    }
+    
+</div>
+
+@code {
+    [Parameter] public bool EditMode { get; set; }
+    [Parameter] public EventCallback<bool> EditModeChanged { get; set; }
+    [Parameter] public bool Editable { get; set; }
+    
+    private string SwitchButtonText() => EditMode ? "Detaljer" : "Redigér";
+    
+    public async Task HandleEditModeChange()
+    {
+        EditMode = !EditMode;
+        await EditModeChanged.InvokeAsync(EditMode);
+    }
+
+    private void HandleCancel() => Navigation.NavigateTo("/members");
+}

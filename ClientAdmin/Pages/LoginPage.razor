@@ -1,0 +1,42 @@
+﻿@page "/login"
+@using ALAdmin.DataTransferObjects.Auth
+@using ALAdmin.Services.Auth.Manager
+@using ALAdmin.Components.Controls
+@inject NavigationManager Navigation
+@inject IAuthManager AuthManager
+@rendermode InteractiveServer
+
+<PageTitle>Login</PageTitle>
+
+<div id="login-cont" class="fillp center-content">
+    <div class="al-tile pad16">
+        <EditForm Model="LoginRequest" OnValidSubmit="HandleLoginRequest" FormName="UserLogin">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
+            <div class="login-form">
+                <div>
+                    <label>Email</label>
+                    <InputText @bind-Value="LoginRequest!.Email"/>
+                </div>
+                <div>
+                    <label>Kodeord</label>
+                    <InputText type=password @bind-Value="LoginRequest.Password"/>
+                </div>
+                <PushButton IsForm="true" Text="Indsend" Style="justify-self: end;"/>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code{
+    public AuthLoginRequest? LoginRequest { get; set; }
+
+    protected override void OnInitialized() => LoginRequest = new();
+    
+    private async Task HandleLoginRequest()
+    {
+        if (await AuthManager.LoginAsync(LoginRequest!))
+            Navigation.NavigateTo("/members",true);
+    }
+}
+

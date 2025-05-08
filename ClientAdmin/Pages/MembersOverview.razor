@@ -1,0 +1,53 @@
+@page "/members"
+@using ALAdmin.Services.Auth.Authentication
+@using ALAdmin.Components.Controls
+@using ALAdmin.DataTransferObjects.Members
+@using ALAdmin.Models.Members
+@using ALAdmin.Services.Auth.Request
+@using ALAdmin.Services.Members
+@using ALAdmin.Components.Sections
+@using ALAdmin.Components.Views
+@inject IFilter<FilterValues, MemberListItem> Filter
+@inject IAuthRequest Request
+@inject IAuthentication Authentication
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<PageTitle>Dashboard</PageTitle>
+
+<p id="zoom-text" class="center-content fillp">Puds brillerne og zoom ud!</p>
+
+<div id="home-cont" class="pad16 fillp scroll">
+    <div id="view-cont" class="al-tile pad16">
+        <div id="sidebar" class="view-section pad16">
+            <FilterSection OnChange="UpdateFilter"/>
+        </div>
+        <div class="view-section pad16">
+            <h3 class="fillp center-content">Medlemmer</h3>
+        </div>
+        <div id="topbar" class="view-section pad16">
+            <PushButton OnClickAsync="NavigateToCreate" IconUrl="./Ressources/create.png" Text="Opret"/>
+            <SearchInput OnValueChanged="UpdatePhrase"/>
+        </div>
+        <div id="members-cont" class="fillp view-section pad16">
+            <MembersListView Members="Filter.Filtered()"/>
+        </div>
+    </div>
+</div>
+
+@code {
+    private void UpdateFilter(FilterValues values) => Filter.UpdateValues(values);
+    
+    private void UpdatePhrase(string phrase) => Filter.UpdatePhrase(phrase);
+    
+    private void NavigateToCreate() => Navigation.NavigateTo("/CreateMember");
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        await Authentication.AuthenticateAsync();
+        var members = await Request.GetAsync<List<MemberListItem>>("/members") ?? [];
+        Filter.SetList(members);
+        StateHasChanged();
+    }
+}
