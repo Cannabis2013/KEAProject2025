@@ -1,7 +1,5 @@
 <script setup>
 
-import PushButton from "@/components/controls/PushButton.vue";
-
 const props = defineProps(["model","onDelete","onUpdate"])
 const article = props.model
 
@@ -13,7 +11,10 @@ function toDate(dateAsString) {
   const day = date.getDay() < 10 ? '0' + date.getDate() : date.getDate()
   const month = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
   const year = date.getFullYear()
-  return `${day}-${month}-${year}`
+  const hour = date.getHours() < 10 ? '0' + date.getHours() : date.getHours()
+  const minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+  const seconds = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
+  return `${day}-${month}-${year} ${hour}:${minutes}:${seconds}`
 }
 
 </script>
@@ -26,8 +27,8 @@ function toDate(dateAsString) {
         <p style="font-size: .75rem">Af {{ article.author }} // {{ toDate(article.created) }}</p>
       </div>
       <div v-if="article.isOwner" class="button-group">
-        <PushButton :onPushed="() => handleUpdate(article.id)" text="Opdater"/>
-        <PushButton :onPushed="() => handleDelete(article.id)" text="Slet"/>
+        <img :onclick="() => handleUpdate(article.id)" class="article-controls-img" src="/edit.png"/>
+        <img :onclick="() => handleDelete(article.id)" class="article-controls-img" src="/trashcan.png"/>
       </div>
     </div>
     <p class="article-content">{{ article.content }}</p>
@@ -40,6 +41,7 @@ function toDate(dateAsString) {
   background-color: rgba(255,255,255,.1);
   border-radius: 9px;
   padding: 9px;
+  animation: popUp .3s ease-in-out;;
 }
 
 .article-head {
@@ -50,6 +52,17 @@ function toDate(dateAsString) {
 .article-head > * {
   white-space: nowrap;
   height: min-content;
+}
+
+.article-controls-img{
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+}
+
+.article-controls-img:hover {
+  scale: 1.25;
+  transition: scale 75ms ease-in-out;
 }
 
 .button-group{
@@ -69,5 +82,10 @@ function toDate(dateAsString) {
   color: lightskyblue;
   font-size: 1rem;
   font-family: "Poppins", sans-serif;
+}
+
+@keyframes popUp {
+  from {opacity: 0}
+  to {opacity: 1}
 }
 </style>

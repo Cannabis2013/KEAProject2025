@@ -9,7 +9,7 @@ function handleClick(el) {
     props.onHandleUrl(props.link.href)
     props.onLinkClicked()
     resetAnimation(el.target.parentElement)
-  }, 250);
+  }, 125);
 }
 
 function performAnimation(el) {
@@ -65,7 +65,7 @@ function resetAnimation(el) {
 }
 
 .animatable {
-  animation: scaleUpDown .25s ease-in-out 1;
+  animation: scaleUpDown 125ms ease-in-out 1;
 }
 
 @keyframes scaleUpDown {
