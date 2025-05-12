@@ -1,14 +1,14 @@
 <script setup>
 import Landing from "@/components/home/landing/landing.vue"
 import Contact from '@/components/home/contact/contact.vue';
-import NewsFeed from "@/components/news/newsFeed.vue";
+import articlesFeed from "@/components/articles/articleFeed.vue";
 </script>
 <template>
   <Landing/>
   <div class="feed-cont horizontal-center">
     <div></div>
     <div></div>
-    <NewsFeed/>
+    <articlesFeed/>
   </div>
   <Contact/>
 </template>

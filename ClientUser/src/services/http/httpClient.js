@@ -9,42 +9,47 @@ function header(token) {
     } : {"Content-Type": "application/json"}
 }
 
-async function _get(route, token) {
+async function _request(route, method,token,data) {
     return await fetch(route, {
-        method: "GET",
-        headers: header(token)
-    })
-}
-
-async function _post(route, data, token) {
-    return await fetch(route, {
-        method: "POST",
+        method: method ?? "GET",
         headers: header(token),
-        body: data ?? ""
+        body: data ?? undefined
     })
 }
 
 export default {
     async getRequest(route) {
         const url = `${baseDomain}${route}`
-        const res = await _get(url)
+        const res = await _request(url)
         return res.ok ? await res.json() : null
     },
     async postRequest(route, data) {
         const url = `${baseDomain}${route}`
-        const res = await _post(url, JSON.stringify(data))
+        const res = await _request(url,"POST", null,JSON.stringify(data))
         return res.ok ? await res.json() : null
     },
     async authGetRequest(route) {
         const url = `${baseDomain}${route}`
         const token = getAccessToken()
-        const res = await _get(url, token)
+        const res = await _request(url,"GET",token)
         return res.ok ? await res.json() : null
     },
     async authPostRequest(route, data) {
         const url = `${baseDomain}${route}`
         let token = getAccessToken()
-        let res = await _post(url, JSON.stringify(data), token)
+        let res = await _request(url,"POST", token, JSON.stringify(data))
+        return res.ok ? await res.json() : null
+    },
+    async authPatchRequest(route, data) {
+        const url = `${baseDomain}${route}`
+        let token = getAccessToken()
+        let res = await _request(url,"PATCH", token, JSON.stringify(data))
+        return res.ok ? await res.json() : null
+    },
+    async authDeleteRequest(route) {
+        const url = `${baseDomain}${route}`
+        let token = getAccessToken()
+        let res = await _request(url,"DELETE", token)
         return res.ok ? await res.json() : null
     }
 }

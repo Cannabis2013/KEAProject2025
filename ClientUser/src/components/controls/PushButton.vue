@@ -32,5 +32,6 @@ defineProps(["onPushed", "text"])
 .push-text {
   color: black;
   white-space: nowrap;
+  text-align: center;
 }
 </style>

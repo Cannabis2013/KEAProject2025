@@ -1,26 +1,48 @@
 using ALBackend.DataTransferObject.Articles;
 using ALBackend.Entities.Articles;
-using ALBackend.Entities.Identity;
 using ALBackend.Persistence.Articles;
-using ALBackend.Persistence.Members;
 
 namespace ALBackend.Services.Articles;
 
-public class ArticlesUpdater(ArticlesDb articles, MembersDb members) : IArticlesUpdater
+public class ArticlesUpdater(ArticlesDb articlesDb) : IArticlesUpdater
 {
-    public async Task<bool> Create(ArticleCreateRequest request,UserAccount user)
+    private Article? FindArticleFromUser(Guid id, Guid userId)
     {
-        var userId = Guid.Parse(user.Id);
-        var member = members.Members.First(member => member.UserId == userId);
+        return articlesDb
+            .Articles
+            .FirstOrDefault(article => article.Id == id && article.UserId == userId);
+    }
+    
+    public async Task<bool> Create(ArticleUpdateRequest request,Guid userId)
+    {
         var article = new Article()
         {
-            Headline = request.Title,
+            Headline = request.Headline,
             ShortContent = request.ShortContent,
             Content = request.Content,
-            MemberId = member.Id
+            UserId = userId
         };
-        articles.Add(article);
-        var result = await articles.SaveChangesAsync();
+        articlesDb.Add(article);
+        var result = await articlesDb.SaveChangesAsync();
         return result > 0;
+    }
+
+    public async Task<bool> Update(ArticleUpdateRequest request, Guid userId)
+    {
+        var article = FindArticleFromUser(Guid.Parse(request.Id),userId);
+        if(article is null) return false;
+        article.Headline = request.Headline;
+        article.ShortContent = request.ShortContent;
+        article.Content = request.Content;
+        articlesDb.Update(article);
+        return await articlesDb.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> Remove(Guid id, Guid userId)
+    {
+        var article = FindArticleFromUser(id,userId);
+        if(article is null) return false;
+        articlesDb.Remove(article);
+        return await articlesDb.SaveChangesAsync() > 0;
     }
 }

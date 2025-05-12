@@ -12,7 +12,7 @@ const props = defineProps(["article"])
       </div>
     </div>
     <p class="news-tile-preview">{{ article.shortContent }}</p>
-    <RouterLink class="news-tile-link" to="/news">Læs mere</RouterLink>
+    <RouterLink class="news-tile-link" to="/articles">Læs mere</RouterLink>
   </div>
 </template>
 <style lang="css" scoped>

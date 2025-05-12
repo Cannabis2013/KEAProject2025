@@ -1,33 +1,32 @@
 using ALBackend.DataTransferObject.Articles;
-using ALBackend.Entities.Articles;
 using ALBackend.Persistence.Articles;
 using ALBackend.Persistence.Members;
-using Microsoft.AspNetCore.Mvc;
 
 namespace ALBackend.Services.Articles;
 
-public class ArticlesFetcher(ArticlesDb articlesDb, MembersDb members) : IArticlesFetcher
+public class ArticlesFetcher(ArticlesDb articlesDb, MembersDb membersDb) : IArticlesFetcher
 {
-    private string GetAuthor(Article article)
+    private string GetAuthor(Guid userId)
     {
-        var member = members.Members.Find(article.MemberId);
+        var member = membersDb.Members
+            .FirstOrDefault(member => member.UserId == userId);
         return $"{member?.FirstName} {member?.LastName}";
     }
 
-    public List<ArticleCard> Fetch()
+    public List<ArticleCard> Many()
     {
         return articlesDb.Articles
             .ToList()
             .OrderByDescending(article => article.CreatedAt)
             .Select(article =>
             {
-                var author = GetAuthor(article);
+                var author = GetAuthor(article.UserId);
                 return new ArticleCard(article, author);
             })
             .ToList();
     }
 
-    public List<ArticleCard> Fetch(int count)
+    public List<ArticleCard> Many(int count)
     {
         return articlesDb.Articles
             .AsEnumerable()
@@ -36,27 +35,23 @@ public class ArticlesFetcher(ArticlesDb articlesDb, MembersDb members) : IArticl
             .ToList()
             .Select(article =>
             {
-                var author = GetAuthor(article);
+                var author = GetAuthor(article.UserId);
                 return new ArticleCard(article, author);
             })
             .ToList();
     }
 
-    public JsonResult FromUser(int userId)
+    public ArticleCard OneFromUser(Guid userId)
     {
-        var reduced = articlesDb.Articles
-            .Where(article => article.MemberId == userId)
-            .AsEnumerable()
-            .Select(GetAuthor)
-            .ToList();
-        return new(reduced);
+        var article = articlesDb.Articles
+            .First(article => article.UserId == userId);
+        return new(article, GetAuthor(article.UserId));
     }
 
-    public JsonResult One(int id)
+    public ArticleCard One(Guid id)
     {
-        var article = articlesDb.Articles.Find(id);
-        return article is null
-            ? new("Article not found")
-            : new(GetAuthor(article));
+        var article = articlesDb.Articles
+            .First(article => article.Id == id);
+        return new(article, GetAuthor(article.UserId));
     }
 }

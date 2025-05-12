@@ -1,5 +1,5 @@
 <script setup>
-import NewsCard from "./NewsCard.vue";
+import articleCard from "./articleCard.vue";
 import {ref} from "vue";
 import LoadIndicator from "@/components/loading/LoadIndicator.vue";
 import HttpClient from "@/services/http/httpClient.js";
@@ -31,7 +31,7 @@ setTimeout(() => {
       <p v-if="failed">
         Kunne ikke indlæses. Serveren er højst sandsynlig nede.
       </p>
-      <NewsCard v-for="article in articles" :article="article"/>
+      <articleCard v-for="article in articles" :article="article"/>
     </div>
   </div>
   <LoadIndicator v-else/>

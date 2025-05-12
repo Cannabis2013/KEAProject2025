@@ -12,29 +12,59 @@ public class ArticlesController(IUsersFetch userFetcher, IArticlesFetcher fetche
     [HttpGet,Authorize]
     public JsonResult Articles()
     {
-        var articles = fetcher.Fetch();
+        var articles = fetcher.Many();
+        var user = userFetcher.User(User);
+        articles.ForEach(article => article.IsOwner = article.userId.ToString() == user?.Id);
         return new(articles);
     }
 
     [HttpGet("count/{count:int}"),Authorize]
     public JsonResult Article(int count)
     {
-        var articles = fetcher.Fetch(count);
+        var articles = fetcher.Many(count);
+        var user = userFetcher.User(User);
+        articles.ForEach(article => article.IsOwner = article.userId.ToString() == user?.Id);
         return new(articles);
     }
 
-    [HttpGet("user/{userId:int}"),Authorize]
-    public JsonResult Filtered(int userId) => fetcher.FromUser(userId);
-    
-    [HttpGet("{id:int}"),Authorize]
-    public JsonResult One(int id) => fetcher.One(id);
+    [HttpGet("user/{userId:guid}"),Authorize]
+    public JsonResult Filtered(Guid userId)
+    {
+        var article = fetcher.OneFromUser(userId);
+        return new(article);
+    }
+
+    [HttpGet("{id:guid}"),Authorize]
+    public JsonResult One(Guid id)
+    {
+        var article = fetcher.One(id);
+        return new(article);
+    }
 
     [HttpPost, Authorize]
-    public async Task<JsonResult> Create(ArticleCreateRequest request)
+    public async Task<JsonResult> Create(ArticleUpdateRequest request)
     {   
         var user = userFetcher.User(User);
         if(user is null) return new(""){StatusCode = StatusCodes.Status404NotFound};
-        var result = await updater.Create(request, user);
+        var result = await updater.Create(request, Guid.Parse(user.Id));
+        return new(result);
+    }
+
+    [HttpPatch, Authorize]
+    public async Task<JsonResult> Update(ArticleUpdateRequest request)
+    {
+        var user = userFetcher.User(User);
+        if(user is null) return new(""){StatusCode = StatusCodes.Status404NotFound};
+        var result = await updater.Update(request, Guid.Parse(user.Id));
+        return new(result);
+    }
+
+    [HttpDelete("{id:guid}"), Authorize]
+    public async Task<JsonResult> Delete(Guid id)
+    {
+        var user = userFetcher.User(User);
+        if(user is null) return new(""){StatusCode = StatusCodes.Status404NotFound};
+        var result = await updater.Remove(id, Guid.Parse(user.Id));
         return new(result);
     }
 }

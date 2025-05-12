@@ -6,12 +6,12 @@ namespace ALBackend.Entities.Articles;
 public class Article
 {
     [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public required string Headline { get; set; }
     public required string ShortContent  { get; set; }
     public required string Content { get; set; }
     public string ImageUrl { get; set; } = "";
-    public required int MemberId { get; set; }
+    public required Guid UserId { get; set; }
 }

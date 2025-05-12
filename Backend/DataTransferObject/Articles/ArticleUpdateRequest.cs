@@ -1,8 +1,9 @@
 namespace ALBackend.DataTransferObject.Articles;
 
-public class ArticleCreateRequest
+public class ArticleUpdateRequest
 {
-    public string Title { get; set; } = "";
+    public string Id { get; set; }
+    public string Headline { get; set; } = "";
     public string ShortContent { get; set; } = "";
     public string Content { get; set; } = "";
 }

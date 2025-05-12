@@ -1,7 +1,7 @@
 import About from '@/pages/about.vue'
 import ErrorRouting from '@/pages/ErrorRouting.vue'
 import Home from '@/pages/home.vue'
-import NewsPage from "@/pages/NewsPage.vue";
+import ArticlesPage from "@/pages/articlesPage.vue";
 import UserPage from "@/pages/UserPage.vue";
 import SignInPage from "@/pages/SignInPage.vue"
 import NotAuthorized from '@/pages/NotAuthorized.vue'
@@ -14,8 +14,8 @@ const routes = [
         component: Home
     },
     {
-        path: '/news',
-        component: NewsPage
+        path: '/articles',
+        component: ArticlesPage
     },
     {
         path: '/about',

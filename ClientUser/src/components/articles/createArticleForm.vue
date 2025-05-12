@@ -3,15 +3,18 @@
 import PushButton from "@/components/controls/PushButton.vue";
 import HttpClient from "@/services/http/httpClient.js";
 
-const props = defineProps(["onCompleted","onCancelled"])
+const props = defineProps(["onCompleted","onCancelled","model"])
 
-let title = ""
-let shortContent = ""
-let content = ""
+const model = props.model ?? {
+  id: "",
+  headline: "",
+  shortContent: "",
+  content: ""
+}
 
 async function handleCompleted(){
-  const data = {title,shortContent,content}
-  var result = await HttpClient.authPostRequest("/articles",data);
+  const request = props.model ? HttpClient.authPatchRequest : HttpClient.authPostRequest
+  const result = await request("/articles",model)
   if(props.onCompleted && result) props.onCompleted();
 }
 
@@ -25,9 +28,9 @@ function handleCancel(){
 
 <template>
   <div class="create-article-form" :onclick="cancel">
-    <input placeholder="Titel" v-model="title"/>
-    <textarea placeholder="Skriv et  kort resume af indholdet her" v-model="shortContent"/>
-    <textarea placeholder="Skriv dit indhold af artiklen her" v-model="content" />
+    <input placeholder="Titel" v-model="model.headline"/>
+    <textarea placeholder="Skriv et  kort resume af indholdet her" v-model="model.shortContent"/>
+    <textarea placeholder="Skriv dit indhold af artiklen her" v-model="model.content" />
   </div>
   <div class="create-btn-group">
     <PushButton text="Fortryd" :onPushed="handleCancel"/>

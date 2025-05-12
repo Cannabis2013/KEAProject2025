@@ -5,7 +5,7 @@ export default [
         icon: "./home.png"
     },
     {
-        href: "/news",
+        href: "/articles",
         title: "Nyheder",
         icon: "./news.png"
     },

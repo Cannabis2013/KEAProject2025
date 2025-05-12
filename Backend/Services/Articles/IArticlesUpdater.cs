@@ -5,5 +5,7 @@ namespace ALBackend.Services.Articles;
 
 public interface IArticlesUpdater
 {
-    public Task<bool> Create(ArticleCreateRequest request, UserAccount user);
+    public Task<bool> Create(ArticleUpdateRequest request, Guid userId);
+    public Task<bool> Update(ArticleUpdateRequest request, Guid userId);
+    public Task<bool> Remove(Guid id, Guid userId);
 }
