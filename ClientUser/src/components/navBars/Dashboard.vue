@@ -41,7 +41,8 @@ function toggleMenu() {
       <div class="links-cont">
         <Link
             v-for="link in links"
-            :link="link" :onHandleUrl="handleNavigationRequest"
+            :link="link" 
+            :onHandleUrl="handleNavigationRequest"
             :onLinkClicked="toggleMenu"
         />
       </div>

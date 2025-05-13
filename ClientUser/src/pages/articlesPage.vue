@@ -11,15 +11,23 @@ const isLoading = ref(false)
 const formVisible = ref(false)
 const article = ref(null)
 const updateId = ref(null)
-
-function fetch() {
-  HttpClient.authGetRequest("/articles")
+let lastIndex = 0
+const count = 20
+const moreAvailable = ref(true)
+function fetch(index, fetchCount) {
+  HttpClient.authGetRequest(`/articles/${index}/${fetchCount}`)
       .then(fetched => {
-        articles.value = fetched
+        articles.value.push(...fetched)
       })
 }
 
-fetch()
+fetch(lastIndex, count)
+
+function fetchMore() {
+  lastIndex += count
+  fetch(lastIndex, count)
+  moreAvailable.value = articles.value.length % 20 == 0
+}
 
 function showForm() {
   formVisible.value = !formVisible.value
@@ -68,7 +76,6 @@ function hideForm() {
         v-else class="create-form-cont"
         :onCancelled="hideForm"
         :onCompleted="createCompleted"
-        :model="article"
     />
     <br>
     <div v-for="article in articles">
@@ -86,6 +93,7 @@ function hideForm() {
           :model="article"
       />
     </div>
+    <PushButton v-if="moreAvailable" style="margin-bottom: 1.5rem;" class="horizontal-center" :onPushed="fetchMore" text="Hent flere.."/>
   </div>
 </template>
 <style lang="css" scoped>

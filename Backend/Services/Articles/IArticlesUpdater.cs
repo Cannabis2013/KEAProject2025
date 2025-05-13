@@ -7,5 +7,5 @@ public interface IArticlesUpdater
 {
     public Task<bool> Create(ArticleUpdateRequest request, Guid userId);
     public Task<bool> Update(ArticleUpdateRequest request, Guid userId);
-    public Task<bool> Remove(Guid id, Guid userId);
+    public Task<bool> Remove(int id, Guid userId);
 }

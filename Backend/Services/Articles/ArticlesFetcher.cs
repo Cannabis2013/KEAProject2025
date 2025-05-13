@@ -13,15 +13,39 @@ public class ArticlesFetcher(ArticlesDb articlesDb, MembersDb membersDb) : IArti
         return $"{member?.FirstName} {member?.LastName}";
     }
 
-    public List<ArticleCard> Many()
+    public List<ArticleCard> Paginated(int lastId, int count, Guid userId)
     {
         return articlesDb.Articles
+            .Where((a) => a.Id > lastId)
+            .OrderBy(a => a.Id)
+            .Take(count)
             .ToList()
-            .OrderByDescending(article => article.CreatedAt)
             .Select(article =>
             {
                 var author = GetAuthor(article.UserId);
-                return new ArticleCard(article, author);
+                return new ArticleCard(article, author)
+                {
+                    IsOwner = article.UserId == userId
+                    
+                };
+            })
+            .ToList();
+        throw new NotImplementedException();
+    }
+
+    public List<ArticleCard> Many(Guid userId)
+    {
+        return articlesDb.Articles
+            .OrderByDescending(article => article.CreatedAt)
+            .AsEnumerable()
+            .Select(article =>
+            {
+                var author = GetAuthor(article.UserId);
+                return new ArticleCard(article, author)
+                {
+                    IsOwner = article.UserId == userId
+                    
+                };
             })
             .ToList();
     }
@@ -41,14 +65,7 @@ public class ArticlesFetcher(ArticlesDb articlesDb, MembersDb membersDb) : IArti
             .ToList();
     }
 
-    public ArticleCard OneFromUser(Guid userId)
-    {
-        var article = articlesDb.Articles
-            .First(article => article.UserId == userId);
-        return new(article, GetAuthor(article.UserId));
-    }
-
-    public ArticleCard One(Guid id)
+    public ArticleCard One(int id)
     {
         var article = articlesDb.Articles
             .First(article => article.Id == id);

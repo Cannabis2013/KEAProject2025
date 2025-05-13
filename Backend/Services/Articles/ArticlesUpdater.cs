@@ -6,7 +6,7 @@ namespace ALBackend.Services.Articles;
 
 public class ArticlesUpdater(ArticlesDb articlesDb) : IArticlesUpdater
 {
-    private Article? FindArticleFromUser(Guid id, Guid userId)
+    private Article? FindArticleFromUser(int id, Guid userId)
     {
         return articlesDb
             .Articles
@@ -29,7 +29,7 @@ public class ArticlesUpdater(ArticlesDb articlesDb) : IArticlesUpdater
 
     public async Task<bool> Update(ArticleUpdateRequest request, Guid userId)
     {
-        var article = FindArticleFromUser(Guid.Parse(request.Id),userId);
+        var article = FindArticleFromUser(request.Id,userId);
         if(article is null) return false;
         article.Headline = request.Headline;
         article.ShortContent = request.ShortContent;
@@ -38,7 +38,7 @@ public class ArticlesUpdater(ArticlesDb articlesDb) : IArticlesUpdater
         return await articlesDb.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> Remove(Guid id, Guid userId)
+    public async Task<bool> Remove(int id, Guid userId)
     {
         var article = FindArticleFromUser(id,userId);
         if(article is null) return false;

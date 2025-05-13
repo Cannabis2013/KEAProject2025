@@ -56,5 +56,6 @@
         overflow: scroll;
         gap: 20px;
         height: 100%;
+        padding: 9px;
     }
 }

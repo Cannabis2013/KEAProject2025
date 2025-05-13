@@ -6,7 +6,7 @@ namespace ALBackend.Entities.Articles;
 public class Article
 {
     [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public int Id { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public required string Headline { get; set; }

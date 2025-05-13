@@ -12,9 +12,16 @@ public class ArticlesController(IUsersFetch userFetcher, IArticlesFetcher fetche
     [HttpGet,Authorize]
     public JsonResult Articles()
     {
-        var articles = fetcher.Many();
         var user = userFetcher.User(User);
-        articles.ForEach(article => article.IsOwner = article.userId.ToString() == user?.Id);
+        var articles = fetcher.Many(Guid.Parse(user?.Id ?? ""));
+        return new(articles);
+    }
+
+    [HttpGet("{lastIndex:int}/{count:int}"), Authorize]
+    public JsonResult Articles(int lastIndex, int count)
+    {
+        var user = userFetcher.User(User);
+        var articles = fetcher.Paginated(lastIndex,count,Guid.Parse(user?.Id ?? ""));
         return new(articles);
     }
 
@@ -27,15 +34,8 @@ public class ArticlesController(IUsersFetch userFetcher, IArticlesFetcher fetche
         return new(articles);
     }
 
-    [HttpGet("user/{userId:guid}"),Authorize]
-    public JsonResult Filtered(Guid userId)
-    {
-        var article = fetcher.OneFromUser(userId);
-        return new(article);
-    }
-
-    [HttpGet("{id:guid}"),Authorize]
-    public JsonResult One(Guid id)
+    [HttpGet("{id:int}"),Authorize]
+    public JsonResult One(int id)
     {
         var article = fetcher.One(id);
         return new(article);
@@ -59,8 +59,8 @@ public class ArticlesController(IUsersFetch userFetcher, IArticlesFetcher fetche
         return new(result);
     }
 
-    [HttpDelete("{id:guid}"), Authorize]
-    public async Task<JsonResult> Delete(Guid id)
+    [HttpDelete("{id:int}"), Authorize]
+    public async Task<JsonResult> Delete(int id)
     {
         var user = userFetcher.User(User);
         if(user is null) return new(""){StatusCode = StatusCodes.Status404NotFound};
