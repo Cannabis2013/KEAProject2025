@@ -11,7 +11,7 @@ namespace ALBackend.Controllers.Identity;
 [ApiController, Route("/auth")]
 public class AuthController(
     IAuthentication authorization,
-    IUsersFetch usersFetch,
+    IUsersFetcher usersFetcher,
     UserManager<UserAccount> userManager)
     : ControllerBase
 {
@@ -21,7 +21,7 @@ public class AuthController(
     [HttpGet, Route("/auth/{id:guid}"), Authorize]
     public JsonResult Get(Guid id)
     {
-        var user = usersFetch.User(id);
+        var user = usersFetcher.User(id);
         if (user is null) return new(""){StatusCode = 404};
         var roles = userManager.GetRolesAsync(user!).Result;
         return new(user.ToFullDto(roles));

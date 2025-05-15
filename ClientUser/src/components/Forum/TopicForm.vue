@@ -1,21 +1,25 @@
 <script setup>
-
 import PushButton from "@/components/controls/PushButton.vue";
 import HttpClient from "@/services/http/httpClient.js";
+import {ref} from "vue";
 
-const props = defineProps(["onCompleted", "onCancelled", "model"])
+const props = defineProps(["onCompleted", "onCancelled", "model"]);
 
 const model = props.model ?? {
   id: "",
-  headline: "",
-  shortContent: "",
-  content: ""
+  title: "",
+  category: "",
+  initialMessage: ""
 }
 
+const processing = ref(false)
+
 async function handleCompleted() {
+  processing.value = true
   const request = props.model ? HttpClient.authPatchRequest : HttpClient.authPostRequest
-  const result = await request("/articles", model)
+  const result = await request("/topic", model)
   if (props.onCompleted && result) props.onCompleted()
+  processing.value = false
 }
 
 const handleCancelRequest = props.onCancelled ?? function () {
@@ -25,42 +29,49 @@ const handleCancelRequest = props.onCancelled ?? function () {
 
 <template>
   <div>
-    <div class="create-article-form">
-      <input placeholder="Titel" v-model="model.headline"/>
-      <textarea placeholder="Skriv et  kort resume af indholdet her" v-model="model.shortContent"/>
-      <textarea placeholder="Skriv dit indhold af artiklen her" v-model="model.content"/>
+    <div class="create-topic-form">
+      <input placeholder="Titel" v-model="model.title"/>
+      <select v-model="model.category">
+        <option value="" style="color: grey">Vælg kategori</option>
+        <option value="Kampe">Kampe</option>
+        <option value="Stadion">Stadion</option>
+        <option value="Generelt">Generelt</option>
+        <option>Salg</option>
+      </select>
+      <textarea placeholder="Skriv hvad din tråd handler om" v-model="model.initialMessage"/>
     </div>
-    <div class="create-btn-group">
+    <div class="forum-form-buttons">
       <PushButton text="Fortryd" :onPushed="handleCancelRequest"/>
-      <PushButton text="Færdig" :onPushed="handleCompleted"/>
+      <PushButton v-if="!processing" text="Færdig" :onPushed="handleCompleted"/>
     </div>
   </div>
 </template>
 
 <style scoped lang="css">
-.create-article-form {
+.create-topic-form {
   border-radius: 3px;
   width: 100%;
   height: 384px;
   animation: growUp .5s ease-in-out;
   margin-top: 6px;
   display: grid;
-  grid-template-rows: min-content 1fr 2fr min-content;
+  grid-template-rows: min-content min-content 2fr min-content;
   row-gap: 9px;
 }
 
-.create-article-form > * {
+.create-topic-form > * {
   outline: none;
   padding: 9px;
   border-radius: 6px;
   resize: none;
 }
 
-.create-btn-group {
+.forum-form-buttons {
   display: flex;
   justify-content: end;
   column-gap: 9px;
 }
+
 
 @keyframes growUp {
   0% {
@@ -78,4 +89,5 @@ const handleCancelRequest = props.onCancelled ?? function () {
     opacity: 1
   }
 }
+
 </style>

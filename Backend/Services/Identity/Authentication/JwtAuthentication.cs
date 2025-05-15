@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ALBackend.Services.Identity.Authentication;
 
 public class JwtAuthentication(
-    IUsersFetch usersFetch,
+    IUsersFetcher usersFetcher,
     SignInManager<UserAccount> signInManager,
     UserManager<UserAccount> userManager,
     ISecurityToken tokenBuilder)
@@ -18,7 +18,7 @@ public class JwtAuthentication(
     {
         if (!await AttemptSignIn(credentials))
             return new("") { StatusCode = StatusCodes.Status403Forbidden };
-        var user = usersFetch.User(credentials);
+        var user = usersFetcher.User(credentials);
         if (user == null)
             return new(credentials) { StatusCode = StatusCodes.Status401Unauthorized };
         await UpdateRefreshToken(user);
@@ -36,7 +36,7 @@ public class JwtAuthentication(
     {
         if (!await AttemptSignIn(credentials))
             return new("") { StatusCode = StatusCodes.Status403Forbidden };
-        var user = usersFetch.User(credentials);
+        var user = usersFetcher.User(credentials);
         if (user == null)
             return new(credentials) { StatusCode = StatusCodes.Status401Unauthorized };
         var roles = await userManager.GetRolesAsync(user);
@@ -55,7 +55,7 @@ public class JwtAuthentication(
 
     public async Task<JsonResult> Refresh(JwtCredentials credentials)
     {
-        var user = usersFetch.User(credentials);
+        var user = usersFetcher.User(credentials);
         if (user == null)
             return new("") { StatusCode = StatusCodes.Status403Forbidden };
         await signInManager.RefreshSignInAsync(user);

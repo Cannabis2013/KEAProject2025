@@ -29,6 +29,15 @@ p {
     margin: 0;
 }
 
+h1{
+    font-size: 4rem;
+    font-weight: bold;
+}
+
+h2{
+    font-size: 2rem;
+}
+
 .horizontal-center {
     margin-left: auto;
     margin-right: auto;
@@ -66,7 +75,12 @@ p {
 
 @media only screen and (min-width: 1024px) {
     .fluid-container {
-        width: 800px;
+        width: 768px;
+    }
+}
+@media only screen and (min-width: 1280px) {
+    .fluid-container {
+        width: 1024px;
     }
 }
 

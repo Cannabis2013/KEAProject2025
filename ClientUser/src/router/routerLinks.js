@@ -10,6 +10,12 @@ export default [
         icon: "./news.png"
     },
     {
+        href: "/forum",
+        title: "Forum",
+        icon: "./history.png"
+    },
+    /*
+    {
         href: "/members",
         title: "Medlemmer",
         icon: "./members.png"
@@ -24,12 +30,6 @@ export default [
         title: "Historie",
         icon: "./history.png"
     },
-
-    {
-        href: "/forum",
-        title: "Forum",
-        icon: "./history.png"
-    },
     {
         href: "/gallary",
         title: "Billeder",
@@ -40,6 +40,7 @@ export default [
         title: "Om",
         icon: "./about.png"
     },
+    */
     {
         href: "/login",
         title: "Login",

@@ -1,20 +1,18 @@
 <script setup>
-
 import PushButton from "@/components/controls/PushButton.vue";
 import HttpClient from "@/services/http/httpClient.js";
 
-const props = defineProps(["onCompleted", "onCancelled", "model"])
+const props = defineProps(["onCompleted", "onCancelled", "model", "topicId"]);
 
 const model = props.model ?? {
   id: "",
-  headline: "",
-  shortContent: "",
-  content: ""
+  message: "",
+  topicId: props.topicId ?? "",
 }
 
 async function handleCompleted() {
   const request = props.model ? HttpClient.authPatchRequest : HttpClient.authPostRequest
-  const result = await request("/articles", model)
+  const result = await request("/post", model)
   if (props.onCompleted && result) props.onCompleted()
 }
 
@@ -25,12 +23,8 @@ const handleCancelRequest = props.onCancelled ?? function () {
 
 <template>
   <div>
-    <div class="create-article-form">
-      <input placeholder="Titel" v-model="model.headline"/>
-      <textarea placeholder="Skriv et  kort resume af indholdet her" v-model="model.shortContent"/>
-      <textarea placeholder="Skriv dit indhold af artiklen her" v-model="model.content"/>
-    </div>
-    <div class="create-btn-group">
+    <textarea class="post-msg-input" placeholder="Skriv dit indhold her" v-model="model.message"/>
+    <div class="post-form-buttons">
       <PushButton text="Fortryd" :onPushed="handleCancelRequest"/>
       <PushButton text="Færdig" :onPushed="handleCompleted"/>
     </div>
@@ -38,29 +32,27 @@ const handleCancelRequest = props.onCancelled ?? function () {
 </template>
 
 <style scoped lang="css">
-.create-article-form {
+.post-msg-input {
   border-radius: 3px;
   width: 100%;
   height: 384px;
   animation: growUp .5s ease-in-out;
   margin-top: 6px;
-  display: grid;
-  grid-template-rows: min-content 1fr 2fr min-content;
-  row-gap: 9px;
 }
 
-.create-article-form > * {
+.post-msg-input > * {
   outline: none;
   padding: 9px;
   border-radius: 6px;
   resize: none;
 }
 
-.create-btn-group {
+.post-form-buttons {
   display: flex;
   justify-content: end;
   column-gap: 9px;
 }
+
 
 @keyframes growUp {
   0% {
@@ -78,4 +70,5 @@ const handleCancelRequest = props.onCancelled ?? function () {
     opacity: 1
   }
 }
+
 </style>

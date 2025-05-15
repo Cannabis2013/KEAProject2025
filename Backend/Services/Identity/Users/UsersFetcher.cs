@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ALBackend.Services.Identity.Users;
 
-public class UsersFetch(UserManager<UserAccount> userManager) : IUsersFetch
+public class UsersFetcher(UserManager<UserAccount> userManager) : IUsersFetcher
 {
     public UserAccount? User(LoginCredentials credentials)
     {

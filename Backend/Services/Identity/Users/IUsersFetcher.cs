@@ -4,7 +4,7 @@ using ALBackend.Entities.Identity;
 
 namespace ALBackend.Services.Identity.Users;
 
-public interface IUsersFetch
+public interface IUsersFetcher
 {
     UserAccount? User(LoginCredentials credentials);
     UserAccount? User(JwtCredentials credentials);

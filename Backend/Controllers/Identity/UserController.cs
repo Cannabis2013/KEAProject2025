@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ALBackend.Controllers.Identity;
 
 [ApiController,Route("/users")]
-public class UserController(IUsersFetch fetcher) : ControllerBase
+public class UserController(IUsersFetcher fetcher) : ControllerBase
 {
     [HttpGet, Authorize(Roles = "CHAIRMAN,DEPUTY_CHAIRMAN,IT,CASHIER")]
     public JsonResult GetUsers()

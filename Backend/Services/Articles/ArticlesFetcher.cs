@@ -13,12 +13,12 @@ public class ArticlesFetcher(ArticlesDb articlesDb, MembersDb membersDb) : IArti
         return $"{member?.FirstName} {member?.LastName}";
     }
 
-    public List<ArticleCard> Paginated(int lastId, int count, Guid userId)
+    public List<ArticleCard> Paginated(int pageIndex, int pageSize, Guid userId)
     {
         return articlesDb.Articles
-            .Where((a) => a.Id > lastId)
             .OrderBy(a => a.Id)
-            .Take(count)
+            .Skip(pageIndex * pageSize)
+            .Take(pageSize)
             .ToList()
             .Select(article =>
             {

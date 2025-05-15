@@ -11,22 +11,23 @@ const isLoading = ref(false)
 const formVisible = ref(false)
 const article = ref(null)
 const updateId = ref(null)
-let lastIndex = 0
-const count = 20
+let pageIndex = 0
+const pageSize = 20
 const moreAvailable = ref(true)
+
 function fetch(index, fetchCount) {
   HttpClient.authGetRequest(`/articles/${index}/${fetchCount}`)
       .then(fetched => {
+        moreAvailable.value = fetched.length > 0
         articles.value.push(...fetched)
       })
 }
 
-fetch(lastIndex, count)
+fetch(pageIndex, pageSize)
 
 function fetchMore() {
-  lastIndex += count
-  fetch(lastIndex, count)
-  moreAvailable.value = articles.value.length % 20 == 0
+  pageIndex += 1
+  fetch(pageIndex, pageSize)
 }
 
 function showForm() {
@@ -69,7 +70,7 @@ function hideForm() {
 <template>
   <LoadIndicator v-if="isLoading"/>
   <div v-else class="fluid-container">
-    <h1 class="page-subh">Nyheder</h1>
+    <h1>Nyheder</h1>
     <br>
     <PushButton v-if="!formVisible" text="Opret nyhed" :onPushed="showForm"/>
     <CreateNewsForm
@@ -97,11 +98,6 @@ function hideForm() {
   </div>
 </template>
 <style lang="css" scoped>
-.page-head {
-  font-size: 2rem;
-  font-weight: bold;
-}
-
 .create-form-cont {
   position: sticky;
   top: 0;

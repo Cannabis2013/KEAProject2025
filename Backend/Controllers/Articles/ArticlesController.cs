@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ALBackend.Controllers.Articles;
 
 [ApiController, Route("/articles")]
-public class ArticlesController(IUsersFetch userFetcher, IArticlesFetcher fetcher, IArticlesUpdater updater): ControllerBase
+public class ArticlesController(IUsersFetcher userFetcher, IArticlesFetcher fetcher, IArticlesUpdater updater): ControllerBase
 {
     [HttpGet,Authorize]
     public JsonResult Articles()

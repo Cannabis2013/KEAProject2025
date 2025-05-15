@@ -1,5 +1,5 @@
 import About from '@/pages/about.vue'
-import ErrorRouting from '@/pages/ErrorRouting.vue'
+import NotFound from '@/pages/NotFoundPage.vue'
 import Home from '@/pages/home.vue'
 import ArticlesPage from "@/pages/articlesPage.vue";
 import UserPage from "@/pages/UserPage.vue";
@@ -7,6 +7,8 @@ import SignInPage from "@/pages/SignInPage.vue"
 import NotAuthorized from '@/pages/NotAuthorized.vue'
 import {signedIn} from '@/services/identity/auth'
 import {createRouter, createWebHashHistory} from 'vue-router'
+import ForumPage from "@/pages/ForumPage.vue";
+import TopicPage from "@/pages/TopicPage.vue";
 
 const routes = [
     {
@@ -16,6 +18,16 @@ const routes = [
     {
         path: '/articles',
         component: ArticlesPage
+    },
+    {
+        path: '/forum',
+        component: ForumPage,
+        meta: {protected: true}
+    },
+    {
+        path: '/topic/:id',
+        component: TopicPage,
+        meta: {protected: true}
     },
     {
         path: '/about',
@@ -29,7 +41,7 @@ const routes = [
     },
     {
         path: '/error',
-        component: ErrorRouting
+        component: NotFound
     },
     {
         path: '/login',
@@ -38,7 +50,11 @@ const routes = [
     {
         path: '/unauthorized',
         component: NotAuthorized
-    }
+    },
+    {
+        path: '/:pathMatch(.*)*', 
+        name: 'NotFound', 
+        component: NotFound}
 ]
 
 const router = createRouter({
@@ -52,10 +68,10 @@ router.beforeEach(async (to, from) => {
     const protectedRoute = to.meta.protected ?? false
     if (!isAuthenticated && protectedRoute) return '/unauthorized'
 })
-
+/*
 router.afterEach(async (to, from) => {
     const result = routes.find(r => r.path === to.fullPath)
     if (!result) await router.replace('/error')
 })
-
+ */
 export default router

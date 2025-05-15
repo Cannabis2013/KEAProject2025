@@ -18,7 +18,7 @@ public static class SecurityServices
     private static void InjectJwtServices(WebApplicationBuilder builder)
     {
         builder.Services.AddScoped<IAuthentication, Services.Identity.Authentication.JwtAuthentication>();
-        builder.Services.AddScoped<IUsersFetch,UsersFetch>();
+        builder.Services.AddScoped<IUsersFetcher,UsersFetcher>();
         builder.Services.AddScoped<IUsersUpdate,UsersUpdate>();
         builder.Services.AddScoped<ISecurityToken,JwtAuthorizationToken>();
     }
