@@ -12,8 +12,10 @@ namespace ALBackend.Controllers.Forum;
 public class ForumController(
     IUsersFetcher usersFetcher,
     MembersDb membersDb,
-    IForumFetcher forumFetcher,
-    IForumUpdater forumUpdater) : ControllerBase
+    ITopicFetcher topicFetcher,
+    IPostFetcher postFetcher,
+    IPostUpdater postUpdater,
+    ITopicUpdater topicUpdater) : ControllerBase
 {
     private Member? CurrentMember()
     {
@@ -27,7 +29,7 @@ public class ForumController(
     {
         var member = CurrentMember();
         if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
-        var topics = forumFetcher.ManyWithoutPosts(lastIndex, count, member);
+        var topics = topicFetcher.TopicsWithoutPosts(lastIndex, count, member);
         return new(topics);
     }
 
@@ -36,7 +38,7 @@ public class ForumController(
     {
         var member = CurrentMember();
         if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
-        var posts = forumFetcher.Posts(pageIndex, pageSize, topicId, member);
+        var posts = postFetcher.Posts(pageIndex, pageSize, topicId, member);
         return new(posts);
     }
 
@@ -45,25 +47,50 @@ public class ForumController(
     {
         var member = CurrentMember();
         if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
-        var topic = forumFetcher.One(id, member);
+        var topic = topicFetcher.Topic(id, member);
         return new(topic);
     }
 
     [HttpPost("topic")]
-    public async Task<JsonResult> AddTopic(TopicAddRequest request)
+    public async Task<JsonResult> AddTopic(TopicUpdateRequest request)
     {
         var member = CurrentMember();
         if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
-        var topicId = await forumUpdater.AddTopic(request, member);
+        var topicId = await topicUpdater.AddTopic(request, member);
         return new(topicId);
     }
 
     [HttpPost("post")]
-    public async Task<JsonResult> AddPost(PostAddRequest request)
+    public async Task<JsonResult> AddPost(PostUpdateRequest request)
     {
         var member = CurrentMember();
         if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
-        var postId = await forumUpdater.AddPost(request, member);
+        var postId = await postUpdater.AddPost(request, member);
         return new(postId);
+    }
+
+    [HttpGet("post/{postId:int}")]
+    public JsonResult GetPost(int postId)
+    {
+        var post = postFetcher.Post(postId);
+        if (post is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
+        return new(post);
+    }
+
+    [HttpPatch("post")]
+    public async Task<JsonResult> UpdatePost(PostUpdateRequest request)
+    {
+        var member = CurrentMember();
+        if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
+        return new(await postUpdater.UpdatePost(request));
+    }
+
+    [HttpDelete("post/{postId:int}")]
+    public async Task<JsonResult> DeletePost(int postId)
+    {
+        var member = CurrentMember();
+        if (member is null) return new(false);
+        var result = await postUpdater.RemovePost(postId);
+        return new(result);
     }
 }

@@ -6,9 +6,9 @@ using ALMembers.Entities;
 
 namespace ALBackend.Services.Forum;
 
-public class ForumFetcher(ForumDb forumDb, MembersDb membersDb) : IForumFetcher
+public class TopicFetcher(ForumDb forumDb, MembersDb membersDb) : ITopicFetcher
 {
-    private TopicCard ToCard(Topic topic, Member currentMember, bool withPosts = false)
+    private TopicCard ToCard(Topic topic, Member currentMember)
     {
         var posts = forumDb
             .Posts
@@ -31,7 +31,7 @@ public class ForumFetcher(ForumDb forumDb, MembersDb membersDb) : IForumFetcher
         };
     }
 
-    public List<TopicCard> ManyWithoutPosts(int pageIndex, int pageSize, Member currentMember)
+    public List<TopicCard> TopicsWithoutPosts(int pageIndex, int pageSize, Member currentMember)
     {
         var topics = forumDb
             .Topics
@@ -45,31 +45,12 @@ public class ForumFetcher(ForumDb forumDb, MembersDb membersDb) : IForumFetcher
             .ToList();
     }
 
-    public TopicCard? One(int topicId, Member currentMember)
+    public TopicCard? Topic(int topicId, Member currentMember)
     {
         var topic = forumDb
             .Topics
             .Find(topicId);
 
-        return topic is null ? null : ToCard(topic, currentMember, true);
-    }
-
-    public List<PostCard> Posts(int pageIndex, int pageSize, int topicId, Member currentMember)
-    {
-        return forumDb.Posts
-            .Where(post => post.TopicId == topicId)
-            .Skip(pageIndex * pageSize)
-            .Take(pageSize)
-            .ToList()
-            .Select(post =>
-            {
-                var author = membersDb.Members.Find(post.memberId);
-                return new PostCard(post)
-                {
-                    IsOwner = post.memberId == currentMember.Id,
-                    Author = $"{author?.FirstName} {author?.LastName}"
-                };
-            })
-            .ToList();
+        return topic is null ? null : ToCard(topic, currentMember);
     }
 }

@@ -9,7 +9,7 @@ import articleBlock from "@/components/articles/articleBlock.vue";
 const articles = ref([])
 const isLoading = ref(false)
 const formVisible = ref(false)
-const article = ref(null)
+const articleToUpdate = ref(null)
 const updateId = ref(null)
 let pageIndex = 0
 const pageSize = 20
@@ -51,7 +51,7 @@ async function deleteArticle(id) {
 
 async function updateArticle(id) {
   const fetched = await HttpClient.authGetRequest(`/articles/${id}`)
-  article.value = {
+  articleToUpdate.value = {
     id: fetched.id,
     headline: fetched.headline,
     shortContent: fetched.shortContent,
@@ -62,7 +62,7 @@ async function updateArticle(id) {
 
 function hideForm() {
   updateId.value = null
-  article.value = null
+  articleToUpdate.value = null
   formVisible.value = false
 }
 

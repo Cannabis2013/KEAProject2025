@@ -12,6 +12,8 @@ const topicId = route.params.id
 const isLoading = ref(true)
 const formVisible = ref(false)
 const topic = ref(null)
+const updateId = ref(null)
+const postToUpdate = ref(null)
 const posts = ref([])
 const pageIndex = 0
 const pageSize = 20;
@@ -31,14 +33,35 @@ function showForm(){
 
 function hideForm(){
   formVisible.value = false
+  updateId.value = null
+  postToUpdate.value = null
+}
+
+async function deletePost(id){
+  if (!confirm("Sikker?")) return;
+  isLoading.value = true
+  const result = await HttpClient.authDeleteRequest(`/post/${id}`)
+  if(result)
+    posts.value = posts.value.filter(post => post.id !== id)
+  isLoading.value = false
 }
 
 async function updatePosts(){
   isLoading.value = true
   const fetched = await HttpClient.authGetRequest(`/post/${topicId}/${pageIndex}/${pageSize}`)
   posts.value = fetched ?? []
+  hideForm()
   isLoading.value = false
-  formVisible.value = false
+}
+
+async function updatePost(id) {
+  const fetched = await HttpClient.authGetRequest(`/post/${id}`)
+  postToUpdate.value = {
+    id: fetched.id,
+    message: fetched.message,
+    topicId: fetched.topicId
+  }
+  updateId.value = fetched.id
 }
 
 </script>
@@ -53,7 +76,10 @@ async function updatePosts(){
       <p class="topic-message">{{ topic.initialMessage }}</p>
       <br>
     </div>
-    <PostCard class="horizontal-center" v-for="post in posts" :post="post"/>
+    <div v-for="post in posts">
+      <PostCard v-if="updateId != post.id" class="horizontal-center" :onUpdate="updatePost" :post="post" :onDelete="deletePost"/>
+      <PostForm v-else  :model="postToUpdate" :topicId="topicId" :onCancelled="hideForm" :onCompleted="updatePosts"/>
+    </div>
     <div v-if="!formVisible" class="topic-btn-controls">
       <PushButton text="Hent flere svar"/>
       <PushButton  :onPushed="showForm" text="Opret svar"/>

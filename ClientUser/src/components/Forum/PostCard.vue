@@ -1,7 +1,11 @@
 <script setup>
 import {toDate} from "@/services/date/dateFormatting.js";
 
-const props = defineProps(["post"])
+const props = defineProps(["post","onDelete","onUpdate"])
+
+const handleDelete = props.onDelete ?? function(){}
+const handleUpdate = props.onUpdate ?? function(){}
+
 const post = props.post
 </script>
 
@@ -11,8 +15,8 @@ const post = props.post
     <p class="post-date"> {{ toDate(post.created) }} </p>
     <p class="post-message"> {{ post.message }} </p>
     <div v-if="post.isOwner" class="post-controls">
-      <img src="/edit.png" class="post-delete"/>
-      <img src="/trashcan.png" class="post-delete"/>
+      <img src="/edit.png" class="post-delete" :onclick="() => handleUpdate(post.id)"/>
+      <img src="/trashcan.png" class="post-delete" :onclick="() => handleDelete(post.id)"/>
     </div>
   </div>
 </template>

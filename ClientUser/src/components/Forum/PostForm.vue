@@ -5,9 +5,9 @@ import HttpClient from "@/services/http/httpClient.js";
 const props = defineProps(["onCompleted", "onCancelled", "model", "topicId"]);
 
 const model = props.model ?? {
-  id: "",
+  id: -1,
   message: "",
-  topicId: props.topicId ?? "",
+  topicId: props.topicId ?? -1,
 }
 
 async function handleCompleted() {
