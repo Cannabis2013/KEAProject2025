@@ -9,7 +9,7 @@ const linkText = props.linkTitle ?? "Opret"
 <template>
   <div class="user-controls-tile al-box fill-parent">
     <div class="card-slot-cont">
-      <h1>{{ title }}</h1>
+      <h2>{{ title }}</h2>
       <p>{{ info }}</p>
     </div>
     <ButtonLink :text="linkText" :to="href" class="tile-button"/>

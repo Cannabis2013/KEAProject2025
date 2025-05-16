@@ -1,11 +1,14 @@
 <script setup>
 import HttpClient from "@/services/http/httpClient.js";
-import {ref} from "vue";
+import {onMounted, ref, useTemplateRef} from "vue";
 import LoadIndicator from "@/components/loading/LoadIndicator.vue";
 import {useRoute} from "vue-router";
 import PostCard from "@/components/Forum/PostCard.vue";
 import PushButton from "@/components/controls/PushButton.vue";
 import PostForm from "@/components/Forum/PostForm.vue";
+
+const content = document.querySelector("#content");
+let createComp = null
 
 const route = useRoute()
 const topicId = route.params.id
@@ -27,26 +30,34 @@ async function fetchTopic() {
 
 fetchTopic()
 
-function showForm(){
+function showForm() {
   formVisible.value = true
+  let y = 0
+  let h = 384
+  setTimeout(() => {
+    createComp = document.querySelector("#create-comp-cont")
+    h = createComp.getBoundingClientRect().height
+    y = createComp.getBoundingClientRect().y + h
+    content.scrollTo(0, y)
+  }, 600)
 }
 
-function hideForm(){
+function hideForm() {
   formVisible.value = false
   updateId.value = null
   postToUpdate.value = null
 }
 
-async function deletePost(id){
+async function deletePost(id) {
   if (!confirm("Sikker?")) return;
   isLoading.value = true
   const result = await HttpClient.authDeleteRequest(`/post/${id}`)
-  if(result)
+  if (result)
     posts.value = posts.value.filter(post => post.id !== id)
   isLoading.value = false
 }
 
-async function updatePosts(){
+async function updatePosts() {
   isLoading.value = true
   const fetched = await HttpClient.authGetRequest(`/post/${topicId}/${pageIndex}/${pageSize}`)
   posts.value = fetched ?? []
@@ -77,14 +88,16 @@ async function updatePost(id) {
       <br>
     </div>
     <div v-for="post in posts">
-      <PostCard v-if="updateId != post.id" class="horizontal-center" :onUpdate="updatePost" :post="post" :onDelete="deletePost"/>
-      <PostForm v-else  :model="postToUpdate" :topicId="topicId" :onCancelled="hideForm" :onCompleted="updatePosts"/>
+      <PostCard v-if="updateId != post.id" class="horizontal-center" :onUpdate="updatePost" :post="post"
+                :onDelete="deletePost"/>
+      <PostForm v-else :model="postToUpdate" :topicId="topicId" :onCancelled="hideForm" :onCompleted="updatePosts"/>
     </div>
     <div v-if="!formVisible" class="topic-btn-controls">
       <PushButton text="Hent flere svar"/>
-      <PushButton  :onPushed="showForm" text="Opret svar"/>
+      <PushButton :onPushed="showForm" text="Opret svar"/>
     </div>
-    <PostForm v-else :topicId="topicId" :onCancelled="hideForm" :onCompleted="updatePosts"/>
+    <PostForm v-else id="create-comp-cont" :topicId="topicId" :onCancelled="hideForm" :onCompleted="updatePosts"/>
+    <br>
   </div>
 
 </template>
@@ -95,7 +108,7 @@ async function updatePost(id) {
   margin-bottom: 16px;
 }
 
-.topic-author{
+.topic-author {
   font-weight: bold;
   border-radius: 6px;
   width: min-content;
@@ -106,11 +119,11 @@ async function updatePost(id) {
   margin-bottom: 6px;
 }
 
-.topic-message{
+.topic-message {
   font-size: 1.25rem;
 }
 
-.topic-ft-cont{
+.topic-ft-cont {
   display: flex;
   column-gap: 16px;
   padding-bottom: 9px;
@@ -121,7 +134,12 @@ async function updatePost(id) {
   line-height: 14px;
 }
 
-.topic-btn-controls{
+.posts-cont {
+  height: 128px;
+  overflow: auto;
+}
+
+.topic-btn-controls {
   display: flex;
   column-gap: 16px;
   justify-content: center;

@@ -1,10 +1,10 @@
 <script setup>
 import {ref} from 'vue';
 import {signedInMember} from "@/services/members/members.js";
-import MemberCard from "@/components/cards/MemberCard.vue";
+import MemberCard from "@/components/user/MemberCard.vue";
 import LoadIndicator from '@/components/loading/LoadIndicator.vue';
 import InfoTiles from "@/components/user/InfoTiles.vue";
-import ActionCard from "@/components/cards/ActionCard.vue";
+import ActionCard from "@/components/user/ActionCard.vue";
 
 const isLoaded = ref(false)
 let member
