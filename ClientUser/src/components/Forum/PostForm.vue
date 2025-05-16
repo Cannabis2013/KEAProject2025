@@ -1,14 +1,21 @@
 <script setup>
 import PushButton from "@/components/controls/PushButton.vue";
 import HttpClient from "@/services/http/httpClient.js";
+import {onMounted} from "vue";
 
-const props = defineProps(["onCompleted", "onCancelled", "model", "topicId"]);
+const props = defineProps(["onCompleted", "onCancelled", "model", "topicId","onMounted"]);
+
+const mountedHandler = props.onMounted ?? function(){}
 
 const model = props.model ?? {
   id: -1,
   message: "",
   topicId: props.topicId ?? -1,
 }
+
+onMounted(function(){
+  setTimeout(mountedHandler,501)
+})
 
 async function handleCompleted() {
   const request = props.model ? HttpClient.authPatchRequest : HttpClient.authPostRequest
@@ -36,7 +43,7 @@ const handleCancelRequest = props.onCancelled ?? function () {
   border-radius: 3px;
   width: 100%;
   height: 384px;
-  animation: growUp .5s ease-in-out;
+  animation: growUp 500ms ease-in-out;
   margin-top: 6px;
 }
 
@@ -58,12 +65,6 @@ const handleCancelRequest = props.onCancelled ?? function () {
   0% {
     height: 0;
     opacity: 0
-  }
-  50% {
-    opacity: 0.05
-  }
-  90% {
-    opacity: .1
   }
   100% {
     height: 384px;

@@ -58,6 +58,12 @@ h2{
     padding: 8px;
 }
 
+textarea,input{
+    padding: 9px;
+    font-size: 20px;
+    font-family: "Poppins", sans-serif;
+}
+
 .al-box {
     border-radius: 3px;
     border: 1px solid rgba(255, 255, 255, 0.2);

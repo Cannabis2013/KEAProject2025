@@ -32,14 +32,13 @@ fetchTopic()
 
 function showForm() {
   formVisible.value = true
-  let y = 0
-  let h = 384
-  setTimeout(() => {
-    createComp = document.querySelector("#create-comp-cont")
-    h = createComp.getBoundingClientRect().height
-    y = createComp.getBoundingClientRect().y + h
-    content.scrollTo(0, y)
-  }, 600)
+}
+
+function scrollToForm(){
+  createComp = document.querySelector("#create-comp-cont")
+  let h = createComp.getBoundingClientRect().height
+  let y = createComp.getBoundingClientRect().y + h
+  content.scrollTo(0, y)
 }
 
 function hideForm() {
@@ -96,7 +95,7 @@ async function updatePost(id) {
       <PushButton text="Hent flere svar"/>
       <PushButton :onPushed="showForm" text="Opret svar"/>
     </div>
-    <PostForm v-else id="create-comp-cont" :topicId="topicId" :onCancelled="hideForm" :onCompleted="updatePosts"/>
+    <PostForm v-else id="create-comp-cont" :onMounted="scrollToForm" :topicId="topicId" :onCancelled="hideForm" :onCompleted="updatePosts"/>
     <br>
   </div>
 
