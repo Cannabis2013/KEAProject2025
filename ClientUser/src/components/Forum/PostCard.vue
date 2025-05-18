@@ -52,7 +52,8 @@ const post = props.post
 
 .post-message {
   white-space: break-spaces;
-  font-size: 1.25rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
   grid-column: span 2;
   user-select: text;
 }

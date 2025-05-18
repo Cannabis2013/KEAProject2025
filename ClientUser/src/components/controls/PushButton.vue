@@ -14,7 +14,6 @@ defineProps(["onPushed", "text"])
 .push-cont {
   padding: 6px;
   background-color: lightgrey;
-  min-width: 64px;
   width: min-content;
   height: min-content;
   cursor: pointer;

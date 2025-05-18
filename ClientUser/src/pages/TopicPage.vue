@@ -1,15 +1,14 @@
 <script setup>
 import HttpClient from "@/services/http/httpClient.js";
-import {onMounted, ref, useTemplateRef} from "vue";
+import {ref} from "vue";
 import LoadIndicator from "@/components/loading/LoadIndicator.vue";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import PostCard from "@/components/Forum/PostCard.vue";
 import PushButton from "@/components/controls/PushButton.vue";
 import PostForm from "@/components/Forum/PostForm.vue";
 
 const content = document.querySelector("#content");
-let createComp = null
-
+const router = useRouter();
 const route = useRoute()
 const topicId = route.params.id
 const isLoading = ref(true)
@@ -34,11 +33,8 @@ function showForm() {
   formVisible.value = true
 }
 
-function scrollToForm(){
-  createComp = document.querySelector("#create-comp-cont")
-  let h = createComp.getBoundingClientRect().height
-  let y = createComp.getBoundingClientRect().y + h
-  content.scrollTo(0, y)
+function scrollToForm(elementY){
+  content.scrollTo(0, elementY)
 }
 
 function hideForm() {
@@ -79,6 +75,7 @@ async function updatePost(id) {
 <template>
   <LoadIndicator v-if="isLoading"/>
   <div class="fluid-container" v-else>
+    <PushButton :onPushed="() => router.back()" text="Tilbage"/>
     <h2>{{ topic.title }}</h2>
     <br>
     <div class="topic-msg-cont">
@@ -89,13 +86,13 @@ async function updatePost(id) {
     <div v-for="post in posts">
       <PostCard v-if="updateId != post.id" class="horizontal-center" :onUpdate="updatePost" :post="post"
                 :onDelete="deletePost"/>
-      <PostForm v-else :model="postToUpdate" :topicId="topicId" :onCancelled="hideForm" :onCompleted="updatePosts"/>
+      <PostForm v-else :onMounted="scrollToForm" :model="postToUpdate" :topicId="topicId" :onCancelled="hideForm" :onCompleted="updatePosts"/>
     </div>
     <div v-if="!formVisible" class="topic-btn-controls">
       <PushButton text="Hent flere svar"/>
       <PushButton :onPushed="showForm" text="Opret svar"/>
     </div>
-    <PostForm v-else id="create-comp-cont" :onMounted="scrollToForm" :topicId="topicId" :onCancelled="hideForm" :onCompleted="updatePosts"/>
+    <PostForm v-else :onMounted="scrollToForm" :topicId="topicId" :onCancelled="hideForm" :onCompleted="updatePosts"/>
     <br>
   </div>
 
@@ -119,7 +116,8 @@ async function updatePost(id) {
 }
 
 .topic-message {
-  font-size: 1.25rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
 }
 
 .topic-ft-cont {
@@ -129,8 +127,7 @@ async function updatePost(id) {
 }
 
 .topic-ft-cont > p {
-  font-size: 14px;
-  line-height: 14px;
+  font-size: 1rem;
 }
 
 .posts-cont {
@@ -140,7 +137,7 @@ async function updatePost(id) {
 
 .topic-btn-controls {
   display: flex;
-  column-gap: 16px;
+  column-gap: 1rem;
   justify-content: center;
 }
 </style>

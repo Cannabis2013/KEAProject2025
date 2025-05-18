@@ -32,7 +32,6 @@ async function fetchTopics(index, count) {
 fetchTopics(pageIndex, pageSize)
 
 function toTopicPage(id){
-  console.log(id)
   router.push(`/topic/${id}`)
 }
 
