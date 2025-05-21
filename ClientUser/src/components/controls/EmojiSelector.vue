@@ -1,12 +1,11 @@
 <script setup>
-import { ref } from "vue";
 
 const props = defineProps(["onSelect"])
 
 const smileys = ["🤣", "🙂", "🥰", "☺️",
   "🥲", "🤥", "🥶", "🤬","🫠"]
 
-const fingers = ["🖕🏼","🤘🏼","👊🏼","👉🏼","👈🏼"]
+const gestures = ["🖕🏼","🤘🏼","👊🏼","👉🏼","👈🏼"]
 
 const selectHandler = props.onSelect ?? function () { }
 
@@ -15,7 +14,7 @@ const selectHandler = props.onSelect ?? function () { }
 <template>
   <div class="emojis-cont">
     <p v-for="smiley in smileys" :onclick="() => selectHandler(smiley)"> {{ smiley }} </p>
-    <p v-for="finger in fingers" :onclick="() => selectHandler(finger)"> {{ finger }} </p>
+    <p v-for="finger in gestures" :onclick="() => selectHandler(finger)"> {{ finger }} </p>
   </div>
 </template>
 
@@ -26,7 +25,6 @@ const selectHandler = props.onSelect ?? function () { }
   display: flex;
   column-gap: 1.5px;
   padding: 3px;
-  margin-bottom: 3px;
   background-color: rgba(245, 222, 179, .1);
 }
 

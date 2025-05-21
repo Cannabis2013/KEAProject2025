@@ -5,14 +5,23 @@ import {ref} from "vue";
 
 const props = defineProps(["onCompleted", "onCancelled", "model"]);
 
-const model = props.model ?? {
-  id: "",
+const model = props.model != null ? toCopy(props.model) : {
+  topicId: "",
   title: "",
   category: "",
   initialMessage: ""
 }
 
 const processing = ref(false)
+
+function toCopy(topic){
+  return {
+    topicId: topic.id,
+    title: topic.title,
+    initialMessage: topic.initialMessage,
+    category: topic.category
+  }
+}
 
 async function handleCompleted() {
   processing.value = true
@@ -31,11 +40,12 @@ const handleCancelRequest = props.onCancelled ?? function () {
   <div>
     <div class="create-topic-form">
       <input placeholder="Titel" v-model="model.title"/>
-      <select v-model="model.category">
+      <select class="category-selector" v-model="model.category">
         <option value="" style="color: grey">Vælg kategori</option>
         <option value="Kampe">Kampe</option>
         <option value="Stadion">Stadion</option>
         <option value="Generelt">Generelt</option>
+        <option value="Sladder">Sladder</option>
         <option>Salg</option>
       </select>
       <textarea placeholder="Skriv hvad din tråd handler om" v-model="model.initialMessage"/>
@@ -57,6 +67,10 @@ const handleCancelRequest = props.onCancelled ?? function () {
   display: grid;
   grid-template-rows: min-content min-content 2fr min-content;
   row-gap: 9px;
+}
+
+.category-selector{
+  font-size: 20px;
 }
 
 .create-topic-form > * {

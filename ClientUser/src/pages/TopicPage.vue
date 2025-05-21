@@ -6,13 +6,15 @@ import {useRoute, useRouter} from "vue-router";
 import PostCard from "@/components/Forum/PostCard.vue";
 import PushButton from "@/components/controls/PushButton.vue";
 import PostForm from "@/components/Forum/PostForm.vue";
+import {toDate, toDateTime} from "@/services/date/dateFormatting.js";
+import TopicForm from "@/components/Forum/TopicForm.vue";
 
-const content = document.querySelector("#content");
-const router = useRouter();
+const router = useRouter()
 const route = useRoute()
 const topicId = route.params.id
-const isLoading = ref(true)
-const formVisible = ref(false)
+const isLoading = ref(false)
+const topicFormVisible = ref(false)
+const postFormVisible = ref(false)
 const topic = ref(null)
 const updateId = ref(null)
 const postToUpdate = ref(null)
@@ -21,6 +23,7 @@ const pageIndex = 0
 const pageSize = 20;
 
 async function fetchTopic() {
+  isLoading.value = true
   topic.value = await HttpClient.authGetRequest(`/topic/${topicId}`)
   const fetched = await HttpClient.authGetRequest(`/post/${topicId}/${pageIndex}/${pageSize}`)
   posts.value.push(...(fetched ?? []))
@@ -29,16 +32,16 @@ async function fetchTopic() {
 
 fetchTopic()
 
-function showForm() {
-  formVisible.value = true
+function showTopicForm(status){
+  topicFormVisible.value = status
 }
 
-function scrollToForm(elementY){
-  content.scrollTo(0, elementY)
+function showPostForm() {
+  postFormVisible.value = true
 }
 
-function hideForm() {
-  formVisible.value = false
+function hidePostForm() {
+  postFormVisible.value = false
   updateId.value = null
   postToUpdate.value = null
 }
@@ -56,8 +59,14 @@ async function updatePosts() {
   isLoading.value = true
   const fetched = await HttpClient.authGetRequest(`/post/${topicId}/${pageIndex}/${pageSize}`)
   posts.value = fetched ?? []
-  hideForm()
+  hidePostForm()
   isLoading.value = false
+}
+
+async function updateCompleted(){
+  posts.value = []
+  await fetchTopic()
+  showTopicForm(false)
 }
 
 async function updatePost(id) {
@@ -70,38 +79,68 @@ async function updatePost(id) {
   updateId.value = fetched.id
 }
 
+async function deleteTopic() {
+  if(!confirm("Sure?")) return
+  const result = await HttpClient.authDeleteRequest(`/topic/${topicId}`)
+  if(result) router.push("/topics")
+}
+
 </script>
 
 <template>
   <LoadIndicator v-if="isLoading"/>
   <div class="fluid-container" v-else>
     <PushButton :onPushed="() => router.back()" text="Tilbage"/>
-    <h2>{{ topic.title }}</h2>
-    <br>
-    <div class="topic-msg-cont">
-      <p class="topic-author">{{ topic.author }}</p>
-      <p class="topic-message">{{ topic.initialMessage }}</p>
-      <br>
+    <div>
+      <h2 >{{ topic.title }}</h2>
+      <p> 
+        Kategori: {{ topic.category }}
+        <br>
+        Oprettet: {{ toDateTime(topic.created) }}
+        <br>
+        Oprettet af: {{ topic.author }}
+      </p>
+      <img v-if="topic.isOwner" class="topic-controls-img" style="margin-right: 6px;" src="/edit.png" :onclick="() => showTopicForm(true)"/>
+      <img v-if="topic.isOwner" class="topic-controls-img" src="/trashcan.png" :onclick="deleteTopic"/>
     </div>
+    <TopicForm v-if="topicFormVisible" :model="topic" :onCompleted="updateCompleted" :onCancelled="() => showTopicForm(false)"/>
+    <br/>
+    <p class="topic-init-msg">{{topic.initialMessage}}</p>
+    <br>
     <div v-for="post in posts">
       <PostCard v-if="updateId != post.id" class="horizontal-center" :onUpdate="updatePost" :post="post"
                 :onDelete="deletePost"/>
-      <PostForm v-else :onMounted="scrollToForm" :model="postToUpdate" :topicId="topicId" :onCancelled="hideForm" :onCompleted="updatePosts"/>
+      <PostForm v-else :model="postToUpdate" :topicId="topicId" :onCancelled="hidePostForm"
+                :onCompleted="updatePosts"/>
     </div>
-    <div v-if="!formVisible" class="topic-btn-controls">
+    <br>
+    <div v-if="!postFormVisible" class="topic-btn-controls">
       <PushButton text="Hent flere svar"/>
-      <PushButton :onPushed="showForm" text="Opret svar"/>
+      <PushButton :onPushed="showPostForm" text="Opret svar"/>
     </div>
-    <PostForm v-else :onMounted="scrollToForm" :topicId="topicId" :onCancelled="hideForm" :onCompleted="updatePosts"/>
+    <PostForm v-else :topicId="topicId" :onCancelled="hidePostForm" :onCompleted="updatePosts"/>
     <br>
   </div>
-
 </template>
 
 <style scoped lang="css">
+.topic-controls-img {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.topic-init-msg{
+  width: 100%;
+  padding-bottom: 9px;
+  border-bottom: 3px solid lightskyblue;
+  font-size: 24px;
+  white-space: break-spaces;
+}
+
 .topic-msg-cont {
-  border-bottom: 2px solid white;
-  margin-bottom: 16px;
+  border-bottom: 2px solid lightskyblue;
+  margin-bottom: 1rem;
 }
 
 .topic-author {
@@ -117,7 +156,7 @@ async function updatePost(id) {
 
 .topic-message {
   font-size: 1rem;
-  line-height: 1.5rem;
+  line-height: 1rem;
 }
 
 .topic-ft-cont {

@@ -7,7 +7,7 @@ import SignInPage from "@/pages/SignInPage.vue"
 import NotAuthorized from '@/pages/NotAuthorized.vue'
 import {signedIn} from '@/services/identity/auth'
 import {createRouter, createWebHashHistory} from 'vue-router'
-import ForumPage from "@/pages/ForumPage.vue";
+import TopicsPage from "@/pages/TopicsPage.vue";
 import TopicPage from "@/pages/TopicPage.vue";
 
 const routes = [
@@ -20,8 +20,8 @@ const routes = [
         component: ArticlesPage
     },
     {
-        path: '/forum',
-        component: ForumPage,
+        path: '/topics',
+        component: TopicsPage,
         meta: {protected: true}
     },
     {

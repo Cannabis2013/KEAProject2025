@@ -6,14 +6,13 @@ import {v4 as uuid} from "uuid";
 import {ref} from "vue";
 import EmojiSelector from "@/components/controls/EmojiSelector.vue";
 
+const content = document.querySelector("#content")
 const compUuid = uuid()
 const compId = `createComp${compUuid}`
 const textId = `textComp${compUuid}`
 let textComp = null
 
-const props = defineProps(["onCompleted", "onCancelled", "model", "topicId","onMounted"]);
-
-const mountedHandler = props.onMounted ?? function(){}
+const props = defineProps(["onCompleted", "onCancelled", "model", "topicId"]);
 
 const model = ref(props.model ?? {
   id: -1,
@@ -26,7 +25,7 @@ onMounted(function(){
   const createComp = document.getElementById(compId)
   let h = createComp.getBoundingClientRect().height
   let y = createComp.getBoundingClientRect().y + h
-  setTimeout(() => mountedHandler(y),501)
+  setTimeout(() => content.scrollTo(0, y),501)
 })
 
 function insertEmoji(emoji) {
@@ -52,7 +51,7 @@ const handleCancelRequest = props.onCancelled ?? function () {
 
 <template>
   <div :id="compId">
-    <EmojiSelector :onSelect="insertEmoji"/>
+    <EmojiSelector style="margin-bottom: 9px;" :onSelect="insertEmoji"/>
     <textarea 
         :id="textId"
         class="post-msg-input" 

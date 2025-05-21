@@ -8,9 +8,9 @@ public class Topic
     [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    public required string Title { get; init; } = "";
+    public required string Title { get; set; } = "";
     public string Category { get; set; } = "";
-    public required string InitialMessage { get; init; }
+    public required string InitialMessage { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public required int memberId { get; set; }

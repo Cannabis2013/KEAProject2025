@@ -60,6 +60,24 @@ public class ForumController(
         return new(topicId);
     }
 
+    [HttpPatch("topic")]
+    public async Task<JsonResult> UpdateTopic(TopicUpdateRequest request)
+    {
+        var member = CurrentMember();
+        if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
+        var result = await topicUpdater.UpdateTopic(request, member);
+        return new(result);
+    }
+
+    [HttpDelete("topic/{id:int}")]
+    public async Task<JsonResult> RemoveTopic(int id)
+    {
+        var member = CurrentMember();
+        if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
+        var result = await topicUpdater.RemoveTopic(id,member);
+        return new(result);
+    }
+
     [HttpPost("post")]
     public async Task<JsonResult> AddPost(PostUpdateRequest request)
     {

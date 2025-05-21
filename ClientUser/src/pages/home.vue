@@ -6,9 +6,9 @@ import articlesFeed from "@/components/articles/articleFeed.vue";
 <template>
   <Landing/>
   <div class="feed-cont horizontal-center">
-    <div></div>
-    <div></div>
     <articlesFeed/>
+    <div></div>
+    <div></div>
   </div>
   <Contact/>
 </template>

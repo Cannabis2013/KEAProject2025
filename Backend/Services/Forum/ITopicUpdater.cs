@@ -9,5 +9,6 @@ namespace ALBackend.Services.Forum;
 public interface ITopicUpdater
 {
     public Task<int> AddTopic(TopicUpdateRequest request, Member currentMember);
-    public Task<bool> UpdateTopic(TopicUpdateRequest request);
+    public Task<bool> UpdateTopic(TopicUpdateRequest request, Member currentMember);
+    public Task<bool> RemoveTopic(int topicId, Member currentMember);
 }

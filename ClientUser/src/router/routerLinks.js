@@ -10,7 +10,7 @@ export default [
         icon: "./news.png"
     },
     {
-        href: "/forum",
+        href: "/topics",
         title: "Forum",
         icon: "./history.png"
     },

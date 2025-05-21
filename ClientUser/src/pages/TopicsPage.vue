@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 
 import {ref} from "vue";
 import PushButton from "@/components/controls/PushButton.vue";
@@ -47,7 +47,11 @@ async function updateTopics(){
 <template>
   <LoadIndicator v-if="isLoading"/>
   <div v-else class="fluid-container">
-    <h1>Forum</h1>
+    <h1>Debat og skænderier</h1>
+    <p>
+      Husk at alt er tilladt!
+    </p>
+    <br>
     <PushButton v-if="!formVisible" text="Ny tråd" :onPushed="showForm" />
     <TopicForm v-else :onCancelled="hideForm" :onCompleted="updateTopics"/>
     <br>
@@ -75,7 +79,7 @@ async function updateTopics(){
 }
 
 .forum-header {
-  border-bottom: 3px solid lightskyblue;
+  border-bottom: 1px solid lightskyblue;
   padding-bottom: 3px;
 }
 
