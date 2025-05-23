@@ -1,18 +1,17 @@
 <script setup>
-const props = defineProps(["article"])
+const props = defineProps(["model"])
 </script>
 <template>
   <div class="news-tile">
-    <img class="tile-icon" src="/news.png"/>
+    <img class="tile-icon" :src="model.image"/>
     <div class="news-tile-upper">
-      <p class="news-tile-head">{{ article.headline }}</p>
+      <p class="news-tile-head">{{ model.title }}</p>
       <div class="news-tile-meta">
-        <p class="news-tile-author">Af {{ article.author }}</p>
-        <p class="news-tile-date">{{ article.date }}</p>
+        <p class="news-tile-author">Af {{ model.author }}</p>
+        <p class="news-tile-date">{{ model.date }}</p>
       </div>
     </div>
-    <p class="news-tile-preview">{{ article.shortContent }}</p>
-    <RouterLink class="news-tile-link" to="/articles">Læs mere</RouterLink>
+    <p class="news-tile-preview">{{ model.content }}</p>
   </div>
 </template>
 <style lang="css" scoped>
