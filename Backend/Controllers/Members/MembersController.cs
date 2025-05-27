@@ -1,4 +1,6 @@
+using System.Net;
 using ALBackend.DataTransferObject.Members;
+using ALBackend.Services.Identity.Users;
 using ALBackend.Services.Members;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,60 +9,66 @@ namespace ALBackend.Controllers.Members;
 
 [ApiController, Route("/members")]
 public class MembersController(
-    IMembersFetch membersFetch,
-    IMembersUpdate membersUpdate) : Controller
+    IMembersFetcher membersFetcher,
+    IMembersUpdate membersUpdate,
+    IUsersFetcher usersFetcher) : Controller
 {
     [HttpGet, Authorize(Roles = "CHAIRMAN, DEPUTY_CHAIRMAN")]
-    public JsonResult GetMembers() => membersFetch.All();
+    public JsonResult GetMembers()
+    {
+        var members = membersFetcher.Many()
+            .Select(member =>
+            {
+                var user = usersFetcher.User(member.UserId);
+                member.Email = user?.Email;
+                member.UserId = member.UserId;
+                return member;
+            })
+            .ToList();
+        return new(members);
+    }
 
     // GET
     [HttpGet("/members/{memberId:int}"), Authorize]
-    public async Task<JsonResult> GetMember(int memberId) => await membersFetch.One(memberId);
-    
+    public async Task<JsonResult> GetMember(int memberId)
+    {
+        var member = membersFetcher.One(memberId);
+        if (member is null) return new("Member not found") { StatusCode = StatusCodes.Status404NotFound };
+        var user = await usersFetcher.UserWithRoles(member.UserId);
+        if(user is null) return new("User not found") { StatusCode = StatusCodes.Status404NotFound };
+        member.Roles = user?.Roles;
+        return new(member);
+    }
+
     [HttpGet("/members/user/{userId:guid}"), Authorize]
-    public async Task<JsonResult> GetMembers(Guid userId) => await membersFetch.One(userId);
+    public async Task<JsonResult> GetMember(Guid userId)
+    {
+        var user = await usersFetcher.UserWithRoles(userId);
+        var response = membersFetcher.One(userId);
+        if (response is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
+        response.Roles = user?.Roles;
+        return new(response);
+    }
 
     [HttpPost, Authorize(Roles = "CHAIRMAN,DEPUTY_CHAIRMAN")]
     public async Task<JsonResult> CreateMember(MemberInfo request)
     {
-        try
-        {
-            await membersUpdate.Create(request);
-        }
-        catch (Exception e)
-        {
-            return new(e.Message) { StatusCode = StatusCodes.Status500InternalServerError };
-        }
-
-        return new("") { StatusCode = StatusCodes.Status201Created };
+        var result = await membersUpdate.Create(request);
+        return new(result) { StatusCode = StatusCodes.Status201Created };
     }
 
     [HttpPatch, Authorize(Roles = "CHAIRMAN,DEPUTY_CHAIRMAN")]
     public async Task<JsonResult> UpdateMember(MemberInfo request)
     {
-        try
-        {
-            await membersUpdate.Update(request);
-        }
-        catch (Exception)
-        {
-            return new("Member not updated correctly. Please consult your administrator!") { StatusCode = StatusCodes.Status500InternalServerError };
-        }
-        return new("") { StatusCode = StatusCodes.Status200OK };
+        var result = await membersUpdate.Update(request);
+        return new(result) { StatusCode = StatusCodes.Status200OK };
     }
 
 
-    [HttpDelete("/members/{memberId:int}"),Authorize(Roles = "CHAIRMAN,DEPUTY_CHAIRMAN,IT")]
+    [HttpDelete("/members/{memberId:int}"), Authorize(Roles = "CHAIRMAN,DEPUTY_CHAIRMAN,IT")]
     public async Task<JsonResult> DeleteMember(int memberId)
     {
-        try
-        {
-            await membersUpdate.RemoveAsync(memberId);
-        }
-        catch (Exception e)
-        {
-            return new(e.Message){StatusCode = StatusCodes.Status500InternalServerError};
-        }
-        return new("") { StatusCode = StatusCodes.Status200OK };
+        var result = await membersUpdate.RemoveAsync(memberId);
+        return new(result) { StatusCode = StatusCodes.Status200OK };
     }
 }

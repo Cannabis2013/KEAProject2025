@@ -3,7 +3,6 @@ using ALBackend.Entities.Identity;
 using ALBackend.Services.Identity.Authentication;
 using ALBackend.Services.Identity.Users;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ALBackend.Controllers.Identity;
@@ -11,20 +10,17 @@ namespace ALBackend.Controllers.Identity;
 [ApiController, Route("/auth")]
 public class AuthController(
     IAuthentication authorization,
-    IUsersFetcher usersFetcher,
-    UserManager<UserAccount> userManager)
+    IUsersFetcher usersFetcher)
     : ControllerBase
 {
     [HttpGet, Route("check"), Authorize]
     public bool Check() => true;
 
     [HttpGet, Route("/auth/{id:guid}"), Authorize]
-    public JsonResult Get(Guid id)
+    public async Task<JsonResult> Get(Guid id)
     {
-        var user = usersFetcher.User(id);
-        if (user is null) return new(""){StatusCode = 404};
-        var roles = userManager.GetRolesAsync(user!).Result;
-        return new(user.ToFullDto(roles));
+        var user = await usersFetcher.UserWithRoles(id);
+        return user is not null ? new(user) : new(""){StatusCode = 404};
     }
 
     [HttpPost, Route("login")]

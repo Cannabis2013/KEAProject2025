@@ -23,16 +23,37 @@ public class UsersFetcher(UserManager<UserAccount> userManager) : IUsersFetcher
                                  u.RefreshToken == credentials.RefreshToken);
     }
 
-    public UserAccount? User(Guid id)
+    public UserFetchResponse? User(Guid id)
     {
-        return userManager.Users.First(u => u.Id == id.ToString());
+        var user = userManager.Users.FirstOrDefault(u => u.Id == id.ToString());
+        if (user is null) return null;
+        return new()
+        {
+            Id = Guid.Parse(user.Id),
+            Email = user.Email ?? "",
+            Username = user.UserName ?? ""
+        };
+    }
+
+    public async Task<UserFetchResponse?> UserWithRoles(Guid id)
+    {
+        var user = userManager.Users.FirstOrDefault(u => u.Id == id.ToString());
+        if (user is null) return null;
+        var roles = await userManager.GetRolesAsync(user!);
+        return new()
+        {
+            Id = Guid.Parse(user.Id),
+            Email = user.Email ?? "",
+            Username = user.UserName ?? "",
+            Roles = roles.ToList()
+        };
     }
 
     public UserAccount? User(ClaimsPrincipal? principal)
     {
         if (principal is null) return null;
         var userId = principal.FindFirst(claim =>  claim.Type == "Id" )?.Value;
-        return userId == null ? null : User(Guid.Parse(userId));
+        return userManager.Users.First(u => u.Id == userId);
     }
 
     public List<UserAccount> Users()

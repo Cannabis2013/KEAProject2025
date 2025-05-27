@@ -4,7 +4,7 @@ namespace ALBackend.Services.Members;
 
 public interface IMembersUpdate
 {
-    public Task Create(MemberInfo request);
-    public Task Update(MemberInfo request);
-    public Task RemoveAsync(int memberId);
+    public Task<bool> Create(MemberInfo request);
+    public Task<bool> Update(MemberInfo request);
+    public Task<bool> RemoveAsync(int memberId);
 }

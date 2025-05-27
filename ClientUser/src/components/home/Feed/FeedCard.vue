@@ -2,20 +2,20 @@
 const props = defineProps(["model"])
 </script>
 <template>
-  <div class="news-tile">
+  <div class="feed-tile-cont">
     <img class="tile-icon" :src="model.image"/>
-    <div class="news-tile-upper">
-      <p class="news-tile-head">{{ model.title }}</p>
-      <div class="news-tile-meta">
-        <p class="news-tile-author">Af {{ model.author }}</p>
-        <p class="news-tile-date">{{ model.date }}</p>
+    <div class="feed-tile-upper">
+      <p class="feed-tile-head">{{ model.title }}</p>
+      <div class="feed-tile-meta">
+        <p class="feed-tile-author">Af {{ model.author }}</p>
+        <p class="feed-tile-date">{{ model.date }}</p>
       </div>
     </div>
-    <p class="news-tile-preview">{{ model.content }}</p>
+    <p class="feed-tile-content">{{ model.content }}</p>
   </div>
 </template>
 <style lang="css" scoped>
-.news-tile {
+.feed-tile-cont {
   display: grid;
   grid-template-columns: 80px 1fr;
   grid-template-rows: min-content 1fr min-content;
@@ -32,46 +32,46 @@ const props = defineProps(["model"])
   height: 80px;
 }
 
-.news-tile-upper {
+.feed-tile-upper {
   border-bottom: 1px solid black;
 }
 
-.news-tile > p,
-.news-tile-upper > p,
-.news-tile-meta > p {
+.feed-tile-cont > p,
+.feed-tile-upper > p,
+.feed-tile-meta > p {
   margin: 0;
   color: black !important;
 }
 
-.news-tile-meta {
+.feed-tile-meta {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.news-tile-head {
+.feed-tile-head {
   font-size: 1.25rem;
   line-height: 1.25rem;
   font-weight: bold;
 }
 
-.news-tile-author {
+.feed-tile-author {
   font-style: italic;
   font-size: .7rem;
 }
 
-.news-tile-date {
+.feed-tile-date {
   font-style: italic;
   font-size: .7rem;
 }
 
-.news-tile-preview {
+.feed-tile-content {
   margin-top: 16px !important;
   font-size: 0.8rem;
   white-space: pre-wrap;
 }
 
-.news-tile-link {
+.feed-tile-link {
   font-size: .8rem;
   width: min-content;
   white-space: nowrap;

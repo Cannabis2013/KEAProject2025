@@ -9,11 +9,7 @@
     }
 
     .text-rotation-cont {
-        display: grid;
         margin-left: 128px;
-        justify-items: center;
-        align-self: center;
-        width: min-content;
     }
 
     .text-banner {

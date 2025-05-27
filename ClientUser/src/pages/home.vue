@@ -1,15 +1,11 @@
 <script setup>
 import Landing from "@/components/home/landing/landing.vue"
 import Contact from '@/components/home/contact/contact.vue';
-import articlesFeed from "@/components/articles/articleFeed.vue";
+import Feed from "@/components/home/Feed/Feed.vue";
 </script>
 <template>
   <Landing/>
-  <div class="feed-cont horizontal-center">
-    <articlesFeed/>
-    <div></div>
-    <div></div>
-  </div>
+  <Feed/>
   <Contact/>
 </template>
 <style lang="css" scoped>
@@ -23,8 +19,9 @@ import articlesFeed from "@/components/articles/articleFeed.vue";
 @media (orientation: landscape) and (min-width: 1280px) {
   .feed-cont {
     width: 1280px;
-    grid-template-columns:1fr 1fr 1fr;
+    grid-template-columns:384px 384px;
     column-gap: 9px;
+    justify-content: center;
   }
 }
 </style>

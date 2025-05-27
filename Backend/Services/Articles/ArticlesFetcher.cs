@@ -26,7 +26,6 @@ public class ArticlesFetcher(ArticlesDb articlesDb, MembersDb membersDb) : IArti
                 return new ArticleCard(article, author)
                 {
                     IsOwner = article.UserId == userId
-                    
                 };
             })
             .ToList();

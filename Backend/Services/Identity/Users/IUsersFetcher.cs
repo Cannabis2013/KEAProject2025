@@ -8,7 +8,8 @@ public interface IUsersFetcher
 {
     UserAccount? User(LoginCredentials credentials);
     UserAccount? User(JwtCredentials credentials);
-    UserAccount? User(Guid id);
+    UserFetchResponse? User(Guid id);
+    Task<UserFetchResponse?> UserWithRoles(Guid id);
     UserAccount? User(ClaimsPrincipal? principal);
     List<UserAccount> Users();
     List<UserAccount> ListUsers();
