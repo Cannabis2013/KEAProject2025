@@ -51,7 +51,8 @@ public class UsersFetcher(UserManager<UserAccount> userManager) : IUsersFetcher
 
     public UserAccount? User(ClaimsPrincipal? principal)
     {
-        if (principal is null) return null;
+        var authenticated = principal?.Identity?.IsAuthenticated ?? false;
+        if (principal is null || !authenticated) return null;
         var userId = principal.FindFirst(claim =>  claim.Type == "Id" )?.Value;
         return userManager.Users.First(u => u.Id == userId);
     }

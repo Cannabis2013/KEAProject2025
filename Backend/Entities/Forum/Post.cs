@@ -1,12 +1,9 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using ALBackend.Entities.Shared;
 
 namespace ALBackend.Entities.Forum;
 
-public class Post
+public class Post : Entity
 {
-    [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public required string Content { get; set; }

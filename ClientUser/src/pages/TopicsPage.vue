@@ -68,7 +68,7 @@ async function updateTopics(){
       <p>{{ topic.lastPoster }}</p>
     </div>
     <br>
-    <PushButton class="horizontal-center" text="Hent flere.."/>
+    <PushButton class="center" text="Hent flere.."/>
   </div>
 </template>
 

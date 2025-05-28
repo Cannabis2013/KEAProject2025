@@ -3,7 +3,7 @@ import HttpClient from "@/services/http/httpClient.js";
 import {ref} from "vue";
 import LoadIndicator from "@/components/loading/LoadIndicator.vue";
 import {useRoute, useRouter} from "vue-router";
-import PostCard from "@/components/Forum/PostCard.vue";
+import PostItem from "@/components/Forum/PostItem.vue";
 import PushButton from "@/components/controls/PushButton.vue";
 import PostForm from "@/components/Forum/PostForm.vue";
 import {toDate, toDateTime} from "@/services/date/dateFormatting.js";
@@ -90,7 +90,7 @@ async function deleteTopic() {
 <template>
   <LoadIndicator v-if="isLoading"/>
   <div class="fluid-container" v-else>
-    <PushButton :onPushed="() => router.back()" text="Tilbage"/>
+    <PushButton :onPushed="() => router.push('/topics')" text="Til debat"/>
     <div>
       <h2 >{{ topic.title }}</h2>
       <p> 
@@ -108,7 +108,7 @@ async function deleteTopic() {
     <p class="topic-init-msg">{{topic.initialMessage}}</p>
     <br>
     <div v-for="post in posts">
-      <PostCard v-if="updateId != post.id" class="horizontal-center" :onUpdate="updatePost" :post="post"
+      <PostItem v-if="updateId != post.id" class="center" :onUpdate="updatePost" :post="post"
                 :onDelete="deletePost"/>
       <PostForm v-else :model="postToUpdate" :topicId="topicId" :onCancelled="hidePostForm"
                 :onCompleted="updatePosts"/>

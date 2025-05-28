@@ -12,8 +12,8 @@ public class TopicFetchResponse(Topic topic,Member? member = null)
     public int memberId { get; set; } = member?.Id ?? 0;
     public string author { get; set; } = $"{member?.FirstName} {member?.LastName}";
     public DateTime Created { get; set; } = topic.CreatedAt;
-    public string lastPoster { get; set; } = "";
     public int PostsCount { get; set; } = 0;
     public string InitialMessage { get; set; } = "";
-    public DateTime LastPost { get; set; }
+    public string LastPoster { get; set; } = "";
+    public DateTime LastPostedOn { get; set; }
 }

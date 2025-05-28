@@ -7,7 +7,7 @@ const linkText = props.linkTitle ?? "Opret"
 </script>
 
 <template>
-  <div class="user-controls-tile al-box fill-parent">
+  <div class="user-controls-tile al-box fillp">
     <div class="card-slot-cont">
       <h2>{{ title }}</h2>
       <p>{{ info }}</p>

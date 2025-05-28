@@ -1,8 +1,8 @@
 <script setup></script>
 <template>
-  <div id="err-cont" class="horizontal-center">
+  <div id="err-cont" class="center">
     <div style="height: 64px;"></div>
-    <h1 id="error-head" class="horizontal-center">Druk alarm!!</h1>
+    <h1 id="error-head" class="center">Druk alarm!!</h1>
     <p id="error-text">
       Siden du prøver at tilgå findes ikke. Du bør stoppe indtaget af øl øjeblikkeligt!
       <br> Tryk her for at komme tilbage til start igen:

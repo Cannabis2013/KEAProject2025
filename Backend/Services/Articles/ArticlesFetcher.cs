@@ -6,14 +6,14 @@ namespace ALBackend.Services.Articles;
 
 public class ArticlesFetcher(ArticlesDb articlesDb, MembersDb membersDb) : IArticlesFetcher
 {
-    private string GetAuthor(Guid userId)
+    private string GetAuthor(int memberId)
     {
         var member = membersDb.Members
-            .FirstOrDefault(member => member.UserId == userId);
+            .FirstOrDefault(member => member.Id == memberId);
         return $"{member?.FirstName} {member?.LastName}";
     }
 
-    public List<ArticleCard> Paginated(int pageIndex, int pageSize, Guid userId)
+    public List<ArticleFetchResponse> Paginated(int pageIndex, int pageSize, int memberId)
     {
         return articlesDb.Articles
             .OrderBy(a => a.Id)
@@ -22,34 +22,16 @@ public class ArticlesFetcher(ArticlesDb articlesDb, MembersDb membersDb) : IArti
             .ToList()
             .Select(article =>
             {
-                var author = GetAuthor(article.UserId);
-                return new ArticleCard(article, author)
+                var author = GetAuthor(article.MemberId);
+                return new ArticleFetchResponse(article, author)
                 {
-                    IsOwner = article.UserId == userId
-                };
-            })
-            .ToList();
-        throw new NotImplementedException();
-    }
-
-    public List<ArticleCard> Many(Guid userId)
-    {
-        return articlesDb.Articles
-            .OrderByDescending(article => article.CreatedAt)
-            .AsEnumerable()
-            .Select(article =>
-            {
-                var author = GetAuthor(article.UserId);
-                return new ArticleCard(article, author)
-                {
-                    IsOwner = article.UserId == userId
-                    
+                    IsOwner = memberId != -1 && article.MemberId == memberId
                 };
             })
             .ToList();
     }
 
-    public List<ArticleCard> Many(int count)
+    public List<ArticleFetchResponse> Many(int count)
     {
         return articlesDb.Articles
             .AsEnumerable()
@@ -58,16 +40,16 @@ public class ArticlesFetcher(ArticlesDb articlesDb, MembersDb membersDb) : IArti
             .ToList()
             .Select(article =>
             {
-                var author = GetAuthor(article.UserId);
-                return new ArticleCard(article, author);
+                var author = GetAuthor(article.MemberId);
+                return new ArticleFetchResponse(article, author);
             })
             .ToList();
     }
 
-    public ArticleCard One(int id)
+    public ArticleFetchResponse One(int id)
     {
         var article = articlesDb.Articles
             .First(article => article.Id == id);
-        return new(article, GetAuthor(article.UserId));
+        return new(article, GetAuthor(article.MemberId));
     }
 }

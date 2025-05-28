@@ -1,9 +1,10 @@
 using ALBackend.Entities.Forum;
+using ALBackend.Persistence.Shared;
 using Microsoft.EntityFrameworkCore;
 
 namespace ALBackend.Persistence.Forum;
 
-public class ForumDb(IConfiguration configuration) : DbContext
+public class ForumDb(IConfiguration configuration) : MariaDbContext(configuration)
 {
     public DbSet<Topic> Topics { get; set; }
     public DbSet<Post> Posts { get; set; }
@@ -22,20 +23,5 @@ public class ForumDb(IConfiguration configuration) : DbContext
         modelBuilder.Entity<Post>()
             .Property(m => m.UpdatedAt)
             .HasDefaultValueSql("now()");
-    }
-    
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        var connectionString = ConnectionString();
-        optionsBuilder.UseMySql(connectionString, new MariaDbServerVersion(new Version()));
-        base.OnConfiguring(optionsBuilder);
-    }
-
-    private string ConnectionString()
-    {
-        var userName = configuration.GetValue<string>("DbUser");
-        var pass = configuration.GetValue<string>("DbPass");
-        var host = configuration.GetValue<string>("DbHost");
-        return $"server={host};user id={userName};password={pass};database=ALResources;";
     }
 }

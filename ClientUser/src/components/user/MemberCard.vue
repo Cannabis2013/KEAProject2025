@@ -13,9 +13,9 @@ const profileImage = props.member.profileImage !== "" ? props.member.profileImag
 
 </script>
 <template>
-  <div class="member-card-cont al-box fill-parent">
+  <div class="member-card-cont al-box fillp">
     <div class="card-image-wrapper">
-      <img :src="profileImage" class="fill-parent"/>
+      <img :src="profileImage" class="fillp"/>
     </div>
     <InfoTile
         :value="getName()"

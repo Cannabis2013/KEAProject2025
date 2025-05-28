@@ -94,7 +94,7 @@ function hideForm() {
           :model="article"
       />
     </div>
-    <PushButton v-if="moreAvailable" style="margin-bottom: 1.5rem;" class="horizontal-center" :onPushed="fetchMore" text="Hent flere.."/>
+    <PushButton v-if="moreAvailable" style="margin-bottom: 1.5rem;" class="center" :onPushed="fetchMore" text="Hent flere.."/>
   </div>
 </template>
 <style lang="css" scoped>

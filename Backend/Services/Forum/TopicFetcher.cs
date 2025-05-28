@@ -8,7 +8,7 @@ namespace ALBackend.Services.Forum;
 
 public class TopicFetcher(ForumDb forumDb, MembersDb membersDb) : ITopicFetcher
 {
-    private TopicFetchResponse ToCard(Topic topic, Member currentMember)
+    private TopicFetchResponse ToFetchResponse(Topic topic, Member currentMember)
     {
         var posts = forumDb
             .Posts
@@ -26,7 +26,7 @@ public class TopicFetcher(ForumDb forumDb, MembersDb membersDb) : ITopicFetcher
         {
             IsOwner = topic.memberId == currentMember.Id,
             PostsCount = postsCount,
-            lastPoster = $"{lastPoster?.FirstName} {lastPoster?.LastName}",
+            LastPoster = $"{lastPoster?.FirstName} {lastPoster?.LastName}",
             InitialMessage = topic.InitialMessage
         };
     }
@@ -41,7 +41,7 @@ public class TopicFetcher(ForumDb forumDb, MembersDb membersDb) : ITopicFetcher
             .ToList();
 
         return topics
-            .Select(topic => ToCard(topic, currentMember))
+            .Select(topic => ToFetchResponse(topic, currentMember))
             .ToList();
     }
 
@@ -51,7 +51,7 @@ public class TopicFetcher(ForumDb forumDb, MembersDb membersDb) : ITopicFetcher
             .Topics
             .Find(topicId);
 
-        return topic is null ? null : ToCard(topic, currentMember);
+        return topic is null ? null : ToFetchResponse(topic, currentMember);
     }
 
     public List<TopicFetchResponse> RecentlyActive(int count)
@@ -65,14 +65,19 @@ public class TopicFetcher(ForumDb forumDb, MembersDb membersDb) : ITopicFetcher
                     .Posts
                     .ToList()
                     .Last(post => post.TopicId == topic.Id);
-                return new TopicFetchResponse(topic)
+                
+                var topicCreator = membersDb.Members.Find(topic.memberId);
+                
+                return new TopicFetchResponse(topic,topicCreator)
                 {
-                    LastPost = lastPost.CreatedAt
+                    LastPoster = $"{topicCreator?.FirstName} {topicCreator?.LastName}",
+                    LastPostedOn = lastPost.CreatedAt
                 };
             })
-            .OrderByDescending(response => response.LastPost)
+            .OrderByDescending(response => response.LastPostedOn)
             .Take(count)
             .ToList();
+        
         return active;
     }
 }

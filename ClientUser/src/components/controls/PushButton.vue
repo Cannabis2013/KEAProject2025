@@ -5,17 +5,14 @@ defineProps(["onPushed", "text"])
 </script>
 
 <template>
-  <div :onclick="onPushed" class="push-cont">
+  <div :onclick="onPushed" class="push-cont adaptive pad8">
     <p class="push-text"> {{ text }} </p>
   </div>
 </template>
 
 <style lang="css" scoped>
 .push-cont {
-  padding: 6px;
   background-color: lightgrey;
-  width: min-content;
-  height: min-content;
   cursor: pointer;
   border-radius: 0.2rem;
 }

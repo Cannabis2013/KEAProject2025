@@ -1,13 +1,9 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using ALBackend.Entities.Shared;
 
 namespace ALBackend.Entities.Forum;
 
-public class Topic
+public class Topic : Entity
 {
-    [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
-
     public required string Title { get; set; } = "";
     public string Category { get; set; } = "";
     public required string InitialMessage { get; set; }

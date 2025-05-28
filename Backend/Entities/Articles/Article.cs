@@ -1,17 +1,14 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using ALBackend.Entities.Shared;
 
 namespace ALBackend.Entities.Articles;
 
-public class Article
+public class Article : Entity
 {
-    [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public required string Headline { get; set; }
     public required string ShortContent  { get; set; }
     public required string Content { get; set; }
     public string ImageUrl { get; set; } = "";
-    public required Guid UserId { get; set; }
+    public int MemberId { get; set; }
 }

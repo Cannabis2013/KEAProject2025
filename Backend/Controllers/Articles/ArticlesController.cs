@@ -1,7 +1,5 @@
 using ALBackend.DataTransferObject.Articles;
-using ALBackend.Persistence.Members;
 using ALBackend.Services.Articles;
-using ALBackend.Services.Identity.Users;
 using ALBackend.Services.Members;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,27 +8,19 @@ namespace ALBackend.Controllers.Articles;
 
 [ApiController, Route("/articles")]
 public class ArticlesController(
-    IUsersFetcher userFetcher,
+    IMembersFetcher membersFetcher,
     IArticlesFetcher fetcher,
     IArticlesUpdater updater) : ControllerBase
 {
-    [HttpGet, Authorize]
-    public JsonResult Articles()
-    {
-        var user = userFetcher.User(User);
-        var articles = fetcher.Many(Guid.Parse(user?.Id ?? ""));
-        return new(articles);
-    }
-
-    [HttpGet("{lastIndex:int}/{count:int}"), Authorize]
+    [HttpGet("{lastIndex:int}/{count:int}")]
     public JsonResult Articles(int lastIndex, int count)
     {
-        var user = userFetcher.User(User);
-        var articles = fetcher.Paginated(lastIndex, count, Guid.Parse(user?.Id ?? ""));
+        var memberId = membersFetcher.One(User)?.Id ?? -1;
+        var articles = fetcher.Paginated(lastIndex, count, memberId);
         return new(articles);
     }
 
-    [HttpGet("count/{count:int}"), Authorize]
+    [HttpGet("count/{count:int}")]
     public JsonResult Article(int count)
     {
         var articles = fetcher.Many(count);
@@ -47,27 +37,27 @@ public class ArticlesController(
     [HttpPost, Authorize]
     public async Task<JsonResult> Create(ArticleUpdateRequest request)
     {
-        var user = userFetcher.User(User);
-        if (user is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
-        var result = await updater.Create(request, Guid.Parse(user.Id));
+        var member = membersFetcher.One(User);
+        if (member is null) return new("Member not found") { StatusCode = StatusCodes.Status404NotFound };
+        var result = await updater.Create(request, member.Id);
         return new(result);
     }
 
     [HttpPatch, Authorize]
     public async Task<JsonResult> Update(ArticleUpdateRequest request)
     {
-        var user = userFetcher.User(User);
-        if (user is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
-        var result = await updater.Update(request, Guid.Parse(user.Id));
+        var member = membersFetcher.One(User);
+        if (member is null) return new("Member not found") { StatusCode = StatusCodes.Status404NotFound };
+        var result = await updater.Update(request, member.Id);
         return new(result);
     }
 
     [HttpDelete("{id:int}"), Authorize]
     public async Task<JsonResult> Delete(int id)
     {
-        var user = userFetcher.User(User);
-        if (user is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
-        var result = await updater.Remove(id, Guid.Parse(user.Id));
+        var member = membersFetcher.One(User);
+        if (member is null) return new("Member not found") { StatusCode = StatusCodes.Status404NotFound };
+        var result = await updater.Remove(id, member.Id);
         return new(result);
     }
 }

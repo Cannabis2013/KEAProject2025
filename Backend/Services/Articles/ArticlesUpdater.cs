@@ -6,30 +6,30 @@ namespace ALBackend.Services.Articles;
 
 public class ArticlesUpdater(ArticlesDb articlesDb) : IArticlesUpdater
 {
-    private Article? FindArticleFromUser(int id, Guid userId)
+    private Article? FindArticleFromUser(int id, int memberId)
     {
         return articlesDb
             .Articles
-            .FirstOrDefault(article => article.Id == id && article.UserId == userId);
+            .FirstOrDefault(article => article.Id == id && article.MemberId == memberId);
     }
     
-    public async Task<bool> Create(ArticleUpdateRequest request,Guid userId)
+    public async Task<bool> Create(ArticleUpdateRequest request,int memberId)
     {
         var article = new Article()
         {
             Headline = request.Headline,
             ShortContent = request.ShortContent,
             Content = request.Content,
-            UserId = userId
+            MemberId = memberId
         };
         articlesDb.Add(article);
         var result = await articlesDb.SaveChangesAsync();
         return result > 0;
     }
 
-    public async Task<bool> Update(ArticleUpdateRequest request, Guid userId)
+    public async Task<bool> Update(ArticleUpdateRequest request, int memberId)
     {
-        var article = FindArticleFromUser(request.Id,userId);
+        var article = FindArticleFromUser(request.Id,memberId);
         if(article is null) return false;
         article.Headline = request.Headline;
         article.ShortContent = request.ShortContent;
@@ -38,9 +38,9 @@ public class ArticlesUpdater(ArticlesDb articlesDb) : IArticlesUpdater
         return await articlesDb.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> Remove(int id, Guid userId)
+    public async Task<bool> Remove(int id, int memberId)
     {
-        var article = FindArticleFromUser(id,userId);
+        var article = FindArticleFromUser(id,memberId);
         if(article is null) return false;
         articlesDb.Remove(article);
         return await articlesDb.SaveChangesAsync() > 0;

@@ -2,10 +2,10 @@
 
 </script>
 <template>
-  <div id="auth-cont" class="horizontal-center">
+  <div id="auth-cont" class="center">
     <div style="height: 64px;"></div>
-    <h1 id="auth-head" class="horizontal-center">ULOVLIG INDTRÆNGEN!!</h1>
-    <p id="auth-text" class="horizontal-center">
+    <h1 id="auth-head" class="center">ULOVLIG INDTRÆNGEN!!</h1>
+    <p id="auth-text" class="center">
       Siden du prøver at tilgå kan ikke tilgås af andre end medlemmer af Amager Loyalist
       eller formanden.<br><br>
       Gentagne forsøg på indtrængen vil blive meldt til PET!!<br><br>

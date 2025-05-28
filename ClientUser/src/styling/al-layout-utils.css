@@ -1,0 +1,29 @@
+.center-content{
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+}
+
+.col-spreaded{
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-rows: min-content;
+    justify-content: space-between;
+}
+
+.gapx8{
+    row-gap: 8px;
+}
+
+.gapy8{
+    column-gap: 8px;
+}
+
+.gapx16{
+    row-gap: 16px;
+}
+
+.gapy16{
+    column-gap: 16px;
+}

@@ -1,0 +1,29 @@
+::-webkit-scrollbar{
+    display: none;
+}
+
+@media (orientation: landscape){
+    .al-tile{
+        border-radius: 6px;
+        background-color: var(--al-tile);
+        border: 1px solid var(--al-tile-border);
+        box-shadow: 12px 12px 24px var(--al-tile-shadow);
+    }
+}
+
+.view-section{
+    background-color: var(--al-section-color);
+    border-radius: 3px;
+}
+
+.clip{
+    overflow: hidden;
+}
+
+.scroll{
+    overflow: auto;
+}
+
+.text-warning{
+    color: var(--al-font-color-warning);
+}

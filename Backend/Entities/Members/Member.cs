@@ -1,15 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using ALBackend.Entities.Members;
+using ALBackend.Entities.Shared;
 
 // ReSharper disable All
 
 namespace ALMembers.Entities;
 
-public class Member
+public class Member : Entity
 {
-    [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
     public required string Title { get; set; }
