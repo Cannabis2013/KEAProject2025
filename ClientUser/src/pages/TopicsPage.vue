@@ -14,11 +14,11 @@ let pageIndex = 0
 const isLoading = ref(false)
 const formVisible = ref(false);
 
-function showForm(){
+function showForm() {
   formVisible.value = true;
 }
 
-function hideForm(){
+function hideForm() {
   formVisible.value = false;
 }
 
@@ -31,11 +31,11 @@ async function fetchTopics(index, count) {
 
 fetchTopics(pageIndex, pageSize)
 
-function toTopicPage(id){
+function toTopicPage(id) {
   router.push(`/topic/${id}`)
 }
 
-async function updateTopics(){
+async function updateTopics() {
   isLoading.value = true
   topics.value = await HttpClient.authGetRequest(`/topic/${pageIndex}/${pageSize}`)
   hideForm()
@@ -52,20 +52,20 @@ async function updateTopics(){
       Husk at alt er tilladt!
     </p>
     <br>
-    <PushButton v-if="!formVisible" text="Ny tråd" :onPushed="showForm" />
+    <PushButton v-if="!formVisible" text="Ny tråd" :onPushed="showForm"/>
     <TopicForm v-else :onCancelled="hideForm" :onCompleted="updateTopics"/>
     <br>
     <div class="forum-col forum-header">
       <p>Titel</p>
       <p>Kategori</p>
-      <p>Poster</p>
-      <p>Aktivitet</p>
+      <p class="topic-postCount">Poster</p>
+      <p class="topic-lastPoster">Aktivitet</p>
     </div>
     <div v-for="topic in topics" class="forum-col forum-item" :onclick="() => toTopicPage(topic.id)">
       <p>{{ topic.title }}</p>
       <p>{{ topic.category }}</p>
-      <p>{{ topic.postsCount }}</p>
-      <p>{{ topic.lastPoster }}</p>
+      <p class="topic-postCount">{{ topic.postsCount }}</p>
+      <p class="topic-lastPoster">{{ topic.lastPoster }}</p>
     </div>
     <br>
     <PushButton class="center" text="Hent flere.."/>
@@ -73,9 +73,12 @@ async function updateTopics(){
 </template>
 
 <style scoped lang="css">
+
 .forum-col {
   display: grid;
-  grid-template-columns:1fr 144px 80px 192px;
+}
+.topic-postCount, .topic-lastPoster {
+  display: none;
 }
 
 .forum-header {
@@ -83,25 +86,50 @@ async function updateTopics(){
   padding-bottom: 3px;
 }
 
-.forum-header>*{
+.forum-header > * {
   font-size: 20px;
 }
 
-.forum-item{
+.forum-item {
   border-bottom: 1px dotted lightskyblue;
   padding: 9px 0 9px 0;
   cursor: pointer;
 }
 
-.forum-item:hover{
-  background-color: rgba(255,255,255,.1);
+.forum-item:hover {
+  background-color: rgba(255, 255, 255, .1);
 }
 
-.forum-item>*{
-  margin:0;
-  padding:0;
+.forum-item > * {
+  margin: 0;
+  padding: 0;
   font-size: 20px;
   white-space: nowrap;
 }
 
+@media (orientation: portrait)  or (max-width: 1279px) {
+  .forum-col {
+    grid-template-columns:1fr 144px;
+  }
+}
+
+@media (orientation: landscape) and (min-width: 1024px){
+  .topic-postCount {
+    display: block;
+  }
+
+.forum-col {
+  grid-template-columns:1fr 144px 80px;
+}
+}
+
+@media (orientation: landscape) and (min-width: 1280px) {
+  .topic-lastPoster {
+    display: block;
+  }
+
+  .forum-col {
+    grid-template-columns:1fr 144px 80px 1fr;
+  }
+}
 </style>

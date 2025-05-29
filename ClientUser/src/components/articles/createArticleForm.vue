@@ -2,20 +2,48 @@
 
 import PushButton from "@/components/controls/PushButton.vue";
 import HttpClient from "@/services/http/httpClient.js";
+import {v4 as uuidv4} from "uuid";
 
 const props = defineProps(["onCompleted", "onCancelled", "model"])
 
+const compId = uuidv4()
+
 const model = props.model ?? {
-  id: "",
+  id: -1,
   headline: "",
   shortContent: "",
-  content: ""
+  content: "",
+  imageBlob: ""
 }
 
 async function handleCompleted() {
   const request = props.model ? HttpClient.authPatchRequest : HttpClient.authPostRequest
+  console.log(model)
   const result = await request("/articles", model)
   if (props.onCompleted && result) props.onCompleted()
+}
+
+async function fetchBlob(uri) {
+  const res = await fetch(uri)
+  if (res.ok)
+    return res.blob()
+  return undefined
+}
+
+function blobToBase64(blob) {
+  return new Promise((resolve, _) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function handleFile(e){
+  const file = e.target.files[0]
+  const uri = URL.createObjectURL(file)
+  const blob = await fetchBlob(uri)
+  const base64 = await blobToBase64(blob)
+  model.imageBlob = String(base64)
 }
 
 const handleCancelRequest = props.onCancelled ?? function () {
@@ -29,6 +57,7 @@ const handleCancelRequest = props.onCancelled ?? function () {
       <input placeholder="Titel" v-model="model.headline"/>
       <textarea placeholder="Skriv et  kort resume af indholdet her" v-model="model.shortContent"/>
       <textarea placeholder="Skriv dit indhold af artiklen her" v-model="model.content"/>
+      <input type="file" :onchange="handleFile" :id="'file-selector' + compId"  class="create-file-selector"/>
     </div>
     <div class="create-btn-group">
       <PushButton text="Fortryd" :onPushed="handleCancelRequest"/>

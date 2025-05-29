@@ -2,7 +2,7 @@ using ALBackend.Entities.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace ALBackend.Persistence.Identity;
+namespace ALBackend.Persistence;
 
 public class IdentityDb(IConfiguration configuration) : IdentityDbContext<UserAccount>
 {

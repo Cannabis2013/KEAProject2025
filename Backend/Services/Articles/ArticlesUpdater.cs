@@ -1,48 +1,49 @@
 using ALBackend.DataTransferObject.Articles;
 using ALBackend.Entities.Articles;
-using ALBackend.Persistence.Articles;
+using ALBackend.Persistence;
 
 namespace ALBackend.Services.Articles;
 
-public class ArticlesUpdater(ArticlesDb articlesDb) : IArticlesUpdater
+public class ArticlesUpdater(MariaDbContext dbContext) : IArticlesUpdater
 {
     private Article? FindArticleFromUser(int id, int memberId)
     {
-        return articlesDb
+        return dbContext
             .Articles
             .FirstOrDefault(article => article.Id == id && article.MemberId == memberId);
     }
-    
-    public async Task<bool> Create(ArticleUpdateRequest request,int memberId)
+
+    public async Task<bool> Create(ArticleUpdateRequest request, int memberId)
     {
-        var article = new Article()
+        var article = new Article
         {
             Headline = request.Headline,
             ShortContent = request.ShortContent,
             Content = request.Content,
-            MemberId = memberId
+            MemberId = memberId,
+            Image = request.ImageBlob is not null ? new(request.ImageBlob) : null
         };
-        articlesDb.Add(article);
-        var result = await articlesDb.SaveChangesAsync();
-        return result > 0;
+
+        dbContext.Articles.Add(article);
+        return await dbContext.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> Update(ArticleUpdateRequest request, int memberId)
     {
-        var article = FindArticleFromUser(request.Id,memberId);
-        if(article is null) return false;
+        var article = FindArticleFromUser(request.Id, memberId);
+        if (article is null) return false;
         article.Headline = request.Headline;
         article.ShortContent = request.ShortContent;
         article.Content = request.Content;
-        articlesDb.Update(article);
-        return await articlesDb.SaveChangesAsync() > 0;
+        dbContext.Update(article);
+        return await dbContext.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> Remove(int id, int memberId)
     {
-        var article = FindArticleFromUser(id,memberId);
-        if(article is null) return false;
-        articlesDb.Remove(article);
-        return await articlesDb.SaveChangesAsync() > 0;
+        var article = FindArticleFromUser(id, memberId);
+        if (article is null) return false;
+        dbContext.Remove(article);
+        return await dbContext.SaveChangesAsync() > 0;
     }
 }

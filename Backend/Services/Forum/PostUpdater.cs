@@ -1,11 +1,11 @@
 using ALBackend.DataTransferObject.Forum;
 using ALBackend.Entities.Forum;
-using ALBackend.Persistence.Forum;
+using ALBackend.Persistence;
 using ALMembers.Entities;
 
 namespace ALBackend.Services.Forum;
 
-public class PostUpdater(ForumDb forumDb) : IPostUpdater
+public class PostUpdater(MariaDbContext dbContext) : IPostUpdater
 {
     public async Task<int> AddPost(PostUpdateRequest request, Member currentMember)
     {
@@ -15,24 +15,24 @@ public class PostUpdater(ForumDb forumDb) : IPostUpdater
             Content = request.Message,
             TopicId = request.TopicId
         };
-        forumDb.Posts.Add(post);
-        await forumDb.SaveChangesAsync();
+        dbContext.Posts.Add(post);
+        await dbContext.SaveChangesAsync();
         return post.Id;
     }
 
     public async Task<bool> UpdatePost(PostUpdateRequest request)
     {
-        var post = await forumDb.Posts.FindAsync(request.Id);
+        var post = await dbContext.Posts.FindAsync(request.Id);
         if (post is null) return false;
         post.Content = request.Message;
-        return await forumDb.SaveChangesAsync() > 0;
+        return await dbContext.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> RemovePost(int topicId)
     {
-        var post = await forumDb.Posts.FindAsync(topicId);
+        var post = await dbContext.Posts.FindAsync(topicId);
         if (post is null) return false;
-        forumDb.Posts.Remove(post);
-        return await forumDb.SaveChangesAsync() > 0;
+        dbContext.Posts.Remove(post);
+        return await dbContext.SaveChangesAsync() > 0;
     }
 }

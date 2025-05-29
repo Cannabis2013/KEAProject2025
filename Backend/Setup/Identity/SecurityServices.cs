@@ -1,5 +1,5 @@
 using ALBackend.Entities.Identity;
-using ALBackend.Persistence.Identity;
+using ALBackend.Persistence;
 using ALBackend.Services.Identity.Authentication;
 using ALBackend.Services.Identity.Token;
 using ALBackend.Services.Identity.Users;

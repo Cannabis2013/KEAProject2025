@@ -1,16 +1,15 @@
 using ALBackend.DataTransferObject.Forum;
 using ALBackend.Entities.Forum;
-using ALBackend.Persistence.Forum;
-using ALBackend.Persistence.Members;
+using ALBackend.Persistence;
 using ALMembers.Entities;
 
 namespace ALBackend.Services.Forum;
 
-public class TopicFetcher(ForumDb forumDb, MembersDb membersDb) : ITopicFetcher
+public class TopicFetcher(MariaDbContext dbContext) : ITopicFetcher
 {
     private TopicFetchResponse ToFetchResponse(Topic topic, Member currentMember)
     {
-        var posts = forumDb
+        var posts = dbContext
             .Posts
             .Where(post => post.TopicId == topic.Id)
             .OrderBy(post => post.CreatedAt)
@@ -18,8 +17,8 @@ public class TopicFetcher(ForumDb forumDb, MembersDb membersDb) : ITopicFetcher
 
         var postsCount = posts.Count;
         var lastPost = postsCount > 0 ? posts.Last() : null;
-        var lastPoster = membersDb.Members.Find(lastPost?.memberId);
-        var topicCreator = membersDb.Members.Find(topic.memberId);
+        var lastPoster = dbContext.Members.Find(lastPost?.memberId);
+        var topicCreator = dbContext.Members.Find(topic.memberId);
         if (topicCreator is null) throw new BadHttpRequestException("Member not found");
         
         return new(topic, topicCreator)
@@ -33,7 +32,7 @@ public class TopicFetcher(ForumDb forumDb, MembersDb membersDb) : ITopicFetcher
 
     public List<TopicFetchResponse> TopicsWithoutPosts(int pageIndex, int pageSize, Member currentMember)
     {
-        var topics = forumDb
+        var topics = dbContext
             .Topics
             .OrderByDescending(topic => topic.CreatedAt)
             .Skip(pageIndex * pageSize)
@@ -47,7 +46,7 @@ public class TopicFetcher(ForumDb forumDb, MembersDb membersDb) : ITopicFetcher
 
     public TopicFetchResponse? Topic(int topicId, Member currentMember)
     {
-        var topic = forumDb
+        var topic = dbContext
             .Topics
             .Find(topicId);
 
@@ -56,17 +55,17 @@ public class TopicFetcher(ForumDb forumDb, MembersDb membersDb) : ITopicFetcher
 
     public List<TopicFetchResponse> RecentlyActive(int count)
     {
-        var active = forumDb.Topics
+        var active = dbContext.Topics
             .ToList()
-            .Where(topic => forumDb.Posts.Any(post => post.TopicId == topic.Id))
+            .Where(topic => dbContext.Posts.Any(post => post.TopicId == topic.Id))
             .Select(topic =>
             {
-                var lastPost = forumDb
+                var lastPost = dbContext
                     .Posts
                     .ToList()
                     .Last(post => post.TopicId == topic.Id);
                 
-                var topicCreator = membersDb.Members.Find(topic.memberId);
+                var topicCreator = dbContext.Members.Find(topic.memberId);
                 
                 return new TopicFetchResponse(topic,topicCreator)
                 {

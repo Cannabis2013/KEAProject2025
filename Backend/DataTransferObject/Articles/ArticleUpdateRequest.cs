@@ -6,4 +6,5 @@ public class ArticleUpdateRequest
     public string Headline { get; set; } = "";
     public string ShortContent { get; set; } = "";
     public string Content { get; set; } = "";
+    public string? ImageBlob { get; set; }
 }

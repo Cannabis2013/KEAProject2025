@@ -1,5 +1,5 @@
 using ALBackend.Entities.Identity;
-using ALBackend.Persistence.Identity;
+using ALBackend.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

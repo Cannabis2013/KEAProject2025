@@ -7,7 +7,5 @@ public class Topic : Entity
     public required string Title { get; set; } = "";
     public string Category { get; set; } = "";
     public required string InitialMessage { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
     public required int memberId { get; set; }
 }

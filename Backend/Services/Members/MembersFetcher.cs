@@ -1,18 +1,18 @@
 using System.Security.Claims;
 using ALBackend.DataTransferObject.Members;
 using ALBackend.Entities.Identity;
-using ALBackend.Persistence.Members;
+using ALBackend.Persistence;
 using ALMembers.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace ALBackend.Services.Members;
 
-public class MembersFetcher(UserManager<UserAccount> userManager,MembersDb membersDb) : IMembersFetcher
+public class MembersFetcher(UserManager<UserAccount> userManager,MariaDbContext dbContext) : IMembersFetcher
 {
     public MemberFetchResponse? One(int memberId)
     {
-        var member = membersDb.Members
+        var member = dbContext.Members
             .Include(u => u.Images)
             .FirstOrDefault(member => member.Id == memberId);
         if (member is null) return null;
@@ -28,7 +28,7 @@ public class MembersFetcher(UserManager<UserAccount> userManager,MembersDb membe
         var user = userManager.Users.FirstOrDefault(u => u.Id == userId);
         if (user is null) return null;
 
-        var member = membersDb
+        var member = dbContext
             .Members
             .FirstOrDefault(member => member.UserId == Guid.Parse(user.Id));
 
@@ -37,7 +37,7 @@ public class MembersFetcher(UserManager<UserAccount> userManager,MembersDb membe
 
     public MemberFetchResponse? One(Guid userId)
     {
-        var member = membersDb.Members
+        var member = dbContext.Members
             .Include(u => u.Images)
             .FirstOrDefault(member => member.UserId == userId);
         if (member is null) return null;
@@ -46,7 +46,7 @@ public class MembersFetcher(UserManager<UserAccount> userManager,MembersDb membe
 
     public List<MemberFetchResponse> Many()
     {
-        return membersDb.Members
+        return dbContext.Members
             .AsEnumerable()
             .Select(member => new MemberFetchResponse(member))
             .ToList();

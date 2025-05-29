@@ -1,22 +1,23 @@
 using ALBackend.DataTransferObject.Articles;
-using ALBackend.Persistence.Articles;
-using ALBackend.Persistence.Members;
+using ALBackend.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace ALBackend.Services.Articles;
 
-public class ArticlesFetcher(ArticlesDb articlesDb, MembersDb membersDb) : IArticlesFetcher
+public class ArticlesFetcher(MariaDbContext dbContext) : IArticlesFetcher
 {
     private string GetAuthor(int memberId)
     {
-        var member = membersDb.Members
+        var member = dbContext.Members
             .FirstOrDefault(member => member.Id == memberId);
         return $"{member?.FirstName} {member?.LastName}";
     }
 
     public List<ArticleFetchResponse> Paginated(int pageIndex, int pageSize, int memberId)
     {
-        return articlesDb.Articles
-            .OrderBy(a => a.Id)
+        return dbContext.Articles
+            .Include(article => article.Image)
+            .OrderByDescending(a => a.CreatedAt)
             .Skip(pageIndex * pageSize)
             .Take(pageSize)
             .ToList()
@@ -33,7 +34,7 @@ public class ArticlesFetcher(ArticlesDb articlesDb, MembersDb membersDb) : IArti
 
     public List<ArticleFetchResponse> Many(int count)
     {
-        return articlesDb.Articles
+        return dbContext.Articles
             .AsEnumerable()
             .TakeLast(count)
             .OrderByDescending(article => article.CreatedAt)
@@ -48,7 +49,7 @@ public class ArticlesFetcher(ArticlesDb articlesDb, MembersDb membersDb) : IArti
 
     public ArticleFetchResponse One(int id)
     {
-        var article = articlesDb.Articles
+        var article = dbContext.Articles
             .First(article => article.Id == id);
         return new(article, GetAuthor(article.MemberId));
     }

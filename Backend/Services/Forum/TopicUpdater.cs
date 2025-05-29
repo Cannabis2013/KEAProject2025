@@ -1,38 +1,38 @@
 using ALBackend.DataTransferObject.Forum;
-using ALBackend.Persistence.Forum;
+using ALBackend.Persistence;
 using ALMembers.Entities;
 
 namespace ALBackend.Services.Forum;
 
-public class TopicUpdater(ForumDb forumDb) : ITopicUpdater
+public class TopicUpdater(MariaDbContext dbContext) : ITopicUpdater
 {
     public async Task<int> AddTopic(TopicUpdateRequest request, Member currentMember)
     {
         var topic = request.ToEntity(currentMember.Id);
-        forumDb.Topics.Add(topic);
-        await forumDb.SaveChangesAsync();
+        dbContext.Topics.Add(topic);
+        await dbContext.SaveChangesAsync();
         return topic.Id;
     }
 
     public async Task<bool> UpdateTopic(TopicUpdateRequest request, Member currentMember)
     {
-        var topic = await forumDb.Topics.FindAsync(request.TopicId);
+        var topic = await dbContext.Topics.FindAsync(request.TopicId);
         if (topic is null) return false;
         if (currentMember.Id != topic.memberId) return false;
         request.ToUpdateEntity(topic);
-        return await forumDb.SaveChangesAsync() > 0;
+        return await dbContext.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> RemoveTopic(int topicId, Member currentMember)
     {
-        var topic = await forumDb.Topics.FindAsync(topicId);
+        var topic = await dbContext.Topics.FindAsync(topicId);
         if (topic is null) return false;
         if (currentMember.Id != topic.memberId) return false;
-        var posts = forumDb.Posts
+        var posts = dbContext.Posts
             .Where(post => post.TopicId == topicId)
             .ToList();
-        forumDb.Posts.RemoveRange(posts);
-        forumDb.Topics.Remove(topic);
-        return await forumDb.SaveChangesAsync() > 0;
+        dbContext.Posts.RemoveRange(posts);
+        dbContext.Topics.Remove(topic);
+        return await dbContext.SaveChangesAsync() > 0;
     }
 }

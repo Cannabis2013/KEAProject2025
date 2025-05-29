@@ -12,7 +12,6 @@ public class Member : Entity
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
     public required string Title { get; set; }
-    public DateTime CreatedAt { get; set; }
     public DateTime JoinedDate { get; set; }
     public string ProfileImage { get; set; } = "";
     public Guid UserId { get; set; }

@@ -4,6 +4,8 @@ import {toDateTime} from "@/services/date/dateFormatting.js";
 const props = defineProps(["model","onDelete","onUpdate"])
 const article = props.model
 
+console.log(article)
+
 const handleDelete = props.onDelete ?? function(){}
 const handleUpdate = props.onUpdate ?? function(){}
 
@@ -22,6 +24,7 @@ const handleUpdate = props.onUpdate ?? function(){}
       </div>
     </div>
     <p class="article-content">{{ article.content }}</p>
+    <img v-if="article.imageBase64.length > 0" :src="article.imageBase64" class="article-image center">
   </div>
 </template>
 
@@ -32,6 +35,12 @@ const handleUpdate = props.onUpdate ?? function(){}
   border-radius: 9px;
   padding: 9px;
   animation: popUp .3s ease-in-out;;
+}
+
+.article-image{
+  width: 100%;
+  overflow: auto;
+  
 }
 
 .article-head {

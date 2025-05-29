@@ -15,12 +15,10 @@ let pageIndex = 0
 const pageSize = 20
 const moreAvailable = ref(true)
 
-function fetch(index, fetchCount) {
-  HttpClient.authGetRequest(`/articles/${index}/${fetchCount}`)
-      .then(fetched => {
-        moreAvailable.value = fetched.length > 0
-        articles.value.push(...fetched)
-      })
+async function fetch(index, fetchCount) {
+  const fetched = await HttpClient.authGetRequest(`/articles/${index}/${fetchCount}`)
+  moreAvailable.value = fetched.length > 0
+  articles.value.push(...fetched)
 }
 
 fetch(pageIndex, pageSize)
@@ -36,7 +34,8 @@ function showForm() {
 
 async function createCompleted() {
   isLoading.value = true
-  articles.value = await HttpClient.authGetRequest("/articles")
+  pageIndex = 0
+  articles.value = await HttpClient.authGetRequest(`/articles/${pageIndex}/${pageSize}`)
   hideForm()
   isLoading.value = false
 }
@@ -94,7 +93,8 @@ function hideForm() {
           :model="article"
       />
     </div>
-    <PushButton v-if="moreAvailable" style="margin-bottom: 1.5rem;" class="center" :onPushed="fetchMore" text="Hent flere.."/>
+    <PushButton v-if="moreAvailable" style="margin-bottom: 1.5rem;" class="center" :onPushed="fetchMore"
+                text="Hent flere.."/>
   </div>
 </template>
 <style lang="css" scoped>

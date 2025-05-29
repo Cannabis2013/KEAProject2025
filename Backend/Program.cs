@@ -1,16 +1,15 @@
-using ALBackend.Setup.Articles;
-using ALBackend.Setup.Forum;
+using ALBackend.Persistence;
+using ALBackend.Setup;
 using ALBackend.Setup.Identity;
-using ALBackend.Setup.Members;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 SecurityServices.Inject(builder);
-MembersServices.Inject(builder);
-NewsServices.Inject(builder);
-ForumServices.Inject(builder);
+ServicesInjector.Inject(builder);
 JwtAuthentication.SetupJwtAuthentication(builder);
+
+builder.Services.AddDbContext<MariaDbContext>();
 
 const string allowedOrigins = "_allowedOrigins";
 
