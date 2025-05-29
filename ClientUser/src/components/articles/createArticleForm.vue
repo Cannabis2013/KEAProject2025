@@ -40,10 +40,12 @@ function blobToBase64(blob) {
 
 async function handleFile(e){
   const file = e.target.files[0]
+  console.log(file)
   const uri = URL.createObjectURL(file)
   const blob = await fetchBlob(uri)
   const base64 = await blobToBase64(blob)
   model.imageBlob = String(base64)
+  URL.revokeObjectURL(uri)
 }
 
 const handleCancelRequest = props.onCancelled ?? function () {
@@ -57,7 +59,7 @@ const handleCancelRequest = props.onCancelled ?? function () {
       <input placeholder="Titel" v-model="model.headline"/>
       <textarea placeholder="Skriv et  kort resume af indholdet her" v-model="model.shortContent"/>
       <textarea placeholder="Skriv dit indhold af artiklen her" v-model="model.content"/>
-      <input type="file" :onchange="handleFile" :id="'file-selector' + compId"  class="create-file-selector"/>
+      <input accept=".png,.jpg,.jpeg" type="file" :onchange="handleFile" :id="'file-selector' + compId"  class="create-file-selector"/>
     </div>
     <div class="create-btn-group">
       <PushButton text="Fortryd" :onPushed="handleCancelRequest"/>

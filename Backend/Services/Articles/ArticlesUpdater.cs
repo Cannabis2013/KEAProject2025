@@ -1,6 +1,7 @@
 using ALBackend.DataTransferObject.Articles;
 using ALBackend.Entities.Articles;
 using ALBackend.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace ALBackend.Services.Articles;
 
@@ -10,6 +11,7 @@ public class ArticlesUpdater(MariaDbContext dbContext) : IArticlesUpdater
     {
         return dbContext
             .Articles
+            .Include(article => article.Image)
             .FirstOrDefault(article => article.Id == id && article.MemberId == memberId);
     }
 
@@ -32,9 +34,16 @@ public class ArticlesUpdater(MariaDbContext dbContext) : IArticlesUpdater
     {
         var article = FindArticleFromUser(request.Id, memberId);
         if (article is null) return false;
+        
         article.Headline = request.Headline;
         article.ShortContent = request.ShortContent;
         article.Content = request.Content;
+
+        if (request.ImageBlob is not null && article.Image is not null)
+            article.Image.Base64 = request.ImageBlob;
+        else if (request.ImageBlob is not null)
+            article.Image = new(request.ImageBlob);
+        
         dbContext.Update(article);
         return await dbContext.SaveChangesAsync() > 0;
     }
