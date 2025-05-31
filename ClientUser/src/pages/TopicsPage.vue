@@ -6,6 +6,7 @@ import HttpClient from "@/services/http/httpClient"
 import LoadIndicator from "@/components/loading/LoadIndicator.vue";
 import TopicForm from "@/components/Forum/TopicForm.vue";
 import {useRouter} from "vue-router";
+import {useVirtualList} from "@vueuse/core";
 
 const router = useRouter();
 const topics = ref([])
@@ -13,6 +14,13 @@ const pageSize = 20
 let pageIndex = 0
 const isLoading = ref(false)
 const formVisible = ref(false);
+
+const {list, containerProps, wrapperProps} = useVirtualList(
+    topics,
+    {
+      itemHeight: 48,
+    },
+)
 
 function showForm() {
   formVisible.value = true;
@@ -61,11 +69,15 @@ async function updateTopics() {
       <p class="topic-postCount">Poster</p>
       <p class="topic-lastPoster">Aktivitet</p>
     </div>
-    <div v-for="topic in topics" class="forum-col forum-item" :onclick="() => toTopicPage(topic.id)">
-      <p>{{ topic.title }}</p>
-      <p>{{ topic.category }}</p>
-      <p class="topic-postCount">{{ topic.postsCount }}</p>
-      <p class="topic-lastPoster">{{ topic.lastPoster }}</p>
+    <div v-bind="containerProps" class="virtual-cont">
+      <div v-bind="wrapperProps">
+        <div v-for="topic in list" class="forum-col forum-item" :onclick="() => toTopicPage(topic.data.id)">
+          <p>{{ topic.data.title }}</p>
+          <p>{{ topic.data.category }}</p>
+          <p class="topic-postCount">{{ topic.data.postsCount }}</p>
+          <p class="topic-lastPoster">{{ topic.data.lastPoster }}</p>
+        </div>
+      </div>
     </div>
     <br>
     <PushButton class="center" text="Hent flere.."/>
@@ -76,7 +88,9 @@ async function updateTopics() {
 
 .forum-col {
   display: grid;
+  height: 40px;
 }
+
 .topic-postCount, .topic-lastPoster {
   display: none;
 }
@@ -88,6 +102,10 @@ async function updateTopics() {
 
 .forum-header > * {
   font-size: 20px;
+}
+
+.virtual-cont {
+  height: 300px;
 }
 
 .forum-item {
@@ -113,14 +131,14 @@ async function updateTopics() {
   }
 }
 
-@media (orientation: landscape) and (min-width: 1024px){
+@media (orientation: landscape) and (min-width: 1024px) {
   .topic-postCount {
     display: block;
   }
 
-.forum-col {
-  grid-template-columns:1fr 144px 80px;
-}
+  .forum-col {
+    grid-template-columns:1fr 144px 80px;
+  }
 }
 
 @media (orientation: landscape) and (min-width: 1280px) {
