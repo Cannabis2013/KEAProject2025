@@ -13,8 +13,8 @@ public class Member : Entity
     public required string LastName { get; set; }
     public required string Title { get; set; }
     public DateTime JoinedDate { get; set; }
-    public string ProfileImage { get; set; } = "";
+    public int ProfileImageId { get; set; }
     public Guid UserId { get; set; }
     public DateTime LastPayment { get; set; }
-    public ICollection<ImageLink> Images { get; set; } = [];
+    public ICollection<ProfileImage> ProfileImages { get; set; } = [];
 }

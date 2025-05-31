@@ -8,14 +8,14 @@ namespace ALBackend.Controllers.Forum;
 
 [ApiController,Route("post"),Authorize]
 public class PostController(
-    IMembersFetcher membersFetcher,
+    IMembers members,
     IPostFetcher postFetcher,
     IPostUpdater postUpdater) : ControllerBase
 {
     [HttpGet("{topicId:int}/{pageIndex:int}/{pageSize:int}")]
     public JsonResult GetPosts(int topicId, int pageIndex, int pageSize)
     {
-        var member = membersFetcher.One(User);
+        var member = members.One(User);
         if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
         var posts = postFetcher.AsBlocks(pageIndex, pageSize, topicId, member);
         return new(posts);
@@ -24,7 +24,7 @@ public class PostController(
     [HttpPost]
     public async Task<JsonResult> AddPost(PostUpdateRequest request)
     {
-        var member = membersFetcher.One(User);
+        var member = members.One(User);
         if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
         var postId = await postUpdater.AddPost(request, member);
         return new(postId);
@@ -41,7 +41,7 @@ public class PostController(
     [HttpPatch]
     public async Task<JsonResult> UpdatePost(PostUpdateRequest request)
     {
-        var member = membersFetcher.One(User);
+        var member = members.One(User);
         if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
         return new(await postUpdater.UpdatePost(request));
     }
@@ -49,7 +49,7 @@ public class PostController(
     [HttpDelete("{postId:int}")]
     public async Task<JsonResult> DeletePost(int postId)
     {
-        var member = membersFetcher.One(User);
+        var member = members.One(User);
         if (member is null) return new(false);
         var result = await postUpdater.RemovePost(postId);
         return new(result);
@@ -58,7 +58,7 @@ public class PostController(
     [HttpGet("cards/{count:int}")]
     public JsonResult GetCards(int count)
     {
-        var member = membersFetcher.One(User);
+        var member = members.One(User);
         if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
         var cards = postFetcher.AsCards(count);
         return new(cards);

@@ -8,8 +8,8 @@ public static class ServicesInjector
 {
     public static void Inject(WebApplicationBuilder builder)
     {
-        builder.Services.AddScoped<IMembersFetcher, MembersFetcher>();
-        builder.Services.AddScoped<IMembersUpdate, MembersUpdate>();
+        builder.Services.AddScoped<IMembers, Members>();
+        builder.Services.AddScoped<IProfileImages, ProfileImages>();
         
         builder.Services.AddScoped<IArticlesFetcher, ArticlesFetcher>();
         builder.Services.AddScoped<IArticlesUpdater, ArticlesUpdater>();

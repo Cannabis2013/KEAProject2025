@@ -9,7 +9,7 @@ function getName() {
   return `${firstName} ${lastName}`
 }
 
-const profileImage = props.member.profileImage !== "" ? props.member.profileImage : "./userTemplate.png"
+const profileImage = props.member.profileImageAsBase64 ?? "/userTemplate.png"
 
 </script>
 <template>

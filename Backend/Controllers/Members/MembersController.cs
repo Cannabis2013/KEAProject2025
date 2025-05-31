@@ -8,14 +8,14 @@ namespace ALBackend.Controllers.Members;
 
 [ApiController, Route("/members")]
 public class MembersController(
-    IMembersFetcher membersFetcher,
-    IMembersUpdate membersUpdate,
-    IUsersFetcher usersFetcher) : Controller
+    IMembers members,
+    IUsersFetcher usersFetcher,
+    IProfileImages profileImages) : Controller
 {
     [HttpGet, Authorize(Roles = "CHAIRMAN, DEPUTY_CHAIRMAN")]
     public JsonResult GetMembers()
     {
-        var members = membersFetcher.Many()
+        var response = members.Many()
             .Select(member =>
             {
                 var user = usersFetcher.User(member.UserId);
@@ -24,42 +24,54 @@ public class MembersController(
                 return member;
             })
             .ToList();
-        return new(members);
+        return new(response);
     }
 
     // GET
     [HttpGet("/members/{memberId:int}"), Authorize]
     public async Task<JsonResult> GetMember(int memberId)
     {
-        var member = membersFetcher.One(memberId);
+        var member = members.One(memberId);
         if (member is null) return new("Member not found") { StatusCode = StatusCodes.Status404NotFound };
+        
         var user = await usersFetcher.UserWithRoles(member.UserId);
         if(user is null) return new("User not found") { StatusCode = StatusCodes.Status404NotFound };
-        member.Roles = user?.Roles;
-        return new(member);
+        var response = new MemberFetchResponse(member)
+        {
+            Roles = user.Roles,
+            ProfileImageAsBase64 = profileImages.One(member.ProfileImageId)?.Blob
+        };
+        return new(response);
     }
 
     [HttpGet("/members/user/{userId:guid}"), Authorize]
     public async Task<JsonResult> GetMember(Guid userId)
     {
         var user = await usersFetcher.UserWithRoles(userId);
-        var response = membersFetcher.One(userId);
-        if (response is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
-        response.Roles = user?.Roles;
+        if(user is null) return new("User not found") { StatusCode = StatusCodes.Status404NotFound };
+        
+        var member = members.One(userId);
+        if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
+        
+        var response = new MemberFetchResponse(member)
+        {
+            Roles = user.Roles,
+            ProfileImageAsBase64 = profileImages.One(member.ProfileImageId)?.Blob
+        };
         return new(response);
     }
 
     [HttpPost, Authorize(Roles = "CHAIRMAN,DEPUTY_CHAIRMAN")]
     public async Task<JsonResult> CreateMember(MemberInfo request)
     {
-        var result = await membersUpdate.Create(request);
+        var result = await members.Create(request);
         return new(result) { StatusCode = StatusCodes.Status201Created };
     }
 
     [HttpPatch, Authorize(Roles = "CHAIRMAN,DEPUTY_CHAIRMAN")]
     public async Task<JsonResult> UpdateMember(MemberInfo request)
     {
-        var result = await membersUpdate.Update(request);
+        var result = await members.Update(request);
         return new(result) { StatusCode = StatusCodes.Status200OK };
     }
 
@@ -67,7 +79,7 @@ public class MembersController(
     [HttpDelete("/members/{memberId:int}"), Authorize(Roles = "CHAIRMAN,DEPUTY_CHAIRMAN,IT")]
     public async Task<JsonResult> DeleteMember(int memberId)
     {
-        var result = await membersUpdate.RemoveAsync(memberId);
+        var result = await members.RemoveAsync(memberId);
         return new(result) { StatusCode = StatusCodes.Status200OK };
     }
 }

@@ -35,4 +35,12 @@ public class MemberInfo
             Title = Title
         };
     }
+
+    public Member ToUpdated(Member member)
+    {
+        member.FirstName = FirstName;
+        member.LastName = LastName;
+        member.Title = Title;
+        return member;
+    }
 }

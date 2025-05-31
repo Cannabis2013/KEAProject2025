@@ -92,7 +92,7 @@ async function deleteTopic() {
   <div class="fluid-container" v-else>
     <PushButton :onPushed="() => router.push('/topics')" text="Til debat"/>
     <div>
-      <h2 >{{ topic.title }}</h2>
+      <h2 style="font-size: 2.5rem">{{ topic.title }}</h2>
       <p> 
         Kategori: {{ topic.category }}
         <br>

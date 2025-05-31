@@ -46,13 +46,17 @@ public class UsersUpdate(UserManager<UserAccount> userManager, IdentityDb users)
         var user = await users
             .Users
             .FirstOrDefaultAsync(user => user.UserName == request.UserName);
+        
         if (user is null) return;
+        
         user.Email = request.Email;
         user.PhoneNumber = request.PhoneNumber;
         user.PasswordHash = userManager.PasswordHasher.HashPassword(user, request.Password);
         var userRoles = await userManager.GetRolesAsync(user);
+        
         await userManager.RemoveFromRolesAsync(user, userRoles);
         await userManager.AddToRolesAsync(user, request.Roles);
+        
         await userManager.UpdateAsync(user);
     }
 }

@@ -3,6 +3,7 @@
 import PushButton from "@/components/controls/PushButton.vue";
 import HttpClient from "@/services/http/httpClient.js";
 import {v4 as uuidv4} from "uuid";
+import {imageAsBase64} from "@/services/Images/images.js";
 
 const props = defineProps(["onCompleted", "onCancelled", "model"])
 
@@ -18,7 +19,6 @@ const model = props.model ?? {
 
 async function handleCompleted() {
   const request = props.model ? HttpClient.authPatchRequest : HttpClient.authPostRequest
-  console.log(model)
   const result = await request("/articles", model)
   if (props.onCompleted && result) props.onCompleted()
 }
@@ -40,12 +40,7 @@ function blobToBase64(blob) {
 
 async function handleFile(e){
   const file = e.target.files[0]
-  console.log(file)
-  const uri = URL.createObjectURL(file)
-  const blob = await fetchBlob(uri)
-  const base64 = await blobToBase64(blob)
-  model.imageBlob = String(base64)
-  URL.revokeObjectURL(uri)
+  model.imageBlob = await imageAsBase64(file)
 }
 
 const handleCancelRequest = props.onCancelled ?? function () {

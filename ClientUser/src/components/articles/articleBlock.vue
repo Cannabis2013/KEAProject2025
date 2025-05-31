@@ -1,10 +1,8 @@
 <script setup>
-import {toDateTime} from "@/services/date/dateFormatting.js";
+import {toDateTime, toLetterDate} from "@/services/date/dateFormatting.js";
 
 const props = defineProps(["model","onDelete","onUpdate"])
 const article = props.model
-
-console.log(article)
 
 const handleDelete = props.onDelete ?? function(){}
 const handleUpdate = props.onUpdate ?? function(){}
@@ -15,8 +13,8 @@ const handleUpdate = props.onUpdate ?? function(){}
   <div class="article-cont">
     <div class="article-head">
       <div>
-        <h2>{{ article.headline }}</h2>
-        <p style="font-size: .75rem">Af {{ article.author }} // {{ toDateTime(article.created) }}</p>
+        <h2 class="article-headline">{{ article.headline }}</h2>
+        <p style="font-size: .75rem">Af {{ article.author }} // {{ toLetterDate(article.created) }}</p>
       </div>
       <div v-if="article.isOwner" class="button-group">
         <img :onclick="() => handleUpdate(article.id)" class="article-controls-img" src="/edit.png"/>
@@ -35,6 +33,10 @@ const handleUpdate = props.onUpdate ?? function(){}
   border-radius: 9px;
   padding: 9px;
   animation: popUp .3s ease-in-out;;
+}
+
+.article-headline{
+  white-space: break-spaces;
 }
 
 .article-image{

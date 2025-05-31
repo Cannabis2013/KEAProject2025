@@ -8,14 +8,14 @@ namespace ALBackend.Controllers.Articles;
 
 [ApiController, Route("/articles")]
 public class ArticlesController(
-    IMembersFetcher membersFetcher,
+    IMembers members,
     IArticlesFetcher fetcher,
     IArticlesUpdater updater) : ControllerBase
 {
     [HttpGet("{lastIndex:int}/{count:int}")]
     public JsonResult Articles(int lastIndex, int count)
     {
-        var memberId = membersFetcher.One(User)?.Id ?? -1;
+        var memberId = members.One(User)?.Id ?? -1;
         var articles = fetcher.Paginated(lastIndex, count, memberId);
         return new(articles);
     }
@@ -37,7 +37,7 @@ public class ArticlesController(
     [HttpPost, Authorize]
     public async Task<JsonResult> Create(ArticleUpdateRequest request)
     {
-        var member = membersFetcher.One(User);
+        var member = members.One(User);
         if (member is null) return new("Member not found") { StatusCode = StatusCodes.Status404NotFound };
         var result = await updater.Create(request, member.Id);
         return new(result);
@@ -46,7 +46,7 @@ public class ArticlesController(
     [HttpPatch, Authorize]
     public async Task<JsonResult> Update(ArticleUpdateRequest request)
     {
-        var member = membersFetcher.One(User);
+        var member = members.One(User);
         if (member is null) return new("Member not found") { StatusCode = StatusCodes.Status404NotFound };
         var result = await updater.Update(request, member.Id);
         return new(result);
@@ -55,7 +55,7 @@ public class ArticlesController(
     [HttpDelete("{id:int}"), Authorize]
     public async Task<JsonResult> Delete(int id)
     {
-        var member = membersFetcher.One(User);
+        var member = members.One(User);
         if (member is null) return new("Member not found") { StatusCode = StatusCodes.Status404NotFound };
         var result = await updater.Remove(id, member.Id);
         return new(result);

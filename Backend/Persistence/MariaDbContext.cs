@@ -10,7 +10,7 @@ namespace ALBackend.Persistence;
 public class MariaDbContext(IConfiguration configuration) : DbContext
 {
     public DbSet<Member> Members { get; set; }
-    public DbSet<ImageLink> ImageLinks { get; set; }
+    public DbSet<ProfileImage> ProfileImages { get; set; }
     public DbSet<Article> Articles { get; set; }
     public DbSet<Topic> Topics { get; set; }
     public DbSet<Post> Posts { get; set; }

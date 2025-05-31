@@ -4,9 +4,9 @@ using ALBackend.Entities.Shared;
 
 namespace ALBackend.Entities.Members;
 
-public class ImageLink : Entity
+public class ProfileImage : Entity
 {
-    public required string Url { get; set; }
+    public string? Blob { get; set; }
     [ForeignKey("id")]
-    public int memberId { get; set; }
+    public required int memberId { get; set; }
 }

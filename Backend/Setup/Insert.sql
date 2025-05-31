@@ -3,7 +3,7 @@ insert into Members(Id,
                     LastName,
                     LastPayment,
                     JoinedDate,
-                    ProfileImage,
+                    ProfileImageId,
                     title,
                     UserId)
 values

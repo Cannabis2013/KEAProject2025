@@ -20,7 +20,7 @@ signedInMember()
     .then(member => {
       if (member == null) return
       name.value = getName(member)
-      profileImage.value = member?.profileImage !== "" ? profileImage.value : "./userTemplate.png"
+      profileImage.value = member?.profileImageAsBase64 ?? "./userTemplate.png"
     })
 
 function handleSignOut() {

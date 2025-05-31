@@ -71,39 +71,45 @@ function hideForm() {
   <div v-else class="fluid-container">
     <h1>Nyheder</h1>
     <br>
-    <PushButton v-if="!formVisible" text="Opret nyhed" :onPushed="showForm"/>
-    <CreateNewsForm
-        v-else class="create-form-cont"
-        :onCancelled="hideForm"
-        :onCompleted="createCompleted"
-    />
-    <br>
-    <div v-for="article in articles">
+    <PushButton class="sticktop article-create-btn" v-if="!formVisible" text="Opret nyhed" :onPushed="showForm"/>
+    <div class="articles-cont center">
       <CreateNewsForm
-          v-if="updateId === article.id"
-          style="margin-bottom: 1.5rem;"
+          v-if="formVisible" class="create-form-cont sticktop"
           :onCancelled="hideForm"
           :onCompleted="createCompleted"
-          :model="article"
       />
-      <articleBlock
-          v-else
-          :onUpdate="updateArticle"
-          :onDelete="deleteArticle"
-          :model="article"
-      />
+      <div v-for="article in articles">
+        <CreateNewsForm
+            v-if="updateId === article.id"
+            style="margin-bottom: 1.5rem;"
+            :onCancelled="hideForm"
+            :onCompleted="createCompleted"
+            :model="article"
+        />
+        <articleBlock
+            v-else
+            :onUpdate="updateArticle"
+            :onDelete="deleteArticle"
+            :model="article"
+        />
+      </div>
+      <PushButton v-if="moreAvailable" style="margin-bottom: 1.5rem;" class="center" :onPushed="fetchMore"
+                  text="Hent flere.."/>
     </div>
-    <PushButton v-if="moreAvailable" style="margin-bottom: 1.5rem;" class="center" :onPushed="fetchMore"
-                text="Hent flere.."/>
   </div>
 </template>
 <style lang="css" scoped>
 .create-form-cont {
-  position: sticky;
-  top: 0;
-  left: 0;
-  background-color: rgb(63, 63, 63, .8);
+  background-color: rgb(63, 63, 63, 1);
   padding: 9px;
   border-radius: 6px;
+}
+
+.article-create-btn{
+  float:left;
+}
+
+.articles-cont {
+  width: 512px;
 }
 </style>
