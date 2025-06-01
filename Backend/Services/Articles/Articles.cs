@@ -5,8 +5,33 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ALBackend.Services.Articles;
 
-public class ArticlesUpdater(MariaDbContext dbContext) : IArticlesUpdater
+public class Articles(MariaDbContext dbContext) : IArticles
 {
+    public async Task<List<Article>> Paginated(int pageIndex, int pageSize, int memberId)
+    {
+        return await dbContext.Articles
+            .Include(article => article.Image)
+            .OrderByDescending(a => a.CreatedAt)
+            .Skip(pageIndex)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
+    public List<Article> Many(int count)
+    {
+        return dbContext.Articles
+            .AsEnumerable()
+            .TakeLast(count)
+            .OrderByDescending(article => article.CreatedAt)
+            .ToList();
+    }
+
+    public Article One(int id)
+    {
+        return dbContext.Articles
+            .First(article => article.Id == id);
+    }
+    
     private Article? FindArticleFromUser(int id, int memberId)
     {
         return dbContext

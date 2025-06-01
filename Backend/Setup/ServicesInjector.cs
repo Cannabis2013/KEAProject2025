@@ -11,8 +11,7 @@ public static class ServicesInjector
         builder.Services.AddScoped<IMembers, Members>();
         builder.Services.AddScoped<IProfileImages, ProfileImages>();
         
-        builder.Services.AddScoped<IArticlesFetcher, ArticlesFetcher>();
-        builder.Services.AddScoped<IArticlesUpdater, ArticlesUpdater>();
+        builder.Services.AddScoped<IArticles, Articles>();
         
         builder.Services.AddScoped<ITopicFetcher, TopicFetcher>();
         builder.Services.AddScoped<ITopicUpdater, TopicUpdater>();

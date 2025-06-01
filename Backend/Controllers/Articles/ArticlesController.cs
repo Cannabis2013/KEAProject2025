@@ -9,29 +9,43 @@ namespace ALBackend.Controllers.Articles;
 [ApiController, Route("/articles")]
 public class ArticlesController(
     IMembers members,
-    IArticlesFetcher fetcher,
-    IArticlesUpdater updater) : ControllerBase
+    IArticles articles) : ControllerBase
 {
-    [HttpGet("{lastIndex:int}/{count:int}")]
-    public JsonResult Articles(int lastIndex, int count)
+    [HttpGet("{lastId:int}/{pageSize:int}")]
+    public async Task<JsonResult> PaginatedArticles(int lastId, int pageSize)
     {
         var memberId = members.One(User)?.Id ?? -1;
-        var articles = fetcher.Paginated(lastIndex, count, memberId);
-        return new(articles);
+        var result = await articles.Paginated(lastId, pageSize, memberId);
+        var response = result
+            .Select(article =>
+            {
+                var author = members.One(memberId);
+                return new ArticleFetchResponse(article, author, memberId);
+            })
+            .ToList();
+        return new(response);
     }
 
     [HttpGet("count/{count:int}")]
     public JsonResult Article(int count)
     {
-        var articles = fetcher.Many(count);
-        return new(articles);
+        var result = articles.Many(count)
+            .Select(article =>
+            {
+                var author = members.One(article.MemberId);
+                return new ArticleFetchResponse(article, author);
+            })
+            .ToList();
+        return new(result);
     }
 
     [HttpGet("{id:int}"), Authorize]
     public JsonResult One(int id)
     {
-        var article = fetcher.One(id);
-        return new(article);
+        var article = articles.One(id);
+        var author = members.One(article.MemberId);
+        var response = new ArticleFetchResponse(article, author);
+        return new(response);
     }
 
     [HttpPost, Authorize]
@@ -39,7 +53,7 @@ public class ArticlesController(
     {
         var member = members.One(User);
         if (member is null) return new("Member not found") { StatusCode = StatusCodes.Status404NotFound };
-        var result = await updater.Create(request, member.Id);
+        var result = await articles.Create(request, member.Id);
         return new(result);
     }
 
@@ -48,7 +62,7 @@ public class ArticlesController(
     {
         var member = members.One(User);
         if (member is null) return new("Member not found") { StatusCode = StatusCodes.Status404NotFound };
-        var result = await updater.Update(request, member.Id);
+        var result = await articles.Update(request, member.Id);
         return new(result);
     }
 
@@ -57,7 +71,7 @@ public class ArticlesController(
     {
         var member = members.One(User);
         if (member is null) return new("Member not found") { StatusCode = StatusCodes.Status404NotFound };
-        var result = await updater.Remove(id, member.Id);
+        var result = await articles.Remove(id, member.Id);
         return new(result);
     }
 }

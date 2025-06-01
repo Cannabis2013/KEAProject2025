@@ -1,4 +1,5 @@
 using ALBackend.Entities.Shared;
+using Microsoft.EntityFrameworkCore;
 
 namespace ALBackend.Entities.Articles;
 

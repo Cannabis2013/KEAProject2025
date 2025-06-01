@@ -5,13 +5,13 @@ const props = defineProps(["model"])
   <div class="article-tile-cont">
     <img class="topic-tile-icon" src="/news.png"/>
     <div class="article-tile-upper">
-      <p class="article-tile-head">{{ model.title }}</p>
+      <p class="article-tile-head">{{ model.headline }}</p>
       <div class="article-tile-meta">
         <p class="article-tile-author">Af {{ model.author }}</p>
         <p class="article-tile-date">{{ model.date }}</p>
       </div>
     </div>
-    <p class="article-tile-content">{{ model.content }}</p>
+    <p class="article-tile-content">{{ model.shortContent }}</p>
   </div>
 </template>
 <style lang="css" scoped>
@@ -19,7 +19,6 @@ const props = defineProps(["model"])
   display: grid;
   grid-template-columns: 80px 1fr;
   grid-template-rows: min-content 1fr min-content;
-  column-gap: 12px;
   background-color: white;
   padding: 12px;
   width: 100%;
@@ -66,7 +65,7 @@ const props = defineProps(["model"])
 }
 
 .article-tile-content {
-  margin-top: 16px !important;
+  margin-top: .25rem !important;
   font-size: 0.8rem;
   white-space: pre-wrap;
 }

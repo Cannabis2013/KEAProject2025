@@ -3,11 +3,9 @@ import {ref} from "vue";
 import LoadIndicator from "@/components/loading/LoadIndicator.vue";
 import HttpClient from "@/services/http/httpClient.js";
 import ArticleCard from "@/components/home/Feed/ArticleCard.vue"
-import {toTime} from "@/services/date/dateFormatting.js";
 import {useRouter} from "vue-router";
 import TopicCard from "@/components/home/Feed/TopicCard.vue";
 
-const router = useRouter();
 const articles = ref([])
 const activeTopics = ref([])
 const loading = ref(false)
@@ -21,35 +19,13 @@ async function fetchData() {
 
 fetchData()
 
-function FromArticle(article) {
-  return {
-    title: article.headline,
-    author: article.author,
-    content: article.shortContent,
-    image: "/news.png"
-  }
-}
-
-function fromTopic(topic) {
-  return {
-    title: topic.title,
-    author: topic.author,
-    content: "",
-    image: "/news.png"
-  }
-}
-
-function toTopicPage(id){
-  router.push(`/topic/${id}`)
-}
-
 </script>
 <template>
   <div v-if="!loading" class="home-col-section">
     <h2 class="home-col-title">Seneste nyheder</h2>
     <div class="home-col">
       <p v-if="articles.length <= 0">Ingen nyheder at vise</p>
-      <ArticleCard v-for="article in articles" :model="FromArticle(article)"/>
+      <ArticleCard v-for="article in articles" :model="article"/>
     </div>
     <h2 class="home-col-title">Seneste debatter</h2>
     <div class="home-col">
@@ -73,11 +49,8 @@ function toTopicPage(id){
     grid-template-columns: 384px 384px;
     grid-auto-flow: column;
     width: 100%;
-    min-height: 100vh;
     column-gap: 1rem;
     justify-content: center;
-    padding: 0;
-    overflow: hidden;
   }
   
   .feed-topic-tile{
