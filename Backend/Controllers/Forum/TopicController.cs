@@ -9,32 +9,44 @@ namespace ALBackend.Controllers.Forum;
 [ApiController, Route("topic"), Authorize]
 public class TopicController(
     IMembers members,
-    ITopicFetcher topicFetcher,
-    ITopicUpdater topicUpdater) : ControllerBase
+    ITopics topics,
+    ITopicResponse responses) : ControllerBase
 {
     [HttpGet("{id:int}")]
-    public JsonResult GetTopic(int id)
+    public async Task<JsonResult> GetTopic(int id)
     {
-        var member = members.One(User);
-        if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
-        var topic = topicFetcher.Topic(id, member);
-        return new(topic);
+        var currentMember = members.One(User);
+        if (currentMember is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
+        var topic = await topics.OneAsync(id);
+        if (topic is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
+        var topicCreator = members.One(topic.memberId);
+        return new(new TopicFetchResponse(topic,topicCreator,currentMember));
     }
     
     [HttpGet("{lastIndex:int}/{count:int}")]
-    public JsonResult GetTopics(int lastIndex, int count)
+    public async Task<JsonResult> GetTopics(int lastIndex, int count)
     {
         var member = members.One(User);
         if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
-        var topics = topicFetcher.TopicsWithoutPosts(lastIndex, count, member);
-        return new(topics);
+        var result = await topics.ManyAsync(lastIndex, count, member);
+        var response = result
+            .Select(topic => responses.ResponseWithPosterInfo(topic,member))
+            .ToList();
+        return new(response);
     }
 
     [HttpGet("active/{count:int}")]
-    public JsonResult GetActiveTopics(int count)
+    public async Task<JsonResult> GetActiveTopics(int count)
     {
-        var active = topicFetcher.RecentlyActive(count);
-        return new(active);
+        var active = await topics.RecentlyActiveAsync(count);
+        var response = active
+            .Select(topic =>
+            {
+                var member = members.One(topic.memberId);
+                return new TopicFetchResponse(topic,member);
+            })
+            .ToList();
+        return new(response);
     }
 
     [HttpPost]
@@ -42,7 +54,7 @@ public class TopicController(
     {
         var member = members.One(User);
         if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
-        var topicId = await topicUpdater.AddTopic(request, member);
+        var topicId = await topics.AddAsync(request, member);
         return new(topicId);
     }
 
@@ -51,7 +63,7 @@ public class TopicController(
     {
         var member = members.One(User);
         if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
-        var result = await topicUpdater.UpdateTopic(request, member);
+        var result = await topics.UpdateAsync(request, member);
         return new(result);
     }
 
@@ -60,7 +72,7 @@ public class TopicController(
     {
         var member = members.One(User);
         if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
-        var result = await topicUpdater.RemoveTopic(id,member);
+        var result = await topics.RemoveAsync(id,member);
         return new(result);
     }
 }

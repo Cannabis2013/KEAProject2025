@@ -1,8 +1,7 @@
 async function fetchBlob(uri) {
     const res = await fetch(uri)
-    if (res.ok)
-        return res.blob()
-    return undefined
+    if (!res.ok) return undefined
+    return res.blob()
 }
 
 function blobToBase64(blob) {

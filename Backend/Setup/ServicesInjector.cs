@@ -13,9 +13,8 @@ public static class ServicesInjector
         
         builder.Services.AddScoped<IArticles, Articles>();
         
-        builder.Services.AddScoped<ITopicFetcher, TopicFetcher>();
-        builder.Services.AddScoped<ITopicUpdater, TopicUpdater>();
-        builder.Services.AddScoped<IPostFetcher, PostFetcher>();
-        builder.Services.AddScoped<IPostUpdater, PostUpdater>();
+        builder.Services.AddScoped<ITopics, Topics>();
+        builder.Services.AddScoped<ITopicResponse, TopicResponse>();
+        builder.Services.AddScoped<IPosts, Posts>();
     }
 }

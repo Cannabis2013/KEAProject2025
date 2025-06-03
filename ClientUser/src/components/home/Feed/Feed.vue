@@ -48,9 +48,7 @@ fetchData()
     grid-template-rows: min-content 1fr;
     grid-template-columns: 384px 384px;
     grid-auto-flow: column;
-    width: 100%;
     column-gap: 1rem;
-    justify-content: center;
   }
   
   .feed-topic-tile{

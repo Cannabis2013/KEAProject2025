@@ -1,5 +1,5 @@
 <script setup>
-import {toDateTime, toLetterDate} from "@/services/date/dateFormatting.js";
+import {toLetterDate} from "@/services/date/dateFormatting.js";
 
 const props = defineProps(["model","onDelete","onUpdate"])
 const article = props.model

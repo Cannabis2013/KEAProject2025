@@ -1,6 +1,6 @@
 <script setup>
-import Dashboard from '@/components/navBars/Dashboard.vue';
-import MobileNavBar from '@/components/navBars/MobileNavBar.vue';
+import Dashboard from '@/components/dashboard/Dashboard.vue';
+import MobileNavBar from '@/components/dashboard/MobileNavBar.vue';
 </script>
 <template>
   <!-- 

@@ -9,16 +9,21 @@ namespace ALBackend.Controllers.Forum;
 [ApiController,Route("post"),Authorize]
 public class PostController(
     IMembers members,
-    IPostFetcher postFetcher,
-    IPostUpdater postUpdater) : ControllerBase
+    IPosts posts) : ControllerBase
 {
     [HttpGet("{topicId:int}/{pageIndex:int}/{pageSize:int}")]
-    public JsonResult GetPosts(int topicId, int pageIndex, int pageSize)
+    public async Task<JsonResult> GetPosts(int topicId, int pageIndex, int pageSize)
     {
-        var member = members.One(User);
-        if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
-        var posts = postFetcher.AsBlocks(pageIndex, pageSize, topicId, member);
-        return new(posts);
+        var currentMember = members.One(User);
+        if (currentMember is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
+        var result = await posts.Paginated(pageIndex, pageSize, topicId, currentMember);
+        var response = result.Select(post =>
+            {
+                var creator = members.One(post.memberId);
+                return new PostFetchRequest(post, creator, currentMember);
+            })
+            .ToList();
+        return new(response);
     }
     
     [HttpPost]
@@ -26,16 +31,19 @@ public class PostController(
     {
         var member = members.One(User);
         if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
-        var postId = await postUpdater.AddPost(request, member);
+        var postId = await posts.AddAsync(request, member);
         return new(postId);
     }
 
     [HttpGet("{postId:int}")]
-    public JsonResult GetPost(int postId)
+    public async Task<JsonResult> GetPost(int postId)
     {
-        var post = postFetcher.Post(postId);
+        var currentMember = members.One(User);
+        var post = await posts.OneAsync(postId);
         if (post is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
-        return new(post);
+        var creator = members.One(post.memberId);
+        var response = new PostFetchRequest(post, creator,currentMember);
+        return new(response);
     }
 
     [HttpPatch]
@@ -43,7 +51,7 @@ public class PostController(
     {
         var member = members.One(User);
         if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
-        return new(await postUpdater.UpdatePost(request));
+        return new(await posts.UpdateAsync(request));
     }
 
     [HttpDelete("{postId:int}")]
@@ -51,16 +59,7 @@ public class PostController(
     {
         var member = members.One(User);
         if (member is null) return new(false);
-        var result = await postUpdater.RemovePost(postId);
+        var result = await posts.RemoveAsync(postId);
         return new(result);
-    }
-
-    [HttpGet("cards/{count:int}")]
-    public JsonResult GetCards(int count)
-    {
-        var member = members.One(User);
-        if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
-        var cards = postFetcher.AsCards(count);
-        return new(cards);
     }
 }

@@ -1,5 +1,6 @@
 html {
     scroll-behavior: smooth;
+    background-color: var(--al-back);
 }
 
 :root {
@@ -74,7 +75,7 @@ textarea,input{
         width: 1024px;
     }
 }
-
+    
 ::-webkit-scrollbar {
     display: none;
 }

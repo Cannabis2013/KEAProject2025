@@ -23,21 +23,6 @@ async function handleCompleted() {
   if (props.onCompleted && result) props.onCompleted()
 }
 
-async function fetchBlob(uri) {
-  const res = await fetch(uri)
-  if (res.ok)
-    return res.blob()
-  return undefined
-}
-
-function blobToBase64(blob) {
-  return new Promise((resolve, _) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
-    reader.readAsDataURL(blob);
-  });
-}
-
 async function handleFile(e){
   const file = e.target.files[0]
   model.imageBlob = await imageAsBase64(file)
