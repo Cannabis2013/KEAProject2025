@@ -58,8 +58,7 @@ public class Topics(MariaDbContext dbContext) : ITopics
     public async Task<bool> UpdateAsync(TopicUpdateRequest request, Member currentMember)
     {
         var topic = await dbContext.Topics.FindAsync(request.TopicId);
-        if (topic is null) return false;
-        if (currentMember.Id != topic.memberId) return false;
+        if (topic is null || currentMember.Id != topic.memberId) return false;
         request.ToUpdateEntity(topic);
         return await dbContext.SaveChangesAsync() > 0;
     }
@@ -67,8 +66,7 @@ public class Topics(MariaDbContext dbContext) : ITopics
     public async Task<bool> RemoveAsync(int topicId, Member currentMember)
     {
         var topic = await dbContext.Topics.FindAsync(topicId);
-        if (topic is null) return false;
-        if (currentMember.Id != topic.memberId) return false;
+        if (topic is null || currentMember.Id != topic.memberId) return false;
         var posts = dbContext.Posts
             .Where(post => post.TopicId == topicId)
             .ToList();

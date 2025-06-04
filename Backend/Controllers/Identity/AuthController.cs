@@ -24,8 +24,10 @@ public class AuthController(
     }
 
     [HttpPost, Route("login")]
-    public async Task<JsonResult> Login([FromBody] LoginCredentials credentials) =>
-        await authorization.SignIn(credentials);
+    public async Task<JsonResult> Login([FromBody] LoginRequest request)
+    {
+        return await authorization.SignIn(request);
+    }
 
     [HttpPost, Route("refresh")]
     public async Task<JsonResult> Refresh([FromBody] JwtCredentials credentials) =>

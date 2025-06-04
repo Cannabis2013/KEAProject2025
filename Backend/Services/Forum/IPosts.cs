@@ -7,7 +7,6 @@ namespace ALBackend.Services.Forum;
 public interface IPosts
 {
     public Task<List<Post>> Paginated(int pageIndex,int pageSize, int topicId, Member currentMember);
-    public Task<List<Post>> TakeAsync(int count);
     public Task<Post?> OneAsync(int id);
     public Task<int> AddAsync(PostUpdateRequest request,Member currentMember);
     public Task<bool> UpdateAsync(PostUpdateRequest request);

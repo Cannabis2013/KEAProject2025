@@ -32,7 +32,7 @@ async function fetchTopic() {
 
 fetchTopic()
 
-function showTopicForm(status){
+function showTopicForm(status) {
   topicFormVisible.value = status
 }
 
@@ -63,7 +63,7 @@ async function updatePosts() {
   isLoading.value = false
 }
 
-async function updateCompleted(){
+async function updateCompleted() {
   posts.value = []
   await fetchTopic()
   showTopicForm(false)
@@ -80,9 +80,9 @@ async function updatePost(id) {
 }
 
 async function deleteTopic() {
-  if(!confirm("Sure?")) return
+  if (!confirm("Sure?")) return
   const result = await HttpClient.authDeleteRequest(`/topic/${topicId}`)
-  if(result) router.push("/topics")
+  if (result) router.push("/topics")
 }
 
 </script>
@@ -93,19 +93,24 @@ async function deleteTopic() {
     <PushButton :onPushed="() => router.push('/topics')" text="Til debat"/>
     <div>
       <h2 style="font-size: 2.5rem">{{ topic.title }}</h2>
-      <p> 
+      <p>
         Kategori: {{ topic.category }}
         <br>
         Oprettet: {{ toDateTime(topic.created) }}
         <br>
         Oprettet af: {{ topic.author }}
       </p>
-      <img v-if="topic.isOwner" class="topic-controls-img" style="margin-right: 6px;" src="/edit.png" :onclick="() => showTopicForm(true)"/>
+      <img v-if="topic.isOwner"
+           class="topic-controls-img"
+           style="margin-right: 6px;"
+           src="/edit.png"
+           :onclick="() => showTopicForm(true)"/>
       <img v-if="topic.isOwner" class="topic-controls-img" src="/trashcan.png" :onclick="deleteTopic"/>
     </div>
-    <TopicForm v-if="topicFormVisible" :model="topic" :onCompleted="updateCompleted" :onCancelled="() => showTopicForm(false)"/>
+    <TopicForm v-if="topicFormVisible" :model="topic" :onCompleted="updateCompleted"
+               :onCancelled="() => showTopicForm(false)"/>
     <br/>
-    <p class="topic-init-msg">{{topic.initialMessage}}</p>
+    <p class="topic-init-msg">{{ topic.initialMessage }}</p>
     <br>
     <div v-for="post in posts">
       <PostItem v-if="updateId != post.id" class="center" :onUpdate="updatePost" :post="post"
@@ -130,7 +135,7 @@ async function deleteTopic() {
   cursor: pointer;
 }
 
-.topic-init-msg{
+.topic-init-msg {
   width: 100%;
   padding-bottom: 9px;
   border-bottom: 3px solid lightskyblue;

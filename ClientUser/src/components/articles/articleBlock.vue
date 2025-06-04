@@ -1,5 +1,6 @@
 <script setup>
 import {toLetterDate} from "@/services/date/dateFormatting.js";
+import {onMounted} from "vue";
 
 const props = defineProps(["model","onDelete","onUpdate"])
 const article = props.model

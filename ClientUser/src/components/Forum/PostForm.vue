@@ -25,6 +25,7 @@ onMounted(function(){
   const createComp = document.getElementById(compId)
   let h = createComp.getBoundingClientRect().height
   let y = createComp.getBoundingClientRect().y + h
+  console.log(`h: ${h}, y: ${y}`)
   setTimeout(() => content.scrollTo(0, y),501)
 })
 
@@ -54,7 +55,7 @@ const handleCancelRequest = props.onCancelled ?? function () {
     <EmojiSelector style="margin-bottom: 9px;" :onSelect="insertEmoji"/>
     <textarea 
         :id="textId"
-        class="post-msg-input" 
+        class="post-msg-input fillw" 
         placeholder="Skriv dit indhold her" 
         v-model="model.message">
     </textarea>
@@ -74,7 +75,6 @@ const handleCancelRequest = props.onCancelled ?? function () {
 <style scoped lang="css">
 .post-msg-input {
   border-radius: 3px;
-  width: 100%;
   height: 384px;
   animation: growUp 500ms ease-in-out;
 }

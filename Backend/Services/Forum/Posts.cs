@@ -17,14 +17,6 @@ public class Posts(MariaDbContext dbContext) : IPosts
             .ToListAsync();
     }
 
-    public async Task<List<Post>> TakeAsync(int count)
-    {
-        return await dbContext.Posts
-            .OrderByDescending(post => post.CreatedAt)
-            .Take(count)
-            .ToListAsync();
-    }
-
     public async Task<Post?> OneAsync(int id) => await dbContext.Posts.FindAsync(id);
 
     public async Task<int> AddAsync(PostUpdateRequest request, Member currentMember)

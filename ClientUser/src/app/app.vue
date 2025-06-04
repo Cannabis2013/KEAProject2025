@@ -16,9 +16,10 @@ import MobileNavBar from '@/components/dashboard/MobileNavBar.vue';
     Dashboard provides links and a login form and supports basic user functionality.
   -->
   <Dashboard/>
-  <div id="content">
-    <RouterView/>
+  <RouterView/>
+  <!--<div id="content">
   </div>
+  -->
 </template>
 <style lang="css" scoped>
 #content {

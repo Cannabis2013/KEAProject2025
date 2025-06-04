@@ -7,11 +7,11 @@ namespace ALBackend.Services.Identity.Users;
 
 public class UsersFetcher(UserManager<UserAccount> userManager) : IUsersFetcher
 {
-    public UserAccount? User(LoginCredentials credentials)
+    public UserAccount? User(LoginRequest request)
     {
         var user = userManager
             .Users
-            .FirstOrDefault(u => u.Email == credentials.Email);
+            .FirstOrDefault(u => u.Email == request.Email);
         return user;
     }
 

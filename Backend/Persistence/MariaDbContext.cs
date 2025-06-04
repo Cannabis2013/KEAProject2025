@@ -1,7 +1,9 @@
 using ALBackend.Entities.Articles;
 using ALBackend.Entities.Events;
 using ALBackend.Entities.Forum;
+using ALBackend.Entities.ImageGallary;
 using ALBackend.Entities.Members;
+using ALBackend.Entities.Shared;
 using ALMembers.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,48 +16,27 @@ public class MariaDbContext(IConfiguration configuration) : DbContext
     public DbSet<Article> Articles { get; set; }
     public DbSet<Topic> Topics { get; set; }
     public DbSet<Post> Posts { get; set; }
+    public DbSet<Image> Images { get; set; }
+
+    private static void ConfigureTimestamps<TEntity>(ModelBuilder modelBuilder) where TEntity : Entity
+    {
+        modelBuilder.Entity<TEntity>()
+            .Property(t => t.CreatedAt)
+            .HasDefaultValueSql("now()");
+        
+        modelBuilder.Entity<TEntity>()
+            .Property(t => t.UpdatedAt)
+            .HasDefaultValueSql("now()");
+    }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Member>()
-            .Property(t => t.CreatedAt)
-            .HasDefaultValueSql("now()");
-        
-        modelBuilder.Entity<Member>()
-            .Property(t => t.UpdatedAt)
-            .HasDefaultValueSql("now()");
-        
-        modelBuilder.Entity<Article>()
-            .Property(t => t.CreatedAt)
-            .HasDefaultValueSql("now()");
-        
-        modelBuilder.Entity<Article>()
-            .Property(t => t.UpdatedAt)
-            .HasDefaultValueSql("now()");
-        
-        modelBuilder.Entity<Topic>()
-            .Property(t => t.CreatedAt)
-            .HasDefaultValueSql("now()");
-        
-        modelBuilder.Entity<Topic>()
-            .Property(t => t.UpdatedAt)
-            .HasDefaultValueSql("now()");
-        
-        modelBuilder.Entity<Post>()
-            .Property(t => t.CreatedAt)
-            .HasDefaultValueSql("now()");
-        
-        modelBuilder.Entity<Post>()
-            .Property(t => t.UpdatedAt)
-            .HasDefaultValueSql("now()");
-        
-        modelBuilder.Entity<Event>()
-            .Property(t => t.CreatedAt)
-            .HasDefaultValueSql("now()");
-        
-        modelBuilder.Entity<Event>()
-            .Property(t => t.UpdatedAt)
-            .HasDefaultValueSql("now()");
+        ConfigureTimestamps<Member>(modelBuilder);
+        ConfigureTimestamps<Article>(modelBuilder);
+        ConfigureTimestamps<Topic>(modelBuilder);
+        ConfigureTimestamps<Post>(modelBuilder);
+        ConfigureTimestamps<Event>(modelBuilder);
+        ConfigureTimestamps<Image>(modelBuilder);
     }
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -72,5 +53,4 @@ public class MariaDbContext(IConfiguration configuration) : DbContext
         var host = configuration.GetValue<string>("DbHost");
         return $"server={host};user id={userName};password={pass};database=ALResources;";
     }
-    
 }

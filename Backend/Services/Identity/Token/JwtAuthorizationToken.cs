@@ -11,29 +11,35 @@ namespace ALBackend.Services.Identity.Token;
 public class JwtAuthorizationToken(IConfiguration appConfig, UserManager<UserAccount> userManager)
     : ISecurityToken
 {
-    public async Task<string> Token(UserAccount user)
+    public async Task<string> Create(UserAccount user)
     {
         var roles = await userManager.GetRolesAsync(user);
-        var tokenDescriptor = TokenDescriptor(user,roles);
-        return Token(tokenDescriptor);
+        var identityClaim = Claims(user, roles);
+        var tokenDescriptor = TokenDescriptor(identityClaim);
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        return tokenHandler.WriteToken(token);
     }
 
-    private SecurityTokenDescriptor TokenDescriptor(UserAccount user, IEnumerable<string> roles)
+    private SecurityTokenDescriptor TokenDescriptor(ClaimsIdentity identity)
     {
+        const string fallBack = "ABCDEFGHIJKLMNOPQRSTUVXY";
+        var key = Encoding.ASCII.GetBytes(appConfig["Jwt:Key"] ?? fallBack);
+        var symmetricKey = new SymmetricSecurityKey(key);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = Identity(user,roles),
+            Subject = identity,
             Expires = DateTime.UtcNow.AddMinutes(60),
             Issuer = appConfig["Jwt:Issuer"],
             Audience = appConfig["Jwt:Audience"],
-            SigningCredentials = new(new SymmetricSecurityKey(Key()),
+            SigningCredentials = new(symmetricKey,
                 SecurityAlgorithms.HmacSha512Signature)
         };
         return tokenDescriptor;
     }
 
     // ReSharper disable once MemberCanBeMadeStatic.Local
-    private static ClaimsIdentity Identity(UserAccount user,IEnumerable<string> roles)
+    private static ClaimsIdentity Claims(UserAccount user, IEnumerable<string> roles)
     {
         var claims = new List<Claim>()
         {
@@ -46,18 +52,5 @@ public class JwtAuthorizationToken(IConfiguration appConfig, UserManager<UserAcc
         claims.AddRange(roles
             .Select(r => new Claim(ClaimTypes.Role, r)));
         return new(claims);
-    }
-
-    private byte[] Key()
-    {
-        const string fallBack = "ABCDEFGHIJKLMNOPQRSTUVXY";
-        return Encoding.ASCII.GetBytes(appConfig["Jwt:Key"] ?? fallBack);
-    }
-
-    private static string Token(SecurityTokenDescriptor descriptor)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var token = tokenHandler.CreateToken(descriptor);
-        return tokenHandler.WriteToken(token);
     }
 }

@@ -6,7 +6,7 @@ namespace ALBackend.Services.Identity.Users;
 
 public interface IUsersFetcher
 {
-    UserAccount? User(LoginCredentials credentials);
+    UserAccount? User(LoginRequest request);
     UserAccount? User(JwtCredentials credentials);
     UserFetchResponse? User(Guid id);
     Task<UserFetchResponse?> UserWithRoles(Guid id);

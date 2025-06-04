@@ -13,6 +13,6 @@ public class AdminController(
     public bool Check() => true;
     
     [HttpPost, Route("login")]
-    public async Task<JsonResult> Login([FromBody] LoginCredentials credentials) =>
-        await authentication.SignInAsAdmin(credentials);
+    public async Task<JsonResult> Login([FromBody] LoginRequest request) =>
+        await authentication.SignInAsAdmin(request);
 }

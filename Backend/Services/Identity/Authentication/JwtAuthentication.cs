@@ -14,15 +14,15 @@ public class JwtAuthentication(
     ISecurityToken tokenBuilder)
     : IAuthentication
 {
-    public async Task<JsonResult> SignIn(LoginCredentials credentials)
+    public async Task<JsonResult> SignIn(LoginRequest request)
     {
-        if (!await AttemptSignIn(credentials))
+        if (!await AttemptSignIn(request))
             return new("") { StatusCode = StatusCodes.Status403Forbidden };
-        var user = usersFetcher.User(credentials);
+        var user = usersFetcher.User(request);
         if (user == null)
-            return new(credentials) { StatusCode = StatusCodes.Status401Unauthorized };
+            return new(request) { StatusCode = StatusCodes.Status401Unauthorized };
         await UpdateRefreshToken(user);
-        var token = await tokenBuilder.Token(user);
+        var token = await tokenBuilder.Create(user);
         return new(new
         {
             Email = user.UserName,
@@ -32,18 +32,18 @@ public class JwtAuthentication(
         });
     }
 
-    public async Task<JsonResult> SignInAsAdmin(LoginCredentials credentials)
+    public async Task<JsonResult> SignInAsAdmin(LoginRequest request)
     {
-        if (!await AttemptSignIn(credentials))
+        if (!await AttemptSignIn(request))
             return new("") { StatusCode = StatusCodes.Status403Forbidden };
-        var user = usersFetcher.User(credentials);
+        var user = usersFetcher.User(request);
         if (user == null)
-            return new(credentials) { StatusCode = StatusCodes.Status401Unauthorized };
+            return new(request) { StatusCode = StatusCodes.Status401Unauthorized };
         var roles = await userManager.GetRolesAsync(user);
         if(!roles.Contains("CHAIRMAN") && !roles.Contains("DEPUTY_CHAIRMAN"))
             return new("") { StatusCode = StatusCodes.Status403Forbidden };
         await UpdateRefreshToken(user);
-        var token = await tokenBuilder.Token(user);
+        var token = await tokenBuilder.Create(user);
         return new(new
         {
             Email = user.UserName,
@@ -60,7 +60,7 @@ public class JwtAuthentication(
             return new("") { StatusCode = StatusCodes.Status403Forbidden };
         await signInManager.RefreshSignInAsync(user);
         await UpdateRefreshToken(user);
-        var token = await tokenBuilder.Token(user);
+        var token = await tokenBuilder.Create(user);
         return new(new
         {
             user.UserName,
@@ -75,9 +75,9 @@ public class JwtAuthentication(
         await userManager.UpdateAsync(user);
     }
 
-    private async Task<bool> AttemptSignIn(LoginCredentials credentials)
+    private async Task<bool> AttemptSignIn(LoginRequest request)
     {
-        var signIn = await signInManager.PasswordSignInAsync(credentials.Email, credentials.Password, true, false);
+        var signIn = await signInManager.PasswordSignInAsync(request.Email, request.Password, true, false);
         return signIn.Succeeded;
     }
 }

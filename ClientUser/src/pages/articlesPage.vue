@@ -17,7 +17,7 @@ const moreAvailable = ref(true)
 
 async function fetchArticles() {
   const fetched = await HttpClient.authGetRequest(`/articles/${pageIndex}/${pageSize}`)
-  if(!fetched) return
+  if (!fetched) return
   pageIndex += pageSize
   moreAvailable.value = fetched.length > 0
   articles.value.push(...fetched)
@@ -70,30 +70,28 @@ function hideForm() {
     <h1>Nyheder</h1>
     <br>
     <PushButton class="sticktop article-create-btn" v-if="!formVisible" text="Opret nyhed" :onPushed="showForm"/>
-    <div class="articles-cont center">
+    <CreateNewsForm
+        v-if="formVisible"
+        class="create-form-cont sticktop"
+        :onCancelled="hideForm"
+        :onCompleted="createCompleted"
+    />
+    <div v-for="article in articles">
       <CreateNewsForm
-          v-if="formVisible" class="create-form-cont sticktop"
+          v-if="updateId === article.id"
           :onCancelled="hideForm"
           :onCompleted="createCompleted"
+          :model="article"
       />
-      <div v-for="article in articles">
-        <CreateNewsForm
-            v-if="updateId === article.id"
-            style="margin-bottom: 1.5rem;"
-            :onCancelled="hideForm"
-            :onCompleted="createCompleted"
-            :model="article"
-        />
-        <articleBlock
-            v-else
-            :onUpdate="updateArticle"
-            :onDelete="deleteArticle"
-            :model="article"
-        />
-      </div>
-      <PushButton v-if="moreAvailable" style="margin-bottom: 1.5rem;" class="center" :onPushed="fetchArticles"
-                  text="Hent flere.."/>
+      <articleBlock
+          v-else
+          :onUpdate="updateArticle"
+          :onDelete="deleteArticle"
+          :model="article"
+      />
     </div>
+    <PushButton v-if="moreAvailable" style="margin-bottom: 1.5rem;" class="center" :onPushed="fetchArticles"
+                text="Hent flere.."/>
   </div>
 </template>
 <style lang="css" scoped>
@@ -103,11 +101,7 @@ function hideForm() {
   border-radius: 6px;
 }
 
-.article-create-btn{
-  float:left;
-}
-
-.articles-cont {
-  width: 512px;
+.article-create-btn {
+  float: left;
 }
 </style>

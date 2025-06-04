@@ -1,5 +1,6 @@
 using ALBackend.Services.Articles;
 using ALBackend.Services.Forum;
+using ALBackend.Services.ImageGallary;
 using ALBackend.Services.Members;
 
 namespace ALBackend.Setup;
@@ -10,6 +11,8 @@ public static class ServicesInjector
     {
         builder.Services.AddScoped<IMembers, Members>();
         builder.Services.AddScoped<IProfileImages, ProfileImages>();
+
+        builder.Services.AddScoped<Images, Images>();
         
         builder.Services.AddScoped<IArticles, Articles>();
         

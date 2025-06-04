@@ -6,7 +6,7 @@ namespace ALBackend.Services.Identity.Authentication;
 
 public interface IAuthentication
 {
-    public Task<JsonResult> SignIn(LoginCredentials credentials);
-    public Task<JsonResult> SignInAsAdmin(LoginCredentials credentials);
+    public Task<JsonResult> SignIn(LoginRequest request);
+    public Task<JsonResult> SignInAsAdmin(LoginRequest request);
     public Task<JsonResult> Refresh(JwtCredentials credentials);
 }

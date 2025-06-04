@@ -31,7 +31,6 @@ import Feed from "@/components/home/Feed/Feed.vue";
 }
 
 #carousel-cont{
-  border: 1px solid lightskyblue;
   border-radius: 6px;
   height: 512px;
 }

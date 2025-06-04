@@ -1,5 +1,12 @@
 <script setup>
 import {onMounted, ref} from "vue";
+import HttpClient from "@/services/http/httpClient.js";
+
+const images = ref([])
+
+async function fetchImages() {
+  images.value = await HttpClient.getRequest("/images");
+}
 
 let slideIndex = 0;
 let slides = [];
@@ -36,7 +43,8 @@ function showSlides() {
   dots[slideIndex].className += " active";
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await fetchImages();
   slides = document.querySelectorAll(".mySlides");
   dots = document.querySelectorAll(".dot");
   showSlides();
@@ -49,17 +57,13 @@ onMounted(() => {
   <div class="slideshow-container fillp">
 
     <div class="carousel-wrapper fillp center-content">
-      <img src="/garageSale.jpg" class="mySlides fade carousel-image">
-      <img src="/al-logo.png" class="mySlides fade carousel-image">
-      <img src="/hamburger.png" class="mySlides fade carousel-image">
+      <img v-for="image in images" :src="image.base64" class="mySlides fade carousel-image">
     </div>
 
     <a class="prev" :onclick="() => plusSlides(-1)">&#10094;</a>
     <a class="next" :onclick="() => plusSlides(1)">&#10095;</a>
     <div style="text-align:center" class="carousel-dots fillw">
-      <span class="dot" :onclick="() => currentSlide(0)"></span>
-      <span class="dot" :onclick="() => currentSlide(1)"></span>
-      <span class="dot" :onclick="() => currentSlide(2)"></span>
+      <span v-for="n in images.length" class="dot" :onclick="() => currentSlide(n - 1)"></span>
     </div>
   </div>
 </template>
@@ -69,6 +73,9 @@ onMounted(() => {
 .slideshow-container {
   position: relative;
   margin: auto;
+  display: grid;
+  grid-template-rows: 1fr 32px;
+  row-gap: 1rem;
 }
 
 /* Hide the images by default */
@@ -77,8 +84,7 @@ onMounted(() => {
 }
 
 .carousel-dots{
-  position: absolute;
-  bottom: 10px;
+  height: 32px;
 }
 
 .carousel-image {
@@ -104,7 +110,9 @@ onMounted(() => {
 }
 
 .carousel-wrapper{
-  position: absolute;
+  max-height: 100%;
+  max-width: 100%;
+  overflow: auto;
 }
 
 /* Position the "next button" to the right */
@@ -144,25 +152,25 @@ onMounted(() => {
   height: 15px;
   width: 15px;
   margin: 0 2px;
-  background-color: #bbb;
+  background-color: white;
   border-radius: 50%;
   display: inline-block;
   transition: background-color 0.6s ease;
 }
 
 .active, .dot:hover {
-  background-color: #717171;
+  background-color: lightskyblue;
 }
 
 /* Fading animation */
 .fade {
   animation-name: fade;
-  animation-duration: 1.5s;
+  animation-duration: .5s;
 }
 
 @keyframes fade {
   from {
-    opacity: .4
+    opacity: 0
   }
   to {
     opacity: 1
