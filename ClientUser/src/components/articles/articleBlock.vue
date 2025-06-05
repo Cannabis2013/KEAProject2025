@@ -11,7 +11,7 @@ const handleUpdate = props.onUpdate ?? function(){}
 </script>
 
 <template>
-  <div class="article-cont">
+  <div class="article-block-cont">
     <div class="article-head">
       <div>
         <h2 class="article-headline">{{ article.headline }}</h2>
@@ -28,7 +28,7 @@ const handleUpdate = props.onUpdate ?? function(){}
 </template>
 
 <style scoped lang="css">
-.article-cont {
+.article-block-cont {
   margin-bottom: 1.5rem;
   background-color: rgba(255,255,255,.1);
   border-radius: 9px;

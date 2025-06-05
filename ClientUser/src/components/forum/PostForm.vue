@@ -5,12 +5,14 @@ import {onMounted} from "vue";
 import {v4 as uuid} from "uuid";
 import {ref} from "vue";
 import EmojiSelector from "@/components/controls/EmojiSelector.vue";
+import Scroll from "@/services/scroll/itemScroll.js"
 
 const content = document.querySelector("#content")
 const compUuid = uuid()
 const compId = `createComp${compUuid}`
 const textId = `textComp${compUuid}`
 let textComp = null
+let createComp = null
 
 const props = defineProps(["onCompleted", "onCancelled", "model", "topicId"]);
 
@@ -22,11 +24,13 @@ const model = ref(props.model ?? {
 
 onMounted(function(){
   textComp = document.getElementById(textId)
-  const createComp = document.getElementById(compId)
-  let h = createComp.getBoundingClientRect().height
-  let y = createComp.getBoundingClientRect().y + h
-  console.log(`h: ${h}, y: ${y}`)
-  setTimeout(() => content.scrollTo(0, y),501)
+  createComp = document.getElementById(compId)
+  setTimeout(function(){
+    const rect = createComp.getBoundingClientRect()
+    let height = rect.height
+    let compY = rect.y
+    Scroll(height,compY)
+  },501)
 })
 
 function insertEmoji(emoji) {

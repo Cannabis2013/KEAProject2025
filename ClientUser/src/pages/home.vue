@@ -62,6 +62,10 @@ import ContactCard from "@/components/contact/ContactCard.vue";
   #home-mid-grid {
     grid-template-rows: 384px 512px;
   }
+
+  #carousel-cont{
+    height: 100vh;
+  }
 }
 
 @media (orientation: landscape) and (min-width: 768px) {
@@ -99,10 +103,9 @@ import ContactCard from "@/components/contact/ContactCard.vue";
     flex-direction: row;
     justify-content: center;
   }
+  #carousel-cont{
+    height: 512px;
+  }
 }
 
-#carousel-cont{
-  border-radius: 6px;
-  height: 512px;
-}
 </style>

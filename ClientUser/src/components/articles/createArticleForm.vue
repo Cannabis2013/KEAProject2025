@@ -5,6 +5,7 @@ import HttpClient from "@/services/http/httpClient.js";
 import {v4 as uuid} from "uuid";
 import {imageAsBase64} from "@/services/Images/images.js";
 import {onMounted} from "vue";
+import Scroll from "@/services/scroll/itemScroll.js"
 
 const props = defineProps(["onCompleted", "onCancelled", "model"])
 
@@ -18,20 +19,13 @@ const model = props.model ?? {
 
 const compUuid = uuid()
 const compId = `articleCreate${compUuid}`
-const content = document.querySelector("#content")
 
 onMounted(function () {
-  const createComp = document.getElementById(compId)
-  const wHeight = window.innerHeight
-  const rect = createComp.getBoundingClientRect()
-  const height = rect.height
-  const y = rect.y
-  let sy = window.scrollY
-  if(y <= wHeight / 2)
-    sy -= wHeight - y - height
-  else
-    sy += y - (wHeight - height)
-  setTimeout(() => window.scrollTo(0, sy), 501)
+  setTimeout(function(){
+    const createComp = document.getElementById(compId)
+    const rect = createComp.getBoundingClientRect()
+    Scroll(rect.height, rect.y)
+  }, 501)
 })
 
 async function handleCompleted() {
@@ -51,10 +45,10 @@ const handleCancelRequest = props.onCancelled ?? function () {
 </script>
 
 <template>
-  <div :id="compId">
+  <div :id="compId" class="article-form-cont">
     <input placeholder="Titel" class="fillw" v-model="model.headline"/>
-    <textarea class="fillw" placeholder="Skriv et  kort resume af indholdet her" v-model="model.shortContent"/>
-    <textarea class="fillw" placeholder="Skriv dit indhold af artiklen her" v-model="model.content"/>
+    <textarea class="" placeholder="Skriv et  kort resume af indholdet her" v-model="model.shortContent"/>
+    <textarea class="create-content-cont" placeholder="Skriv dit indhold af artiklen her" v-model="model.content"/>
     <input accept=".png,.jpg,.jpeg" type="file" :onchange="handleFile" :id="'file-selector' + compId"
            class="create-file-selector"/>
     <div class="create-btn-group">
@@ -65,6 +59,14 @@ const handleCancelRequest = props.onCancelled ?? function () {
 </template>
 
 <style scoped lang="css">
+.article-form-cont {
+  display: grid;
+  grid-template-rows: min-content 128px 1fr 64px;
+  height: 768px;
+  animation: growUp .5s ease-in-out;
+  z-index: 333;
+}
+
 textarea, input {
   outline: none;
   padding: 9px;

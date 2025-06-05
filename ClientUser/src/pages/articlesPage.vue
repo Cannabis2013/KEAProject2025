@@ -76,7 +76,7 @@ function hideForm() {
         :onCancelled="hideForm"
         :onCompleted="createCompleted"
     />
-    <div v-for="article in articles">
+    <div class="article-cont center" v-for="article in articles">
       <CreateNewsForm
           v-if="updateId === article.id"
           :onCancelled="hideForm"
@@ -103,5 +103,9 @@ function hideForm() {
 
 .article-create-btn {
   float: left;
+}
+
+.article-cont{
+  width: 640px;
 }
 </style>
