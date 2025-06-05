@@ -4,7 +4,7 @@ import {ref} from "vue";
 import PushButton from "@/components/controls/PushButton.vue";
 import HttpClient from "@/services/http/httpClient"
 import LoadIndicator from "@/components/loading/LoadIndicator.vue";
-import TopicForm from "@/components/Forum/TopicForm.vue";
+import TopicForm from "@/components/forum/TopicForm.vue";
 import {useRouter} from "vue-router";
 import {useVirtualList} from "@vueuse/core";
 

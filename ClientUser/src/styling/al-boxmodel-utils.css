@@ -3,6 +3,14 @@
     height: 100vh;
 }
 
+.fillsw{
+    width: 100vw;
+}
+
+.fillsh{
+    height: 100vh;
+}
+
 .fillp{
     width: 100%;
     height: 100%;

@@ -57,7 +57,7 @@ onMounted(async () => {
   <div class="slideshow-container fillp">
 
     <div class="carousel-wrapper fillp center-content">
-      <img v-for="image in images" :src="image.base64" class="mySlides fade carousel-image">
+      <img v-for="image in images" :src="image.base64" class="mySlides fade carousel-image round6">
     </div>
 
     <a class="prev" :onclick="() => plusSlides(-1)">&#10094;</a>

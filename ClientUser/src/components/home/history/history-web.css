@@ -1,4 +1,4 @@
-@media only screen and (min-width: 768px) {
+@media (orientation: landscape) and (min-width: 768px) {
     .hist-tree-cont {
         display: grid;
     }

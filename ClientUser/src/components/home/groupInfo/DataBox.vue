@@ -6,7 +6,7 @@ export default {
 <template>
   <div class="info-box">
     <p class="box-title">{{ title }}</p>
-    <p class="box-value animate-charcter"> {{ value }}</p>
+    <p class="box-value animate-character"> {{ value }}</p>
   </div>
 </template>
 <style lang="css" scoped>
@@ -29,7 +29,7 @@ export default {
   line-height: 1.25rem;
 }
 
-.animate-charcter {
+.animate-character {
   background-image: linear-gradient(-225deg,
   lightskyblue 0%,
   white 25%,

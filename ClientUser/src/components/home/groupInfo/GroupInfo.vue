@@ -1,5 +1,5 @@
 <script setup>
-import DataBox from './dataBox.vue';
+import DataBox from './DataBox.vue';
 </script>
 <template>
   <div id="groupInfo" class="groupInfo-cont">

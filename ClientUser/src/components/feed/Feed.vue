@@ -2,9 +2,9 @@
 import {ref} from "vue";
 import LoadIndicator from "@/components/loading/LoadIndicator.vue";
 import HttpClient from "@/services/http/httpClient.js";
-import ArticleCard from "@/components/home/Feed/ArticleCard.vue"
+import ArticleCard from "@/components/articles/ArticleCard.vue"
 import {useRouter} from "vue-router";
-import TopicCard from "@/components/home/Feed/TopicCard.vue";
+import TopicCard from "@/components/forum/TopicCard.vue";
 
 const articles = ref([])
 const activeTopics = ref([])

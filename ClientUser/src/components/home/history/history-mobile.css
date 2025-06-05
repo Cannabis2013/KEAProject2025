@@ -1,4 +1,6 @@
-.hist-tree-cont {
-    display: inline;
-    margin: 128px 0 128px 0;
+@media (orientation: portrait) or (max-width: 767px){
+    .hist-tree-cont {
+        display: inline;
+        margin: 128px 0 128px 0;
+    }
 }

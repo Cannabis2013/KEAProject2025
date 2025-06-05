@@ -17,16 +17,4 @@ import MobileNavBar from '@/components/dashboard/MobileNavBar.vue';
   -->
   <Dashboard/>
   <RouterView/>
-  <!--<div id="content">
-  </div>
-  -->
 </template>
-<style lang="css" scoped>
-#content {
-  overflow: auto;
-  height: 100vh;
-  width: 100%;
-  scroll-behavior: smooth;
-  background-color: var(--al-back);
-}
-</style>

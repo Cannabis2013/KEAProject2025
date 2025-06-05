@@ -3,11 +3,11 @@ import HttpClient from "@/services/http/httpClient.js";
 import {ref} from "vue";
 import LoadIndicator from "@/components/loading/LoadIndicator.vue";
 import {useRoute, useRouter} from "vue-router";
-import PostItem from "@/components/Forum/PostItem.vue";
+import PostItem from "@/components/forum/PostItem.vue";
 import PushButton from "@/components/controls/PushButton.vue";
-import PostForm from "@/components/Forum/PostForm.vue";
+import PostForm from "@/components/forum/PostForm.vue";
 import {toDate, toDateTime} from "@/services/date/dateFormatting.js";
-import TopicForm from "@/components/Forum/TopicForm.vue";
+import TopicForm from "@/components/forum/TopicForm.vue";
 
 const router = useRouter()
 const route = useRoute()
