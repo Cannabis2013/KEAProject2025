@@ -8,7 +8,7 @@ namespace ALBackend.Services.Forum;
 
 public class Posts(MariaDbContext dbContext) : IPosts
 {
-    public async Task<List<Post>> Paginated(int pageIndex, int pageSize, int topicId, Member currentMember)
+    public async Task<List<Post>> ManyAsync(int pageIndex, int pageSize, int topicId, Member currentMember)
     {
         return await dbContext.Posts
             .Where(post => post.TopicId == topicId)
@@ -40,9 +40,9 @@ public class Posts(MariaDbContext dbContext) : IPosts
         return await dbContext.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> RemoveAsync(int topicId)
+    public async Task<bool> RemoveAsync(int id)
     {
-        var post = await dbContext.Posts.FindAsync(topicId);
+        var post = await dbContext.Posts.FindAsync(id);
         if (post is null) return false;
         dbContext.Posts.Remove(post);
         return await dbContext.SaveChangesAsync() > 0;

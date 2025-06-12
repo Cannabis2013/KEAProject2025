@@ -13,15 +13,13 @@ public class MembersController(
     IProfileImages profileImages) : Controller
 {
     [HttpGet, Authorize(Roles = "CHAIRMAN, DEPUTY_CHAIRMAN")]
-    public JsonResult GetMembers()
+    public async Task<JsonResult> GetMembers()
     {
-        var response = members.Many()
+        var response = (await members.ManyAsync())
             .Select(member =>
             {
                 var user = usersFetcher.User(member.UserId);
-                member.Email = user?.Email;
-                member.UserId = member.UserId;
-                return member;
+                return new MemberFetchResponse(member,user);
             })
             .ToList();
         return new(response);
@@ -34,11 +32,11 @@ public class MembersController(
         var member = members.One(memberId);
         if (member is null) return new("Member not found") { StatusCode = StatusCodes.Status404NotFound };
         
-        var user = await usersFetcher.UserWithRoles(member.UserId);
-        if(user is null) return new("User not found") { StatusCode = StatusCodes.Status404NotFound };
-        var response = new MemberFetchResponse(member)
+        var userWithRoles = await usersFetcher.UserWithRoles(member.UserId);
+        if(userWithRoles is null) return new("User not found") { StatusCode = StatusCodes.Status404NotFound };
+        var response = new MemberFetchResponse(member,userWithRoles.User)
         {
-            Roles = user.Roles,
+            Roles = userWithRoles.Roles,
             ProfileImageAsBase64 = profileImages.One(member.ProfileImageId)?.Blob
         };
         return new(response);
@@ -53,7 +51,7 @@ public class MembersController(
         var member = members.One(userId);
         if (member is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
         
-        var response = new MemberFetchResponse(member)
+        var response = new MemberFetchResponse(member,user.User)
         {
             Roles = user.Roles,
             ProfileImageAsBase64 = profileImages.One(member.ProfileImageId)?.Blob
@@ -62,14 +60,14 @@ public class MembersController(
     }
 
     [HttpPost, Authorize(Roles = "CHAIRMAN,DEPUTY_CHAIRMAN")]
-    public async Task<JsonResult> CreateMember(MemberInfo request)
+    public async Task<JsonResult> CreateMember(MemberUpdateRequest request)
     {
         var result = await members.Create(request);
         return new(result) { StatusCode = StatusCodes.Status201Created };
     }
 
     [HttpPatch, Authorize(Roles = "CHAIRMAN,DEPUTY_CHAIRMAN")]
-    public async Task<JsonResult> UpdateMember(MemberInfo request)
+    public async Task<JsonResult> UpdateMember(MemberUpdateRequest request)
     {
         var result = await members.Update(request);
         return new(result) { StatusCode = StatusCodes.Status200OK };

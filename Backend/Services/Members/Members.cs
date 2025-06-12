@@ -14,11 +14,11 @@ public class Members(
     MariaDbContext dbContext,
     IUsersUpdate usersUpdate) : IMembers
 {
-    public Member? One(int memberId)
+    public Member? One(int id)
     {
         return dbContext.Members
             .Include(u => u.ProfileImages)
-            .FirstOrDefault(member => member.Id == memberId);
+            .FirstOrDefault(member => member.Id == id);
     }
 
     public Member? One(ClaimsPrincipal principal)
@@ -30,11 +30,9 @@ public class Members(
         var user = userManager.Users.FirstOrDefault(u => u.Id == userId);
         if (user is null) return null;
 
-        var member = dbContext
+        return dbContext
             .Members
             .FirstOrDefault(member => member.UserId == Guid.Parse(user.Id));
-
-        return member;
     }
 
     public Member? One(Guid userId)
@@ -44,15 +42,10 @@ public class Members(
             .FirstOrDefault(member => member.UserId == userId);
     }
 
-    public List<MemberFetchResponse> Many()
-    {
-        return dbContext.Members
-            .AsEnumerable()
-            .Select(member => new MemberFetchResponse(member))
-            .ToList();
-    }
+    public async Task<List<Member>> ManyAsync() =>
+        await dbContext.Members.ToListAsync();
 
-    public async Task<bool> Create(MemberInfo request)
+    public async Task<bool> Create(MemberUpdateRequest request)
     {
         var member = request.ToMember();
         member.UserId = await usersUpdate.CreateAsync(request.ToCredentials());
@@ -60,7 +53,7 @@ public class Members(
         return await dbContext.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> Update(MemberInfo request)
+    public async Task<bool> Update(MemberUpdateRequest request)
     {
         await usersUpdate.UpdateAsync(request.ToCredentials());
         var member = await dbContext.Members.FindAsync(request.MemberId);
@@ -70,12 +63,12 @@ public class Members(
         return await dbContext.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> RemoveAsync(int memberId)
+    public async Task<bool> RemoveAsync(int id)
     {
-        var member = await dbContext.Members.FindAsync(memberId);
+        var member = await dbContext.Members.FindAsync(id);
         if (member is null) return false;
         await usersUpdate.RemoveAsync(member.UserId);
-        dbContext.Remove(memberId);
+        dbContext.Remove(id);
         return await dbContext.SaveChangesAsync() > 0;
     }
 }

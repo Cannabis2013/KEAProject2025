@@ -5,6 +5,7 @@ import TextRotator from "@/components/textRotator/TextRotator.vue";
 import ALTextBanner from "@/components/banners/ALTextBanner.vue";
 import AlLogoBanner from "@/components/banners/ALLogoBanner.vue";
 import ContactCard from "@/components/contact/ContactCard.vue";
+import HistoryChart from "@/components/historyChart/HistoryChart.vue";
 </script>
 <template>
   <div class="landing-banner-cont">
@@ -12,12 +13,13 @@ import ContactCard from "@/components/contact/ContactCard.vue";
     <AlLogoBanner/>
     <ALTextBanner />
   </div>
-  <div id="home-mid-grid" class="pad16">
+  <div id="home-mid-grid" class="center-content pad16">
     <div id="carousel-cont" class="fillw">
       <ImageCarousel />
     </div>
     <Feed id="feed-cont" class="fillp"/>
   </div>
+  <HistoryChart style="margin-bottom: 16rem;"/>
   <div class="contact-cont">
     <h1 class="contact-head">Kontakt</h1>
     <div class="contact-grid">

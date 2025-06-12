@@ -9,6 +9,7 @@ import {signedIn} from '@/services/identity/auth'
 import {createRouter, createWebHashHistory} from 'vue-router'
 import TopicsPage from "@/pages/TopicsPage.vue";
 import TopicPage from "@/pages/TopicPage.vue";
+import HistoryPage from "@/pages/HistoryPage.vue";
 
 const routes = [
     {
@@ -46,6 +47,10 @@ const routes = [
     {
         path: '/login',
         component: SignInPage
+    },
+    {
+        path: '/history',
+        component: HistoryPage
     },
     {
         path: '/unauthorized',

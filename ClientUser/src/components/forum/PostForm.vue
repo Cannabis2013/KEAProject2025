@@ -7,7 +7,6 @@ import {ref} from "vue";
 import EmojiSelector from "@/components/controls/EmojiSelector.vue";
 import Scroll from "@/services/scroll/itemScroll.js"
 
-const content = document.querySelector("#content")
 const compUuid = uuid()
 const compId = `createComp${compUuid}`
 const textId = `textComp${compUuid}`

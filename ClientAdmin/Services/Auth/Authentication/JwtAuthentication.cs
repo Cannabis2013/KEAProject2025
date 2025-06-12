@@ -41,11 +41,6 @@ public class JwtAuthentication(
         return true;
     }
 
-    private async Task<HttpResponseMessage> FetchResponse()
-    {
-        return await client.GetAsync($"/auth/admin/check");
-    }
-
     private async Task<HttpResponseMessage?> AuthenticationCheck()
     {
         try

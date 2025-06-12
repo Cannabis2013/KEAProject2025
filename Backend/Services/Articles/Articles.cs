@@ -7,7 +7,7 @@ namespace ALBackend.Services.Articles;
 
 public class Articles(MariaDbContext dbContext) : IArticles
 {
-    public async Task<List<Article>> Paginated(int pageIndex, int pageSize, int memberId)
+    public async Task<List<Article>> ManyAsync(int pageIndex, int pageSize, int memberId)
     {
         return await dbContext.Articles
             .Include(article => article.Image)
@@ -17,21 +17,17 @@ public class Articles(MariaDbContext dbContext) : IArticles
             .ToListAsync();
     }
 
-    public List<Article> Many(int count)
+    public async Task<List<Article>> ManyAsync(int count)
     {
-        return dbContext.Articles
-            .AsEnumerable()
+        return (await dbContext.Articles.ToListAsync())
             .TakeLast(count)
             .OrderByDescending(article => article.CreatedAt)
             .ToList();
     }
 
-    public Article One(int id)
-    {
-        return dbContext.Articles
-            .First(article => article.Id == id);
-    }
-    
+    public Article? One(int id) =>
+        dbContext.Articles.FirstOrDefault(article => article.Id == id);
+
     private Article? FindArticleFromUser(int id, int memberId)
     {
         return dbContext
@@ -40,40 +36,31 @@ public class Articles(MariaDbContext dbContext) : IArticles
             .FirstOrDefault(article => article.Id == id && article.MemberId == memberId);
     }
 
-    public async Task<bool> Create(ArticleUpdateRequest request, int memberId)
+    public async Task<bool> AddAsync(ArticleUpdateRequest request, int memberId)
     {
-        var article = new Article
-        {
-            Headline = request.Headline,
-            ShortContent = request.ShortContent,
-            Content = request.Content,
-            MemberId = memberId,
-            Image = request.ImageBlob is not null ? new(request.ImageBlob) : null
-        };
-
+        var article = request.ToEntity();
+        article.MemberId = memberId;
         dbContext.Articles.Add(article);
         return await dbContext.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> Update(ArticleUpdateRequest request, int memberId)
+    public async Task<bool> UpdateAsync(ArticleUpdateRequest request, int memberId)
     {
         var article = FindArticleFromUser(request.Id, memberId);
         if (article is null) return false;
         
-        article.Headline = request.Headline;
-        article.ShortContent = request.ShortContent;
-        article.Content = request.Content;
-
-        if (request.ImageBlob is not null && article.Image is not null)
-            article.Image.Base64 = request.ImageBlob;
-        else if (request.ImageBlob is not null)
-            article.Image = new(request.ImageBlob);
+        var updated = request.ToEntity(article);
         
-        dbContext.Update(article);
+        if (request.ImageBlob is not null && updated.Image is not null)
+            updated.Image.Base64 = request.ImageBlob;
+        else if (request.ImageBlob is not null)
+            updated.Image = new(request.ImageBlob);
+        
+        dbContext.Update(updated);
         return await dbContext.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> Remove(int id, int memberId)
+    public async Task<bool> RemoveAsync(int id, int memberId)
     {
         var article = FindArticleFromUser(id, memberId);
         if (article is null) return false;

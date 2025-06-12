@@ -19,32 +19,24 @@ public class UsersFetcher(UserManager<UserAccount> userManager) : IUsersFetcher
     {
         return userManager
             .Users
-            .FirstOrDefault(u => u.Email == credentials.Email && 
+            .FirstOrDefault(u => u.Email == credentials.Email &&
                                  u.RefreshToken == credentials.RefreshToken);
     }
 
-    public UserFetchResponse? User(Guid id)
+    public UserAccount? User(Guid id)
     {
         var user = userManager.Users.FirstOrDefault(u => u.Id == id.ToString());
-        if (user is null) return null;
-        return new()
-        {
-            Id = Guid.Parse(user.Id),
-            Email = user.Email ?? "",
-            Username = user.UserName ?? ""
-        };
+        return user ?? null;
     }
 
-    public async Task<UserFetchResponse?> UserWithRoles(Guid id)
+    public async Task<UserAccountWithRoles?> UserWithRoles(Guid id)
     {
         var user = userManager.Users.FirstOrDefault(u => u.Id == id.ToString());
         if (user is null) return null;
         var roles = await userManager.GetRolesAsync(user!);
         return new()
         {
-            Id = Guid.Parse(user.Id),
-            Email = user.Email ?? "",
-            Username = user.UserName ?? "",
+            User = user,
             Roles = roles.ToList()
         };
     }
@@ -53,7 +45,7 @@ public class UsersFetcher(UserManager<UserAccount> userManager) : IUsersFetcher
     {
         var authenticated = principal?.Identity?.IsAuthenticated ?? false;
         if (principal is null || !authenticated) return null;
-        var userId = principal.FindFirst(claim =>  claim.Type == "Id" )?.Value;
+        var userId = principal.FindFirst(claim => claim.Type == "Id")?.Value;
         return userManager.Users.First(u => u.Id == userId);
     }
 

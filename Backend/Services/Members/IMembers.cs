@@ -6,11 +6,11 @@ namespace ALBackend.Services.Members;
 
 public interface IMembers
 {
-    public Member? One(int memberId);
+    public Member? One(int id);
     public Member? One(ClaimsPrincipal principal);
     public Member? One(Guid userId);
-    public List<MemberFetchResponse> Many();
-    public Task<bool> Create(MemberInfo request);
-    public Task<bool> Update(MemberInfo request);
-    public Task<bool> RemoveAsync(int memberId);
+    public Task<List<Member>> ManyAsync();
+    public Task<bool> Create(MemberUpdateRequest request);
+    public Task<bool> Update(MemberUpdateRequest request);
+    public Task<bool> RemoveAsync(int id);
 }

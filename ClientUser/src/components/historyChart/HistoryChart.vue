@@ -43,7 +43,18 @@
         <div class="date">16. november 2024</div>
         <p class="title">Reiner Selvig Sandell // 1974 - 2024</p>
         <p class="descr">
-          Hvil i fred.
+          Endnu en tragedie rammer Amager Loyalist. Mangeårigt medlem Reiner Selvig
+          Sandell afgår ved døden og efterlader sig to børn.
+          <br><br>
+          Hvil i fred ✞
+        </p>
+      </li>
+      <li style="--accent-color:#FF1215">
+        <div class="date">21. juni 2025</div>
+        <p class="title">Jubilæumsfest</p>
+        <p class="descr">
+          Amager Loyalist har 20 års jubilæum. Det fejres med stor fest
+          i stakladen med narko og kællinger!!!
         </p>
       </li>
     </ul>

@@ -19,18 +19,8 @@ function handleNavigationRequest(href) {
 }
 
 function toggleMenu() {
-  const status = dashContainer.style.display
-  if (status !== "block") {
-    dashContainer.style.display = "block"
-    setTimeout(() => {
-      dashContainer.style.height = "100vh"
-    }, 1);
-  } else {
-    dashContainer.style.height = "0"
-    setTimeout(() => {
-      dashContainer.style.display = "none"
-    }, 300);
-  }
+  const result = dashContainer.style.height !== "100vh"
+  dashContainer.style.height = result ? "100vh" : "0"
 }
 </script>
 <template>
@@ -51,14 +41,16 @@ function toggleMenu() {
   </div>
 </template>
 <style lang="css" scoped>
-.nav-handle, .dash-cont, .dash-inner-cont {
+.nav-handle {
   display: none;
 }
 
-.dash-cont{
+.dash-cont {
   transition: height 0.5s ease-in-out;
   height: 0;
   background-color: #3f3f3f;
+  overflow: hidden;
+  position: relative;
 }
 
 @media only screen and (min-width: 768px) {

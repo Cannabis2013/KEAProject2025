@@ -1,4 +1,4 @@
-export function scroll(height, elementY) {
+export default function scroll(height, elementY) {
     const wHeight = window.innerHeight
     let windowScrollY = window.scrollY
     if (elementY <= wHeight / 2)
@@ -7,5 +7,3 @@ export function scroll(height, elementY) {
         windowScrollY += elementY - (wHeight - height)
     window.scrollTo(0, windowScrollY)
 }
-
-export default scroll

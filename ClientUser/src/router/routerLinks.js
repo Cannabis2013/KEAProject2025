@@ -14,6 +14,11 @@ export default [
         title: "Forum",
         icon: "./history.png"
     },
+    {
+        href: "/history",
+        title: "Historien",
+        icon: "./history.png"
+    },
     /*
     {
         href: "/members",

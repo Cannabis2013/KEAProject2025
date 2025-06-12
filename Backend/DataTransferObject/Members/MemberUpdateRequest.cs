@@ -3,7 +3,7 @@ using ALMembers.Entities;
 
 namespace ALBackend.DataTransferObject.Members;
 
-public class MemberInfo
+public class MemberUpdateRequest
 {
     public required int MemberId { get; set; }
     public required string FirstName { get; set; }

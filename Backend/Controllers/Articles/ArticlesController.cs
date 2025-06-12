@@ -11,12 +11,11 @@ public class ArticlesController(
     IMembers members,
     IArticles articles) : ControllerBase
 {
-    [HttpGet("{lastId:int}/{pageSize:int}")]
-    public async Task<JsonResult> PaginatedArticles(int lastId, int pageSize)
+    [HttpGet("{pageIndex:int}/{pageSize:int}")]
+    public async Task<JsonResult> Paginated(int pageIndex, int pageSize)
     {
         var memberId = members.One(User)?.Id ?? -1;
-        var result = await articles.Paginated(lastId, pageSize, memberId);
-        var response = result
+        var response = (await articles.ManyAsync(pageIndex, pageSize, memberId))
             .Select(article =>
             {
                 var author = members.One(memberId);
@@ -27,9 +26,9 @@ public class ArticlesController(
     }
 
     [HttpGet("count/{count:int}")]
-    public JsonResult Article(int count)
+    public async Task<JsonResult> Articles(int count)
     {
-        var result = articles.Many(count)
+        var result = (await articles.ManyAsync(count))
             .Select(article =>
             {
                 var author = members.One(article.MemberId);
@@ -43,6 +42,7 @@ public class ArticlesController(
     public JsonResult One(int id)
     {
         var article = articles.One(id);
+        if (article == null) return new("") { StatusCode = StatusCodes.Status404NotFound };
         var author = members.One(article.MemberId);
         var response = new ArticleFetchResponse(article, author);
         return new(response);
@@ -53,7 +53,7 @@ public class ArticlesController(
     {
         var member = members.One(User);
         if (member is null) return new("Member not found") { StatusCode = StatusCodes.Status404NotFound };
-        var result = await articles.Create(request, member.Id);
+        var result = await articles.AddAsync(request, member.Id);
         return new(result);
     }
 
@@ -62,7 +62,7 @@ public class ArticlesController(
     {
         var member = members.One(User);
         if (member is null) return new("Member not found") { StatusCode = StatusCodes.Status404NotFound };
-        var result = await articles.Update(request, member.Id);
+        var result = await articles.UpdateAsync(request, member.Id);
         return new(result);
     }
 
@@ -71,7 +71,7 @@ public class ArticlesController(
     {
         var member = members.One(User);
         if (member is null) return new("Member not found") { StatusCode = StatusCodes.Status404NotFound };
-        var result = await articles.Remove(id, member.Id);
+        var result = await articles.RemoveAsync(id, member.Id);
         return new(result);
     }
 }

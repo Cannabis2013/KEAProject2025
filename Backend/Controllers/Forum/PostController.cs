@@ -16,7 +16,7 @@ public class PostController(
     {
         var currentMember = members.One(User);
         if (currentMember is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
-        var result = await posts.Paginated(pageIndex, pageSize, topicId, currentMember);
+        var result = await posts.ManyAsync(pageIndex, pageSize, topicId, currentMember);
         var response = result.Select(post =>
             {
                 var creator = members.One(post.memberId);
@@ -35,11 +35,11 @@ public class PostController(
         return new(postId);
     }
 
-    [HttpGet("{postId:int}")]
-    public async Task<JsonResult> GetPost(int postId)
+    [HttpGet("{id:int}")]
+    public async Task<JsonResult> GetPost(int id)
     {
         var currentMember = members.One(User);
-        var post = await posts.OneAsync(postId);
+        var post = await posts.OneAsync(id);
         if (post is null) return new("") { StatusCode = StatusCodes.Status404NotFound };
         var creator = members.One(post.memberId);
         var response = new PostFetchRequest(post, creator,currentMember);
@@ -54,12 +54,12 @@ public class PostController(
         return new(await posts.UpdateAsync(request));
     }
 
-    [HttpDelete("{postId:int}")]
-    public async Task<JsonResult> DeletePost(int postId)
+    [HttpDelete("{id:int}")]
+    public async Task<JsonResult> DeletePost(int id)
     {
         var member = members.One(User);
         if (member is null) return new(false);
-        var result = await posts.RemoveAsync(postId);
+        var result = await posts.RemoveAsync(id);
         return new(result);
     }
 }

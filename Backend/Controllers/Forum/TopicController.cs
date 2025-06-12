@@ -39,6 +39,7 @@ public class TopicController(
     public async Task<JsonResult> GetActiveTopics(int count)
     {
         var active = await topics.RecentlyActiveAsync(count);
+        
         var response = active
             .Select(topic =>
             {
@@ -46,6 +47,7 @@ public class TopicController(
                 return new TopicFetchResponse(topic,member);
             })
             .ToList();
+        
         return new(response);
     }
 
